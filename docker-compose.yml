@@ -1,0 +1,20 @@
+services:
+  tesseract:
+    build:
+      context: ./tesseract
+    ports:
+      - 3000:3000
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - 3001:3001
+    networks:
+      - app-network
+
+networks:
+  app-networks:
+    driver: bridge
