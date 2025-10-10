@@ -2,9 +2,11 @@ const { createWorker } = require("tesseract.js");
 
 const express = require("express");
 const multer = require("multer");
+const cors = require("cors");
 const fs = require("fs");
 
 const app = express();
+app.use(cors());
 const port = 3000;
 
 const upload = multer({ storage: multer.memoryStorage() });
