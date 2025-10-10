@@ -25,6 +25,7 @@ export default function Home() {
 
 		if (imgPreview != "") {
 			setInputImage(imgPreview);
+			console.log("imgpreview path:" + imgPreview)
 
 			const worker = await createWorker("nld");
 			const ret = await worker.recognize(imgPreview);
