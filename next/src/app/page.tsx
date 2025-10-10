@@ -2,13 +2,10 @@
 import { useRef, useState } from "react";
 import Image from "next/image";
 import styles from "./page.module.css";
-import { createWorker } from "tesseract.js";
-import { imageConfigDefault } from "next/dist/shared/lib/image-config";
 
 export default function Home() {
 	const imgInputRef = useRef<HTMLInputElement | null>(null);
 	const [imgPreview, setImgPreview] = useState<string>("");
-	const [inputImage, setInputImage] = useState<string>("");
 	const [foundText, setFoundText] = useState<string>("Loading ...");
 
 	const handleChange = () => {
@@ -23,15 +20,24 @@ export default function Home() {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
 
-		if (imgPreview != "") {
-			setInputImage(imgPreview);
-			console.log("imgpreview path:" + imgPreview)
+		const formData = new FormData();
+		formData.append("image", imgInputRef.current!.files![0]);
 
-			const worker = await createWorker("nld");
-			const ret = await worker.recognize(imgPreview);
-			setFoundText(ret.data.text);
-			console.log(ret.data.text);
-			await worker.terminate();
+		try {
+			const response = await fetch("http://localhost:3000/OCR", {
+				method: "POST",
+				body: formData,
+			});
+
+			if (!response.ok) {
+				throw new Error("OCR request failed");
+			}
+
+			const data = await response.json();
+			setFoundText(data.text);
+		} catch (error) {
+			console.error(error);
+			setFoundText("OCR failed");
 		}
 	};
 
@@ -48,12 +54,7 @@ export default function Home() {
 				</div>
 			</form>
 
-			{inputImage && (
-				<div className={styles.resultContainer}>
-					<Image className={styles.img} src={inputImage} alt="uploaded image" width={500} height={500} />
-					<pre className={styles.preview}>{foundText}</pre>
-				</div>
-			)}
+			<pre className={styles.preview}>{foundText}</pre>
 		</div>
 	);
 }
