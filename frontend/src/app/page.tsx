@@ -7,6 +7,7 @@ export default function Home() {
 	const imgInputRef = useRef<HTMLInputElement | null>(null);
 	const [imgPreview, setImgPreview] = useState<string>("");
 	const [foundText, setFoundText] = useState<string>("Loading ...");
+	const [imgSubmitted, setImgSubmitted] = useState<boolean>(false);
 
 	const handleChange = () => {
 		console.log("change");
@@ -19,6 +20,7 @@ export default function Home() {
 
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
+		setImgSubmitted(true);
 
 		const formData = new FormData();
 		formData.append("image", imgInputRef.current!.files![0]);
@@ -53,8 +55,7 @@ export default function Home() {
 					{imgPreview && <Image className={styles.img} src={imgPreview} alt="uploaded image" width={250} height={250} />}
 				</div>
 			</form>
-
-			<pre className={styles.preview}>{foundText}</pre>
+			{imgSubmitted && <pre className={styles.preview}>{foundText}</pre>}
 		</div>
 	);
 }
