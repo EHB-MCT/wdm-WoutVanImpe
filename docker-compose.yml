@@ -30,16 +30,35 @@ services:
       POSTGRES_PASSWORD:
       POSTGRES_DB:
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready"]
+      test: ["CMD-SHELL", "pg_isready -d db -U user@gmail.com "]
       interval: 1s
       timeout: 5s
       retries: 10
+    networks:
+      - app-network
 
   adminer:
     image: adminer
     restart: always
     ports:
       - 8080:8080
+    networks:
+      - app-network
+
+  api:
+    build:
+      context: ./api
+    command: ["npm", "run", "knex:migrate"]
+    environment:
+      DATABASE_HOST: db
+      POSTGRES_USER:
+      POSTGRES_PASSWORD:
+      POSTGRES_DB:
+    networks:
+      - app-network
+    depends_on:
+      db:
+        condition: service_healthy
 
 networks:
   app-network:
