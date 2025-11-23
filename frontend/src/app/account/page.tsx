@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, FormEvent } from "react";
+import SHA256 from "crypto-js/sha256";
 import styles from "../page.module.css";
 
 export default function AuthPage() {
@@ -19,12 +20,55 @@ export default function AuthPage() {
 
 	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
-		if (!formData.email || !formData.password) {
+		setMessage("");
+
+		if (!formData.email || !formData.password || (!isLogin && !formData.name)) {
 			setMessage("Vul alle verplichte velden in.");
 			return;
 		}
-		console.log(isLogin ? "LOGIN" : "REGISTER", formData);
-		setMessage("");
+
+		const hashedPassword = SHA256(formData.password).toString();
+
+		const endpoint = isLogin ? "http://localhost:5000/api/login" : "http://localhost:5000/api/register";
+
+		const payload = isLogin
+			? {
+					email: formData.email,
+					password: hashedPassword,
+			  }
+			: {
+					username: formData.name,
+					email: formData.email,
+					password: hashedPassword,
+			  };
+
+		try {
+			const response = await fetch(endpoint, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(payload),
+			});
+
+			const data = await response.json();
+
+			if (!response.ok) {
+				throw new Error(data.error || "Er is iets misgegaan.");
+			}
+
+			console.log("Succes:", data);
+
+			if (data.token) {
+				localStorage.setItem("token", data.token);
+				localStorage.setItem("user", JSON.stringify(data.user));
+			}
+
+			setMessage(isLogin ? "Succesvol ingelogd!" : "Account aangemaakt!");
+		} catch (error: any) {
+			console.error("API Error:", error);
+			setMessage(error.message);
+		}
 	};
 
 	return (
