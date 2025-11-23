@@ -21,6 +21,8 @@ services:
       - "11434:11434"
     volumes:
       - ./ollama:/root/.ollama
+    networks:
+      - app-network
 
   db:
     image: postgres
@@ -48,12 +50,14 @@ services:
   api:
     build:
       context: ./api
-    command: ["npm", "run", "knex:migrate"]
+    command: ["npm run knex:migrate && npm start"]
     environment:
       DATABASE_HOST: db
       POSTGRES_USER:
       POSTGRES_PASSWORD:
       POSTGRES_DB:
+    ports:
+      - "${API_PORT}:${API_PORT}"
     networks:
       - app-network
     depends_on:
