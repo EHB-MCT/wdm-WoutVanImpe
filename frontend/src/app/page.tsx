@@ -44,18 +44,33 @@ export default function Home() {
 	};
 
 	return (
-		<div className={styles.page}>
-			<h1>Upload your tickets here!</h1>
-			<form className={styles.form} onSubmit={handleSubmit}>
-				<div className={styles.input}>
-					<input ref={imgInputRef} required type="file" accept="image/*" onChange={handleChange} />
-					<input type="submit" value="Upload" />
+		<div className={styles.ocrPage}>
+			<h1 className={styles.pageTitle}>Upload your tickets here!</h1>
+
+			<div className="card" style={{ maxWidth: "600px", width: "100%" }}>
+				<form className={styles.ocrForm} onSubmit={handleSubmit}>
+					<div className={styles.uploadControls}>
+						<label className="label-text">Kies een afbeelding</label>
+
+						<input ref={imgInputRef} required type="file" accept="image/*" onChange={handleChange} className="input-field" style={{ paddingTop: "10px" }} />
+
+						<button type="submit" className="btn btn-primary">
+							Upload & Scan
+						</button>
+					</div>
+
+					<div className={styles.imagePreviewWrapper}>
+						{imgPreview ? <Image src={imgPreview} alt="uploaded image" width={250} height={250} style={{ objectFit: "contain", maxWidth: "100%", height: "auto" }} /> : <span style={{ color: "#9ca3af" }}>Geen afbeelding geselecteerd</span>}
+					</div>
+				</form>
+			</div>
+
+			{imgSubmitted && (
+				<div className={styles.textResult}>
+					<strong>Gevonden tekst:</strong>
+					<pre style={{ whiteSpace: "pre-wrap", marginTop: "10px" }}>{foundText}</pre>
 				</div>
-				<div className={styles.selectedImg} style={{ width: 250, height: 250 }}>
-					{imgPreview && <Image className={styles.img} src={imgPreview} alt="uploaded image" width={250} height={250} />}
-				</div>
-			</form>
-			{imgSubmitted && <pre className={styles.preview}>{foundText}</pre>}
+			)}
 		</div>
 	);
 }
