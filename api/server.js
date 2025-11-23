@@ -1,4 +1,5 @@
 const express = require("express");
+const cors = require("cors");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
@@ -6,6 +7,7 @@ const knexConfig = require("./knexfile");
 const db = require("knex")(knexConfig.development);
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 
 const PORT = process.env.API_PORT;
