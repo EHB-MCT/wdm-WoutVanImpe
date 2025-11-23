@@ -1,0 +1,17 @@
+const path = require("path");
+
+module.exports = {
+	development: {
+		client: "pg",
+		connection: {
+			host: process.env.DATABASE_HOST || "NOT FOUND",
+			port: 5432,
+			user: process.env.POSTGRES_USER,
+			password: process.env.POSTGRES_PASSWORD,
+			database: process.env.POSTGRES_DB,
+		},
+		migrations: {
+			directory: path.join(__dirname, "migrations"),
+		},
+	},
+};

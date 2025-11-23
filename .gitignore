@@ -1,1 +1,4 @@
 ollama
+.env
+node_modules
+.aider*
