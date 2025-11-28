@@ -2,10 +2,9 @@ FROM node:latest
 
 COPY package*.json .
 
-RUN npm install
+RUN npm i --quiet
 
-COPY knexfile.js .
-COPY migrations/* .
+COPY . .
 
 EXPOSE $API_PORT
 
