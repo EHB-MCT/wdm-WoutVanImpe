@@ -7,12 +7,27 @@
 
 	--foreground: #111827;
 
-	--brand-color: #2563eb;
+--brand-color: #2563eb;
 	--brand-color-hover: #1d4ed8;
+	--brand-shadow: rgba(37, 99, 235, 0.15);
 
 	--border-color: #e5e7eb;
 	--error-color: #dc2626;
 	--error-bg: #fef2f2;
+	--error-border: #fca5a5;
+
+	--warning-color: #f59e0b;
+	--warning-bg: #fffbeb;
+	--warning-border: #f59e0b;
+	--warning-shadow: rgba(245, 158, 11, 0.1);
+
+	--muted-color: #6b7280;
+	--muted-bg: #f9fafb;
+
+	--disabled-bg: #9b9b9bff;
+	--placeholder-color: #9ca3af;
+
+	--success-color: #15803d;
 }
 
 /* --- BASIC SETUP --- */
@@ -100,7 +115,7 @@ a {
 	padding: 0.75rem 1rem;
 	border-radius: 8px;
 	border: 1px solid var(--border-color);
-	background: #ffffff;
+	background: var(--card-bg);
 	color: var(--foreground);
 	font-size: 1rem;
 	transition: all 0.2s ease;
@@ -109,7 +124,7 @@ a {
 .input-field:focus {
 	outline: none;
 	border-color: var(--brand-color);
-	box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+	box-shadow: 0 0 0 3px var(--brand-shadow);
 }
 
 /* 4. LABELS & TEXT */
@@ -118,7 +133,7 @@ a {
 	margin-bottom: 0.5rem;
 	font-size: 0.875rem;
 	font-weight: 600;
-	color: #374151;
+	color: var(--muted-color);
 }
 
 .error-msg {
@@ -126,7 +141,14 @@ a {
 	background: var(--error-bg);
 	padding: 0.75rem;
 	border-radius: 8px;
-	border: 1px solid #fca5a5;
+	border: 1px solid var(--error-border);
 	font-size: 0.875rem;
 	text-align: center;
+}
+
+/* --- VALIDATION STYLES --- */
+.incompleteField {
+	border-color: var(--warning-color) !important;
+	box-shadow: 0 0 0 3px var(--warning-shadow) !important;
+	background-color: var(--warning-bg) !important;
 }
