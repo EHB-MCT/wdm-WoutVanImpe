@@ -1,13 +1,24 @@
 "use client";
 import { useRef, useState } from "react";
-import Image from "next/image";
-import styles from "./page.module.css";
+import { ReceiptData, ReceiptItem } from "@/types/receipt";
+import ImageUpload from "./components/ImageUpload";
+import ReceiptForm from "../components/ReceiptForm";
+import ReceiptItemsList from "../components/ReceiptItemsList";
+import LoadingStates from "./components/LoadingStates";
+import OCRTextDisplay from "./components/OCRTextDisplay";
+import ReceiptProcessor from "./components/ReceiptProcessor";
+import styles from "../page.module.css";
+import componentStyles from "../components/components.module.css";
+import classNames from "classnames";
 
 export default function Home() {
 	const imgInputRef = useRef<HTMLInputElement | null>(null);
 	const [imgPreview, setImgPreview] = useState<string>("");
-	const [foundText, setFoundText] = useState<string>("Loading ...");
+	const [foundText, setFoundText] = useState<string>("");
+	const [editableData, setEditableData] = useState<ReceiptData | null>(null);
 	const [imgSubmitted, setImgSubmitted] = useState<boolean>(false);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
+	const [isSaving, setIsSaving] = useState<boolean>(false);
 
 	const handleChange = () => {
 		console.log("change");
@@ -18,59 +29,134 @@ export default function Home() {
 		}
 	};
 
-	const handleSubmit = async (e: React.FormEvent) => {
+	const { handleSubmit } = ReceiptProcessor({
+		imgInputRef,
+		setFoundText,
+		setEditableData,
+		setIsLoading,
+	});
+
+	const updateEditableData = (field: keyof ReceiptData, value: string | number | null) => {
+		if (!editableData) return;
+		setEditableData({
+			...editableData,
+			[field]: value,
+		});
+	};
+
+	const updateItem = (index: number, field: keyof ReceiptItem, value: string | number | null) => {
+		if (!editableData || !editableData.items) return;
+		const updatedItems = [...editableData.items];
+		updatedItems[index] = {
+			...updatedItems[index],
+			[field]: value,
+		};
+		setEditableData({
+			...editableData,
+			items: updatedItems,
+		});
+	};
+
+	const addNewItem = () => {
+		if (!editableData) return;
+		const newItem: ReceiptItem = {
+			name: null,
+			category: null,
+			quantity: 1,
+			price: null,
+		};
+		setEditableData({
+			...editableData,
+			items: [newItem, ...(editableData.items || [])],
+		});
+	};
+
+	const removeItem = (index: number) => {
+		if (!editableData || !editableData.items) return;
+		const updatedItems = editableData.items.filter((_, i) => i !== index);
+		setEditableData({
+			...editableData,
+			items: updatedItems,
+		});
+	};
+
+	const handleSave = async () => {
+		if (!editableData) return;
+
+		setIsSaving(true);
+		try {
+			// Here you would send data to your API
+			console.log("Saving receipt data:", editableData);
+
+			// Example API call (uncomment and modify as needed):
+			/*
+			const response = await fetch("http://localhost:3000/api/receipts", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify(editableData),
+			});
+			
+			if (!response.ok) {
+				throw new Error(`Save failed: ${response.status} ${response.statusText}`);
+			}
+			*/
+
+			alert("Receipt saved successfully!");
+		} catch (error) {
+			console.error("Save error:", error);
+			alert(`Error saving receipt: ${error instanceof Error ? error.message : "Unknown error"}`);
+		} finally {
+			setIsSaving(false);
+		}
+	};
+
+	const handleFormSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		setImgSubmitted(true);
-
-		const formData = new FormData();
-		formData.append("image", imgInputRef.current!.files![0]);
-
-		try {
-			const response = await fetch("http://localhost:3000/OCR", {
-				method: "POST",
-				body: formData,
-			});
-
-			if (!response.ok) {
-				throw new Error("OCR request failed");
-			}
-
-			const data = await response.json();
-			setFoundText(data.text);
-		} catch (error) {
-			console.error(error);
-			setFoundText("OCR failed");
-		}
+		handleSubmit(e);
 	};
 
 	return (
 		<div className={styles.ocrPage}>
 			<h1 className={styles.pageTitle}>Upload your tickets here!</h1>
 
-			<div className="card" style={{ maxWidth: "600px", width: "100%" }}>
-				<form className={styles.ocrForm} onSubmit={handleSubmit}>
-					<div className={styles.uploadControls}>
-						<label className="label-text">Kies een afbeelding</label>
-
-						<input ref={imgInputRef} required type="file" accept="image/*" onChange={handleChange} className="input-field" style={{ paddingTop: "10px" }} />
-
-						<button type="submit" className="btn btn-primary">
-							Upload & Scan
-						</button>
-					</div>
-
-					<div className={styles.imagePreviewWrapper}>
-						{imgPreview ? <Image src={imgPreview} alt="uploaded image" width={250} height={250} style={{ objectFit: "contain", maxWidth: "100%", height: "auto" }} /> : <span style={{ color: "#9ca3af" }}>Geen afbeelding geselecteerd</span>}
-					</div>
-				</form>
-			</div>
-
 			{imgSubmitted && (
-				<div className={styles.textResult}>
-					<strong>Gevonden tekst:</strong>
-					<pre style={{ whiteSpace: "pre-wrap", marginTop: "10px" }}>{foundText}</pre>
+				<div className={classNames(componentStyles.textResultContainer, "card")}>
+					{isLoading ? (
+						<LoadingStates isLoading={isLoading} />
+					) : editableData ? (
+						<div>
+							<div className={componentStyles.editReceiptHeader}>
+								<strong>Edit Receipt Data:</strong>
+								<button onClick={handleSave} disabled={isSaving} className={`btn btn-primary ${componentStyles.saveButton}`}>
+									{isSaving ? "Saving..." : "Save Receipt"}
+								</button>
+							</div>
+
+							<div className={componentStyles.receiptFormSection}>
+								<ReceiptForm editableData={editableData} updateEditableData={updateEditableData} />
+
+								<ReceiptItemsList editableData={editableData} updateItem={updateItem} addNewItem={addNewItem} removeItem={removeItem} />
+							</div>
+
+							<OCRTextDisplay foundText={foundText} />
+						</div>
+					) : foundText ? (
+						<div>
+							<strong>OCR Text (AI extraction failed):</strong>
+							<pre className={componentStyles.ocrFailedText}>{foundText}</pre>
+						</div>
+					) : (
+						<div className={componentStyles.processingFailed}>
+							<strong>Processing failed</strong>
+						</div>
+					)}
 				</div>
 			)}
+
+			<ImageUpload imgInputRef={imgInputRef} imgPreview={imgPreview} onChange={handleChange} isLoading={isLoading} onSubmit={handleFormSubmit} />
 		</div>
 	);
 }

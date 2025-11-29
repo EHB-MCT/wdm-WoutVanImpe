@@ -2,11 +2,14 @@
 
 import React, { useState, FormEvent } from "react";
 import SHA256 from "crypto-js/sha256";
+import { useRouter } from "next/navigation";
 import styles from "../page.module.css";
 
 export default function AuthPage() {
+	const router = useRouter();
 	const [isLogin, setIsLogin] = useState(true);
 	const [message, setMessage] = useState("");
+	const [isSuccess, setIsSuccess] = useState(false);
 	const [formData, setFormData] = useState({
 		name: "",
 		email: "",
@@ -57,7 +60,7 @@ export default function AuthPage() {
 				throw new Error(data.error || "Er is iets misgegaan.");
 			}
 
-			console.log("Succes:", data);
+	console.log("Succes:", data);
 
 			if (data.token) {
 				localStorage.setItem("token", data.token);
@@ -65,9 +68,16 @@ export default function AuthPage() {
 			}
 
 			setMessage(isLogin ? "Succesvol ingelogd!" : "Account aangemaakt!");
-		} catch (error: any) {
+			setIsSuccess(true);
+			
+			// Redirect to home page after 1.5 seconds
+			setTimeout(() => {
+				router.push("/");
+			}, 1500);
+		} catch (error: unknown) {
 			console.error("API Error:", error);
-			setMessage(error.message);
+			setMessage(error instanceof Error ? error.message : "An unknown error occurred");
+			setIsSuccess(false);
 		}
 	};
 
@@ -75,7 +85,18 @@ export default function AuthPage() {
 		<div className={styles.authContainer}>
 			<div className={styles.authWrapper}>
 				<div className="card">
-					<h1 className={styles.authTitle}>{isLogin ? "Welkom Terug" : "Account Maken"}</h1>
+					<div style={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
+						<button 
+							onClick={() => router.push("/")} 
+							className="btn btn-secondary" 
+							style={{ marginRight: "15px", padding: "8px 16px" }}
+						>
+							← Terug
+						</button>
+						<h1 className={styles.authTitle} style={{ margin: 0 }}>
+							{isLogin ? "Welkom Terug" : "Account Maken"}
+						</h1>
+					</div>
 
 					<form onSubmit={handleSubmit} className={styles.formStack}>
 						{!isLogin && (
@@ -101,7 +122,11 @@ export default function AuthPage() {
 							<input type="password" id="password" name="password" value={formData.password} onChange={handleChange} className="input-field" required placeholder="••••••••" />
 						</div>
 
-						{message && <p className="error-msg">{message}</p>}
+						{message && (
+							<p className={isSuccess ? "success-msg" : "error-msg"}>
+								{message}
+							</p>
+						)}
 
 						<button type="submit" className="btn btn-primary">
 							{isLogin ? "Inloggen" : "Registreren"}

@@ -1,0 +1,140 @@
+/* --- RECEIPT FORM COMPONENT --- */
+
+.receiptFormGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 10px;
+}
+
+.receiptFormSection {
+	margin-top: 15px;
+	display: grid;
+	gap: 15px;
+}
+
+/* --- RECEIPT ITEMS COMPONENT --- */
+
+.itemsHeader {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.itemsGrid {
+	display: grid;
+	gap: 10px;
+}
+
+.itemCard {
+	border: 1px solid var(--border-color);
+	padding: 12px;
+	border-radius: 6px;
+	background-color: var(--muted-bg);
+}
+
+.itemFieldsGrid {
+	display: grid;
+	grid-template-columns: 2fr 1fr 1fr 1fr auto;
+	gap: 8px;
+	align-items: center;
+}
+
+.itemField {
+	font-size: 0.9em;
+}
+
+.itemRemoveBtn {
+	padding-top: 20px;
+}
+
+.noItemsMessage {
+	text-align: center;
+	padding: 20px;
+	color: var(--muted-color);
+	background-color: var(--muted-bg);
+	border-radius: 4px;
+}
+
+/* --- IMAGE UPLOAD COMPONENT --- */
+
+.uploadButtonContainer {
+	text-align: center;
+	justify-self: center;
+}
+
+.uploadButtonDisabled {
+	background-color: var(--disabled-bg) !important;
+	cursor: default !important;
+}
+
+/* --- TEXT RESULT COMPONENT --- */
+
+.textResultContainer {
+	width: 100%;
+	max-width: 600px;
+}
+
+.editReceiptHeader {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 15px;
+}
+
+.saveButton {
+	font-size: 0.9em;
+	padding: 8px 16px;
+}
+
+.addItemButton {
+	font-size: 0.8em;
+	padding: 4px 12px;
+}
+
+.removeItemButton {
+	font-size: 0.8em;
+	padding: 4px 8px;
+}
+
+/* --- LOADING STATES --- */
+
+.loadingContainer {
+	margin-top: 10px;
+}
+
+.loadingStep {
+	margin-bottom: 5px;
+}
+
+/* --- OCR TEXT DISPLAY --- */
+
+.ocrTextContainer {
+	margin-top: 20px;
+}
+
+.ocrTextSummary {
+	cursor: pointer;
+	color: var(--muted-color);
+}
+
+.ocrTextContent {
+	white-space: pre-wrap;
+	margin-top: 10px;
+	font-size: 0.85em;
+	color: var(--muted-color);
+	background-color: var(--muted-bg);
+	padding: 10px;
+	border-radius: 4px;
+}
+
+/* --- PROCESSING STATES --- */
+
+.ocrFailedText {
+	white-space: pre-wrap;
+	margin-top: 10px;
+}
+
+.processingFailed {
+	font-weight: bold;
+}

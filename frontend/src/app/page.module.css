@@ -11,7 +11,7 @@
 .pageTitle {
 	font-size: 2rem;
 	font-weight: 800;
-	color: #111827;
+	color: var(--foreground);
 	text-align: center;
 	letter-spacing: -0.025em;
 }
@@ -31,13 +31,12 @@
 }
 
 .imagePreviewWrapper {
-	margin-top: 20px;
 	display: flex;
 	justify-content: center;
 	align-items: center;
 	border-radius: 8px;
 	overflow: hidden;
-	background: #f9fafb;
+	background: var(--muted-bg);
 	border: 2px dashed var(--border-color);
 	min-height: 250px;
 	width: 100%;
@@ -48,9 +47,9 @@
 	max-width: 600px;
 	padding: 24px;
 	border-radius: 12px;
-	background-color: #ffffff;
+	background-color: var(--card-bg);
 	border: 1px solid var(--border-color);
-	color: #15803d;
+	color: var(--success-color);
 	font-family: monospace;
 	font-size: 14px;
 	white-space: pre-wrap;
@@ -90,5 +89,5 @@
 	margin-top: 2rem;
 	text-align: center;
 	font-size: 0.9rem;
-	color: #6b7280;
+	color: var(--muted-color);
 }
