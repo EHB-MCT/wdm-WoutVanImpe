@@ -39,7 +39,7 @@ export default function HomePage() {
 							<span style={{ color: "var(--brand-color)" }}>{user.email}</span>
 						</p>
 
-						<p style={{ marginBottom: "30px", color: "#6b7280" }}>Je hebt momenteel nog geen recent overzicht. Begin met het uploaden van je eerste ticket.</p>
+						<p style={{ marginBottom: "30px", color: "var(--muted-color)" }}>Je hebt momenteel nog geen recent overzicht. Begin met het uploaden van je eerste ticket.</p>
 
 						<Link href="/upload">
 							<button className="btn btn-primary" style={{ width: "100%" }}>
@@ -52,7 +52,7 @@ export default function HomePage() {
 						<p className="label-text" style={{ marginBottom: "20px" }}>
 							Je bent nog niet ingelogd.
 						</p>
-						<Link href="/login">
+						<Link href="/account">
 							<button className="btn btn-primary" style={{ width: "100%" }}>
 								Naar Login
 							</button>
