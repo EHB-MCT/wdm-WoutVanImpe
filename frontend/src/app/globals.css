@@ -152,3 +152,15 @@ a {
 	box-shadow: 0 0 0 3px var(--warning-shadow) !important;
 	background-color: var(--warning-bg) !important;
 }
+
+.readonly-field {
+	background-color: var(--muted-bg) !important;
+	cursor: not-allowed;
+	opacity: 0.8;
+}
+
+.readonly-field:focus {
+	outline: none;
+	border-color: var(--border-color);
+	box-shadow: none;
+}

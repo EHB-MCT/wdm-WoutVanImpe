@@ -35,10 +35,13 @@ export default function ReceiptForm({ editableData, updateEditableData }: Receip
 					type="number"
 					step="0.01"
 					value={editableData.total_price || ""}
-					onChange={(e) => updateEditableData("total_price", e.target.value ? parseFloat(e.target.value) : null)}
-					className={getFieldClassName(editableData.total_price)}
+					readOnly
+					className={`${getFieldClassName(editableData.total_price)} readonly-field`}
 					placeholder="0.00"
 				/>
+				<small style={{ color: 'var(--muted-color)', fontSize: '0.8em', marginTop: '4px', display: 'block' }}>
+					Automatically calculated from item prices
+				</small>
 			</div>
 			<div>
 				<label className="label-text">Payment Method</label>
