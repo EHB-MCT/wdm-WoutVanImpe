@@ -1,0 +1,28 @@
+# Conversation History - DEV5 Project
+
+## Initial Setup
+- User requested to save conversation history in prompt.txt
+- Project structure: Next.js frontend, Node.js API, Tesseract OCR service
+- Working directory: C:\Users\woutv\Documents\Multimedia\DEV5\wdm-WoutVanImpe
+
+## Project Overview
+- Frontend: Next.js 15 with TypeScript, ESLint
+- API: Node.js with Express, CommonJS modules
+- Tesseract: OCR service for receipt processing
+- Database: Uses Knex.js for migrations
+- Dutch error messages in API responses
+
+## Available Commands
+- Frontend: `cd frontend && npm run dev` (dev), `npm run build` (build), `npm run lint` (lint)
+- API: `cd api && npm start` (start), `npm run knex:migrate` (migrate)
+- Tesseract: `cd tesseract && npm start` (start)
+- No test framework configured
+
+## Code Style Guidelines
+- Use `@/*` imports for frontend components
+- Follow Next.js App Router structure
+- TypeScript strict mode enabled
+- Use async/await for async operations
+
+---
+*This file will be updated as we continue working on the project*
