@@ -7,9 +7,10 @@ interface ReceiptItemProps {
 	index: number;
 	updateItem: (index: number, field: keyof ReceiptItem, value: string | number | null) => void;
 	removeItem: (index: number) => void;
+	categories?: string[];
 }
 
-export default function ReceiptItemComponent({ item, index, updateItem, removeItem }: ReceiptItemProps) {
+export default function ReceiptItemComponent({ item, index, updateItem, removeItem, categories = [] }: ReceiptItemProps) {
 	const getFieldClassName = (value: string | number | null, isQuantity: boolean = false, isPrice: boolean = false) => {
 		const baseClass = "input-field";
 		const isEmpty = value === null || value === "" || (isQuantity && value === 0) || (isPrice && value === 0);
@@ -29,7 +30,20 @@ export default function ReceiptItemComponent({ item, index, updateItem, removeIt
 					<label className="label-text" style={{ fontSize: "0.8em" }}>
 						Category
 					</label>
-					<input type="text" value={item.category || ""} onChange={(e) => updateItem(index, "category", e.target.value)} className={getFieldClassName(item.category)} placeholder="Category" style={{ fontSize: "0.9em" }} />
+					<select 
+						value={item.category || ""} 
+						onChange={(e) => updateItem(index, "category", e.target.value)} 
+						className={getFieldClassName(item.category)} 
+						style={{ fontSize: "0.9em", width: "100%" }}
+					>
+						<option value="">Selecteer categorie</option>
+						{categories.map((category) => (
+							<option key={category} value={category}>
+								{category}
+							</option>
+						))}
+						<option value="Onbekend">Onbekend</option>
+					</select>
 				</div>
 				<div>
 					<label className="label-text" style={{ fontSize: "0.8em" }}>

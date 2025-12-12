@@ -23,6 +23,7 @@ export default function Home() {
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [validation, setValidation] = useState<ValidationResult | null>(null);
 	const [showValidationModal, setShowValidationModal] = useState<boolean>(false);
+	const [categories, setCategories] = useState<string[]>([]);
 
 	const handleChange = () => {
 		console.log("change");
@@ -140,28 +141,49 @@ export default function Home() {
 		setShowValidationModal(false);
 		setIsSaving(true);
 		try {
-			// Here you would send data to your API
-			console.log("Saving receipt data:", editableData);
+			const token = localStorage.getItem("token");
+			if (!token) {
+				throw new Error("Je moet ingelogd zijn om bonnen op te slaan.");
+			}
 
-			// Example API call (uncomment and modify as needed):
-			/*
-			const response = await fetch("http://localhost:3000/api/receipts", {
+			const receiptPayload = {
+				store_name: editableData.store_name,
+				purchase_date: editableData.date,
+				purchase_time: editableData.time,
+				payment_method: editableData.payment_method,
+				total_amount: editableData.total_price,
+				raw_ocr_text: foundText || null,
+				items: editableData.items || []
+			};
+
+			const response = await fetch("http://localhost:5000/api/receipts", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
+					"Authorization": `Bearer ${token}`,
 				},
-				body: JSON.stringify(editableData),
+				body: JSON.stringify(receiptPayload),
 			});
 			
 			if (!response.ok) {
-				throw new Error(`Save failed: ${response.status} ${response.statusText}`);
+				const errorData = await response.json();
+				throw new Error(errorData.error || `Opslaan mislukt: ${response.status} ${response.statusText}`);
 			}
-			*/
 
-			alert("Receipt saved successfully!");
+			const savedReceipt = await response.json();
+			console.log("Receipt saved successfully:", savedReceipt);
+			
+			// Reset form after successful save
+			setImgPreview("");
+			setFoundText("");
+			setEditableData(null);
+			setImgSubmitted(false);
+			setValidation(null);
+			
+			alert("Bon succesvol opgeslagen!");
 		} catch (error) {
 			console.error("Save error:", error);
-			alert(`Error saving receipt: ${error instanceof Error ? error.message : "Unknown error"}`);
+			alert(`Fout bij opslaan bon: ${error instanceof Error ? error.message : "Onbekende fout"}`);
 		} finally {
 			setIsSaving(false);
 		}
@@ -189,6 +211,23 @@ export default function Home() {
 		setShowValidationModal(false); // Reset validation when new image is submitted
 		handleSubmit(e);
 	};
+
+	// Fetch categories on component mount
+	useEffect(() => {
+		const fetchCategories = async () => {
+			try {
+				const response = await fetch("http://localhost:5000/api/categories");
+				if (response.ok) {
+					const categoriesData: { id: number; name: string }[] = await response.json();
+					setCategories(categoriesData.map((cat) => cat.name));
+				}
+			} catch (error) {
+				console.error("Error fetching categories:", error);
+			}
+		};
+
+		fetchCategories();
+	}, []);
 
 	// Initialize validation when editableData is set
 	useEffect(() => {
@@ -239,7 +278,7 @@ export default function Home() {
 							<div className={componentStyles.receiptFormSection}>
 								<ReceiptForm editableData={editableData} updateEditableData={updateEditableData} />
 
-								<ReceiptItemsList editableData={editableData} updateItem={updateItem} addNewItem={addNewItem} removeItem={removeItem} />
+								<ReceiptItemsList editableData={editableData} updateItem={updateItem} addNewItem={addNewItem} removeItem={removeItem} categories={categories} />
 							</div>
 
 							<OCRTextDisplay foundText={foundText} />
