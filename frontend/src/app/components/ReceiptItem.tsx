@@ -30,7 +30,7 @@ export default function ReceiptItemComponent({ item, index, updateItem, removeIt
 					<label className="label-text" style={{ fontSize: "0.8em" }}>
 						Category
 					</label>
-					<select 
+<select 
 						value={item.category || ""} 
 						onChange={(e) => updateItem(index, "category", e.target.value)} 
 						className={getFieldClassName(item.category)} 
@@ -42,7 +42,6 @@ export default function ReceiptItemComponent({ item, index, updateItem, removeIt
 								{category}
 							</option>
 						))}
-						<option value="Onbekend">Onbekend</option>
 					</select>
 				</div>
 				<div>
