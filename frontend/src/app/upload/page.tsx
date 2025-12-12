@@ -1,12 +1,14 @@
 "use client";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { ReceiptData, ReceiptItem } from "@/types/receipt";
+import { validateReceiptData, ValidationResult } from "./utils/receiptValidation";
 import ImageUpload from "./components/ImageUpload";
 import ReceiptForm from "../components/ReceiptForm";
 import ReceiptItemsList from "../components/ReceiptItemsList";
 import LoadingStates from "./components/LoadingStates";
 import OCRTextDisplay from "./components/OCRTextDisplay";
 import ReceiptProcessor from "./components/ReceiptProcessor";
+import ValidationModal from "./components/ValidationModal";
 import styles from "../page.module.css";
 import componentStyles from "../components/components.module.css";
 import classNames from "classnames";
@@ -19,6 +21,9 @@ export default function Home() {
 	const [imgSubmitted, setImgSubmitted] = useState<boolean>(false);
 	const [isLoading, setIsLoading] = useState<boolean>(false);
 	const [isSaving, setIsSaving] = useState<boolean>(false);
+	const [validation, setValidation] = useState<ValidationResult | null>(null);
+	const [showValidationModal, setShowValidationModal] = useState<boolean>(false);
+	const [categories, setCategories] = useState<string[]>([]);
 
 	const handleChange = () => {
 		console.log("change");
@@ -36,12 +41,34 @@ export default function Home() {
 		setIsLoading,
 	});
 
+	const calculateTotalFromItems = (items: ReceiptItem[]): number => {
+		return items.reduce((total, item) => {
+			if (item.price !== null && item.price !== undefined) {
+				const quantity = item.quantity || 1;
+				return total + (item.price * quantity);
+			}
+			return total;
+		}, 0);
+	};
+
 	const updateEditableData = (field: keyof ReceiptData, value: string | number | null) => {
 		if (!editableData) return;
-		setEditableData({
+		
+		const newData = {
 			...editableData,
 			[field]: value,
-		});
+		};
+		
+		// Recalculate total if items change
+		if (field === 'items' && newData.items) {
+			newData.total_price = calculateTotalFromItems(newData.items);
+		}
+		
+		setEditableData(newData);
+		
+		// Re-validate on data change
+		const newValidation = validateReceiptData(newData);
+		setValidation(newValidation);
 	};
 
 	const updateItem = (index: number, field: keyof ReceiptItem, value: string | number | null) => {
@@ -51,10 +78,19 @@ export default function Home() {
 			...updatedItems[index],
 			[field]: value,
 		};
-		setEditableData({
+		const newData = {
 			...editableData,
 			items: updatedItems,
-		});
+		};
+		
+		// Recalculate total from items
+		newData.total_price = calculateTotalFromItems(updatedItems);
+		
+		setEditableData(newData);
+		
+		// Re-validate on item change
+		const newValidation = validateReceiptData(newData);
+		setValidation(newValidation);
 	};
 
 	const addNewItem = () => {
@@ -65,58 +101,153 @@ export default function Home() {
 			quantity: 1,
 			price: null,
 		};
-		setEditableData({
+		const updatedItems = [newItem, ...(editableData.items || [])];
+		const newData = {
 			...editableData,
-			items: [newItem, ...(editableData.items || [])],
-		});
+			items: updatedItems,
+		};
+		
+		// Recalculate total from items
+		newData.total_price = calculateTotalFromItems(updatedItems);
+		
+		setEditableData(newData);
+		
+		// Re-validate after adding item
+		const newValidation = validateReceiptData(newData);
+		setValidation(newValidation);
 	};
 
 	const removeItem = (index: number) => {
 		if (!editableData || !editableData.items) return;
 		const updatedItems = editableData.items.filter((_, i) => i !== index);
-		setEditableData({
+		const newData = {
 			...editableData,
 			items: updatedItems,
-		});
+		};
+		
+		// Recalculate total from items
+		newData.total_price = calculateTotalFromItems(updatedItems);
+		
+		setEditableData(newData);
+		
+		// Re-validate after removing item
+		const newValidation = validateReceiptData(newData);
+		setValidation(newValidation);
 	};
 
-	const handleSave = async () => {
+	const proceedWithSave = async () => {
 		if (!editableData) return;
 
+		setShowValidationModal(false);
 		setIsSaving(true);
 		try {
-			// Here you would send data to your API
-			console.log("Saving receipt data:", editableData);
+			const token = localStorage.getItem("token");
+			if (!token) {
+				throw new Error("Je moet ingelogd zijn om bonnen op te slaan.");
+			}
 
-			// Example API call (uncomment and modify as needed):
-			/*
-			const response = await fetch("http://localhost:3000/api/receipts", {
+			const receiptPayload = {
+				store_name: editableData.store_name,
+				purchase_date: editableData.date,
+				purchase_time: editableData.time,
+				payment_method: editableData.payment_method,
+				total_amount: editableData.total_price,
+				raw_ocr_text: foundText || null,
+				items: editableData.items || []
+			};
+
+			const response = await fetch("http://localhost:5000/api/receipts", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
+					"Authorization": `Bearer ${token}`,
 				},
-				body: JSON.stringify(editableData),
+				body: JSON.stringify(receiptPayload),
 			});
 			
 			if (!response.ok) {
-				throw new Error(`Save failed: ${response.status} ${response.statusText}`);
+				const errorData = await response.json();
+				throw new Error(errorData.error || `Opslaan mislukt: ${response.status} ${response.statusText}`);
 			}
-			*/
 
-			alert("Receipt saved successfully!");
+			const savedReceipt = await response.json();
+			console.log("Receipt saved successfully:", savedReceipt);
+			
+			// Reset form after successful save
+			setImgPreview("");
+			setFoundText("");
+			setEditableData(null);
+			setImgSubmitted(false);
+			setValidation(null);
+			
+			alert("Bon succesvol opgeslagen!");
 		} catch (error) {
 			console.error("Save error:", error);
-			alert(`Error saving receipt: ${error instanceof Error ? error.message : "Unknown error"}`);
+			alert(`Fout bij opslaan bon: ${error instanceof Error ? error.message : "Onbekende fout"}`);
 		} finally {
 			setIsSaving(false);
 		}
 	};
 
+	const handleSave = async () => {
+		if (!editableData) return;
+
+		// Validate before saving
+		const validationResult = validateReceiptData(editableData);
+		setValidation(validationResult);
+		setShowValidationModal(true);
+
+		if (!validationResult.isValid) {
+			// Don't save if there are errors
+			return;
+		}
+
+		// If valid, proceed with save will be handled by modal continue button
+	};
+
 	const handleFormSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		setImgSubmitted(true);
+		setShowValidationModal(false); // Reset validation when new image is submitted
 		handleSubmit(e);
 	};
+
+	// Fetch categories on component mount
+	useEffect(() => {
+		const fetchCategories = async () => {
+			try {
+				const response = await fetch("http://localhost:5000/api/categories");
+				if (response.ok) {
+					const categoriesData: { id: number; name: string }[] = await response.json();
+					setCategories(categoriesData.map((cat) => cat.name));
+				}
+			} catch (error) {
+				console.error("Error fetching categories:", error);
+			}
+		};
+
+		fetchCategories();
+	}, []);
+
+	// Initialize validation when editableData is set
+	useEffect(() => {
+		if (editableData) {
+			// Ensure total is calculated from items
+			const calculatedTotal = editableData.items ? calculateTotalFromItems(editableData.items) : 0;
+			const dataWithCorrectTotal = {
+				...editableData,
+				total_price: calculatedTotal
+			};
+			
+			// Update the data if total was different
+			if (editableData.total_price !== calculatedTotal) {
+				setEditableData(dataWithCorrectTotal);
+			}
+			
+			const initialValidation = validateReceiptData(dataWithCorrectTotal);
+			setValidation(initialValidation);
+		}
+	}, [editableData]); // Include editableData as dependency
 
 	return (
 		<div className={styles.ocrPage}>
@@ -135,10 +266,19 @@ export default function Home() {
 								</button>
 							</div>
 
+							{showValidationModal && validation && (
+								<ValidationModal 
+									validation={validation} 
+									isOpen={showValidationModal}
+									onClose={() => setShowValidationModal(false)}
+									onContinue={proceedWithSave}
+								/>
+							)}
+
 							<div className={componentStyles.receiptFormSection}>
 								<ReceiptForm editableData={editableData} updateEditableData={updateEditableData} />
 
-								<ReceiptItemsList editableData={editableData} updateItem={updateItem} addNewItem={addNewItem} removeItem={removeItem} />
+								<ReceiptItemsList editableData={editableData} updateItem={updateItem} addNewItem={addNewItem} removeItem={removeItem} categories={categories} />
 							</div>
 
 							<OCRTextDisplay foundText={foundText} />
