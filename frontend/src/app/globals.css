@@ -1,42 +1,166 @@
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+	/* --- COLORS --- */
+
+	--background: #f3f4f6;
+
+	--card-bg: #ffffff;
+
+	--foreground: #111827;
+
+--brand-color: #2563eb;
+	--brand-color-hover: #1d4ed8;
+	--brand-shadow: rgba(37, 99, 235, 0.15);
+
+	--border-color: #e5e7eb;
+	--error-color: #dc2626;
+	--error-bg: #fef2f2;
+	--error-border: #fca5a5;
+
+	--warning-color: #f59e0b;
+	--warning-bg: #fffbeb;
+	--warning-border: #f59e0b;
+	--warning-shadow: rgba(245, 158, 11, 0.1);
+
+	--muted-color: #6b7280;
+	--muted-bg: #f9fafb;
+
+	--disabled-bg: #9b9b9bff;
+	--placeholder-color: #9ca3af;
+
+	--success-color: #15803d;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
+/* --- BASIC SETUP --- */
 html,
 body {
-  max-width: 100vw;
-  overflow-x: hidden;
+	max-width: 100vw;
+	overflow-x: hidden;
+	height: 100%;
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+	color: var(--foreground);
+	background: var(--background);
+	font-family: Arial, Helvetica, sans-serif;
+	-webkit-font-smoothing: antialiased;
 }
 
 * {
-  box-sizing: border-box;
-  padding: 0;
-  margin: 0;
+	box-sizing: border-box;
+	padding: 0;
+	margin: 0;
 }
 
 a {
-  color: inherit;
-  text-decoration: none;
+	color: inherit;
+	text-decoration: none;
 }
 
-@media (prefers-color-scheme: dark) {
-  html {
-    color-scheme: dark;
-  }
+/* --- GLOBAL CLASSES --- */
+
+/* 1. CARDS */
+.card {
+	background: var(--card-bg);
+	padding: 2.5rem;
+	border-radius: 16px;
+	border: 1px solid var(--border-color);
+	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* 2. BUTTONS */
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	padding: 0 24px;
+	height: 48px;
+	border-radius: 8px;
+	font-size: 16px;
+	font-weight: 600;
+	cursor: pointer;
+	border: none;
+	transition: background 0.2s, transform 0.1s;
+}
+
+.btn:active {
+	transform: scale(0.98);
+}
+
+.btn-primary {
+	background: var(--brand-color);
+	color: white;
+}
+
+.btn-primary:hover {
+	background: var(--brand-color-hover);
+}
+
+.btn-link {
+	background: none;
+	color: var(--brand-color);
+	padding: 0;
+	height: auto;
+	font-size: inherit;
+	cursor: pointer;
+}
+
+.btn-link:hover {
+	text-decoration: underline;
+	color: var(--brand-color-hover);
+}
+
+/* 3. INPUTS */
+.input-field {
+	width: 100%;
+	padding: 0.75rem 1rem;
+	border-radius: 8px;
+	border: 1px solid var(--border-color);
+	background: var(--card-bg);
+	color: var(--foreground);
+	font-size: 1rem;
+	transition: all 0.2s ease;
+}
+
+.input-field:focus {
+	outline: none;
+	border-color: var(--brand-color);
+	box-shadow: 0 0 0 3px var(--brand-shadow);
+}
+
+/* 4. LABELS & TEXT */
+.label-text {
+	display: block;
+	margin-bottom: 0.5rem;
+	font-size: 0.875rem;
+	font-weight: 600;
+	color: var(--muted-color);
+}
+
+.error-msg {
+	color: var(--error-color);
+	background: var(--error-bg);
+	padding: 0.75rem;
+	border-radius: 8px;
+	border: 1px solid var(--error-border);
+	font-size: 0.875rem;
+	text-align: center;
+}
+
+/* --- VALIDATION STYLES --- */
+.incompleteField {
+	border-color: var(--warning-color) !important;
+	box-shadow: 0 0 0 3px var(--warning-shadow) !important;
+	background-color: var(--warning-bg) !important;
+}
+
+.readonly-field {
+	background-color: var(--muted-bg) !important;
+	cursor: not-allowed;
+	opacity: 0.8;
+}
+
+.readonly-field:focus {
+	outline: none;
+	border-color: var(--border-color);
+	box-shadow: none;
 }

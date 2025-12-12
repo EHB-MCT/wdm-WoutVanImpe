@@ -1,61 +1,65 @@
 "use client";
-import { useRef, useState } from "react";
-import Image from "next/image";
+
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
 import styles from "./page.module.css";
+interface User {
+	id: number;
+	username: string;
+	email: string;
+}
 
-export default function Home() {
-	const imgInputRef = useRef<HTMLInputElement | null>(null);
-	const [imgPreview, setImgPreview] = useState<string>("");
-	const [foundText, setFoundText] = useState<string>("Loading ...");
-	const [imgSubmitted, setImgSubmitted] = useState<boolean>(false);
+export default function HomePage() {
+	const [user, setUser] = useState<User | null>(null);
+	const [loading, setLoading] = useState(true);
 
-	const handleChange = () => {
-		console.log("change");
-		const file = imgInputRef.current?.files?.[0];
-		if (file) {
-			const objectUrl = URL.createObjectURL(file);
-			setImgPreview(objectUrl);
+	useEffect(() => {
+		const storedUser = localStorage.getItem("user");
+
+		if (storedUser) {
+			setUser(JSON.parse(storedUser));
 		}
-	};
 
-	const handleSubmit = async (e: React.FormEvent) => {
-		e.preventDefault();
-		setImgSubmitted(true);
+		setLoading(false);
+	}, []);
 
-		const formData = new FormData();
-		formData.append("image", imgInputRef.current!.files![0]);
-
-		try {
-			const response = await fetch("http://localhost:3000/OCR", {
-				method: "POST",
-				body: formData,
-			});
-
-			if (!response.ok) {
-				throw new Error("OCR request failed");
-			}
-
-			const data = await response.json();
-			setFoundText(data.text);
-		} catch (error) {
-			console.error(error);
-			setFoundText("OCR failed");
-		}
-	};
+	if (loading) {
+		return <div className={styles.ocrPage}>Laden...</div>;
+	}
 
 	return (
-		<div className={styles.page}>
-			<h1>Upload your tickets here!</h1>
-			<form className={styles.form} onSubmit={handleSubmit}>
-				<div className={styles.input}>
-					<input ref={imgInputRef} required type="file" accept="image/*" onChange={handleChange} />
-					<input type="submit" value="Upload" />
-				</div>
-				<div className={styles.selectedImg} style={{ width: 250, height: 250 }}>
-					{imgPreview && <Image className={styles.img} src={imgPreview} alt="uploaded image" width={250} height={250} />}
-				</div>
-			</form>
-			{imgSubmitted && <pre className={styles.preview}>{foundText}</pre>}
-		</div>
+		<main className={styles.ocrPage}>
+			<h1 className={styles.pageTitle}>Welkom, {user ? user.username : "Gast"}!</h1>
+
+			<div className="card" style={{ maxWidth: "500px", width: "100%", textAlign: "center" }}>
+				{user ? (
+					<>
+						<p className="label-text" style={{ marginBottom: "20px" }}>
+							Je bent ingelogd als: <br />
+							<span style={{ color: "var(--brand-color)" }}>{user.email}</span>
+						</p>
+
+						<p style={{ marginBottom: "30px", color: "var(--muted-color)" }}>Je hebt momenteel nog geen recent overzicht. Begin met het uploaden van je eerste ticket.</p>
+
+						<Link href="/upload">
+							<button className="btn btn-primary" style={{ width: "100%" }}>
+								Start met uploaden
+							</button>
+						</Link>
+					</>
+				) : (
+					<>
+						<p className="label-text" style={{ marginBottom: "20px" }}>
+							Je bent nog niet ingelogd.
+						</p>
+						<Link href="/account">
+							<button className="btn btn-primary" style={{ width: "100%" }}>
+								Naar Login
+							</button>
+						</Link>
+					</>
+				)}
+			</div>
+		</main>
 	);
 }
