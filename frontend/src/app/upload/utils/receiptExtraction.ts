@@ -38,36 +38,46 @@ export const extractReceiptData = async (ocrText: string): Promise<ReceiptData |
 	try {
 		const prompt = `Extract receipt data from the following OCR text and return ONLY a JSON object. No explanations, no markdown formatting, no conversational text.
 
-OCR Text:
-"""
-${ocrText}
-"""
+ OCR Text:
+ """
+ ${ocrText}
+ """
 
-Return JSON with this exact structure:
-{
-  "store_name": null,
-  "date": null,
-  "time": null,
-  "total_price": null,
-  "payment_method": null,
-  "items": []
-}
+ IMPORTANT LANGUAGE CONTEXT:
+ - The OCR text may be in Dutch, English, or French
+ - Product names and store names can appear in any of these languages
+ - Extract product names exactly as they appear in the original language
+ - Handle multilingual receipts - items may be in different languages on the same receipt
+ - Common terms to recognize:
+   * Dutch: "TOTAAL", "SUBTOTAAL", "BTW", "KORTING"
+   * English: "TOTAL", "SUBTOTAL", "VAT", "TAX", "DISCOUNT"
+   * French: "TOTAL", "SOUS-TOTAL", "TVA", "REMISE"
 
-INTERNAL USE ONLY (not returned in JSON):
-- Also determine store_type and primary_category for your internal categorization logic
-- store_type: "supermarket", "clothing", "electronics", "restaurant", "pharmacy", "petrol_station", "hardware", "unknown"
-- primary_category: "Boodschappen", "Huishouden", "Verkeer & Vervoer", "Gezondheid & Zorg", "Vrije Tijd & Uitgaan", "Winkels & Kleding", "Financieel & Diensten", "Overig"
+ Return JSON with this exact structure:
+ {
+   "store_name": null,
+   "date": null,
+   "time": null,
+   "total_price": null,
+   "payment_method": null,
+   "items": []
+ }
 
-Rules:
-- store_name: Shop name (string or null)
-- date: YYYY-MM-DD format (string or null)
-- time: HH:MM 24h format (string or null)
-- total_price: Final amount paid (number or null)
-- payment_method: "Cash", "Visa", "Bancontact", "Credit Card", etc. (string or null)
-- items: Array of objects with name, category, quantity, price (default quantity to 1 if not specified)
-- CRITICAL: Extract EVERY single line item that could possibly be a product, even if you're unsure. If it has a name and price, treat it as a product. Be maximally inclusive - when in doubt, include it.
-- Include all food items, drinks, household products, clothing, electronics, services, fees, taxes, and any other line items with names and prices.
-- BUT filter out: "TOTAAL", "TOTAL", "SUBTOTAAL", "SUBTOTAL", "BTW", "VAT", "TAX", "KORTING", "DISCOUNT", and any line items that are just numbers, codes, or payment method descriptions.
+ INTERNAL USE ONLY (not returned in JSON):
+ - Also determine store_type and primary_category for your internal categorization logic
+ - store_type: "supermarket", "clothing", "electronics", "restaurant", "pharmacy", "petrol_station", "hardware", "unknown"
+ - primary_category: "Boodschappen", "Huishouden", "Verkeer & Vervoer", "Gezondheid & Zorg", "Vrije Tijd & Uitgaan", "Winkels & Kleding", "Financieel & Diensten", "Overig"
+
+ Rules:
+ - store_name: Shop name (string or null) - keep original language
+ - date: YYYY-MM-DD format (string or null)
+ - time: HH:MM 24h format (string or null)
+ - total_price: Final amount paid (number or null)
+ - payment_method: "Cash", "Visa", "Bancontact", "Credit Card", "Contant", etc. (string or null)
+ - items: Array of objects with name, category, quantity, price (default quantity to 1 if not specified)
+ - CRITICAL: Extract EVERY single line item that could possibly be a product, even if you're unsure. If it has a name and price, treat it as a product. Be maximally inclusive - when in doubt, include it.
+ - Include all food items, drinks, household products, clothing, electronics, services, fees, taxes, and any other line items with names and prices.
+ - BUT filter out: "TOTAAL", "TOTAL", "SOUS-TOTAL", "SUBTOTAAL", "SUBTOTAL", "BTW", "VAT", "TVA", "TAX", "KORTING", "DISCOUNT", "REMISE", and any line items that are just numbers, codes, or payment method descriptions.
 
 INTERNAL STORE TYPE DETECTION (for categorization logic only):
 - Analyze store_name and types of items being sold to determine store type
