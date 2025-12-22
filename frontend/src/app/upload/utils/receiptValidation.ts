@@ -1,5 +1,17 @@
 import { ReceiptData } from "@/types/receipt";
 
+// Predefined categories for validation
+const VALID_CATEGORIES = [
+	"Boodschappen",
+	"Huishouden", 
+	"Verkeer & Vervoer",
+	"Gezondheid & Zorg",
+	"Vrije Tijd & Uitgaan",
+	"Winkels & Kleding",
+	"Financieel & Diensten",
+	"Overig"
+];
+
 export interface ValidationError {
   field: string;
   message: string;
@@ -97,10 +109,16 @@ export const validateReceiptData = (data: ReceiptData): ValidationResult => {
         });
       }
 
-      if (!item.category || item.category.trim() === '') {
+if (!item.category || item.category.trim() === '') {
         warnings.push({
           field: 'category',
           message: 'Category is recommended',
+          itemIndex: index
+        });
+      } else if (!VALID_CATEGORIES.includes(item.category)) {
+        warnings.push({
+          field: 'category',
+          message: 'Invalid category - should be one of the predefined categories',
           itemIndex: index
         });
       }
