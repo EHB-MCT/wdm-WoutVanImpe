@@ -882,5 +882,87 @@ Following conventional commits format: `docs: add project context documentation`
 
 This documentation ensures any AI assistant working on the project understands both the apparent functionality (expense tracker) and the underlying data collection objectives.
 
+---
+
+## Multilingual OCR Support Implementation
+
+### User Request
+User wanted to extend the OCR system beyond Dutch-only to support English and French, making it capable of processing receipts in Belgium's three official languages.
+
+### Implementation Details
+
+#### 1. Tesseract OCR Service Enhancement
+**Updated File:** `tesseract/src/index.js`
+
+**Changes:**
+- Changed from single language `createWorker("nld")` to multi-language `createWorker(["nld", "eng", "fra"])`
+- Added support for Dutch (Nederlands), English, and French (Français)
+- OCR service now automatically detects and processes text in all three languages
+
+**Language Data Files Added:**
+- `eng.traineddata` - English language model (22.3MB)
+- `fra.traineddata` - French language model (13.5MB)
+- Existing `nld.traineddata` - Dutch language model
+
+#### 2. AI Extraction Prompt Enhancement
+**Updated File:** `frontend/src/app/upload/utils/receiptExtraction.ts`
+
+**New Language Context:**
+- Added explicit instruction that OCR text may be in Dutch, English, or French
+- Instructed AI to extract product names exactly as they appear in original language
+- Added support for multilingual receipts (items in different languages on same receipt)
+
+**Multilingual Filter Terms:**
+- **Dutch**: "TOTAAL", "SUBTOTAAL", "BTW", "KORTING"
+- **English**: "TOTAL", "SUBTOTAL", "VAT", "TAX", "DISCOUNT"
+- **French**: "TOTAL", "SOUS-TOTAL", "TVA", "REMISE"
+
+**Payment Method Support:**
+- Added "Contant" (Dutch cash) alongside existing payment methods
+- Maintains support for "Cash", "Visa", "Bancontact", "Credit Card", etc.
+
+### Key Features Implemented
+
+**OCR Layer:**
+- Simultaneous language detection and processing
+- No need to specify language - automatic recognition
+- Handles mixed-language receipts seamlessly
+
+**AI Extraction Layer:**
+- Preserves original product names in their language
+- Filters out total/tax terms in all three languages
+- Maintains categorization logic regardless of language
+- Handles store names in any of the three languages
+
+**Real-World Applicability:**
+- **Brussels Region**: Bilingual French/Dutch receipts
+- **Flanders**: Dutch receipts with English products
+- **Wallonia**: French receipts
+- **International Stores**: English receipts (e.g., H&M, McDonald's)
+- **Tourist Areas**: Mixed-language receipts
+
+### Testing & Deployment
+- All containers rebuilt and restarted successfully
+- Tesseract service running with multi-language support
+- Frontend updated with enhanced AI prompt
+- Ready for multilingual receipt processing
+
+### Commit Messages
+Following conventional commits format with language-support scope:
+
+1. `feat(language-support): add English and French language models to Tesseract OCR`
+2. `feat(language-support): update OCR worker to support Dutch, English, and French`
+3. `feat(language-support): enhance AI extraction prompt for multilingual receipt processing`
+
+### Current Status
+**Multilingual OCR Support: 100% Complete**
+- OCR service supports 3 languages (NL, EN, FR)
+- AI prompt handles multilingual text extraction
+- Filter terms updated for all three languages
+- Product names preserved in original language
+- Ready for production use across Belgium
+
+This enhancement makes the system significantly more robust for real-world usage in Belgium's multilingual environment, where receipts commonly contain multiple languages or are in languages other than Dutch.
+
 --- 
 *This file will be updated as we continue working on the project*
