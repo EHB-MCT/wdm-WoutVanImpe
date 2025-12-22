@@ -30,6 +30,7 @@ export default function AuthPage() {
 			return;
 		}
 
+		// Hash password with SHA256 before sending
 		const hashedPassword = SHA256(formData.password).toString();
 
 		const endpoint = isLogin ? "http://localhost:5000/api/login" : "http://localhost:5000/api/register";

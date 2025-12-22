@@ -7,7 +7,7 @@ exports.up = async function(knex) {
   const [userResult] = await knex('users').insert({
     username: 'testuser',
     email: 'test@example.com',
-    password_hash: '$2b$10$rOvHPGkwJkKYs1qJ8.Xqj.8YvJ9qJ8.Xqj8YvJ9qJ8.Xqj8YvJ9qJ8' // bcrypt hash for 'password123'
+    password_hash: 'ef92b778bafe771e89245b89ecbc08a44a4e166c06659911881f383d4473e94f' // SHA256 hash for 'password123'
   }).returning('id');
   const userId = userResult.id;
 

@@ -1,6 +1,5 @@
 const express = require("express");
 const cors = require("cors");
-const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
 const knexConfig = require("./knexfile");
@@ -30,14 +29,12 @@ app.post("/api/register", async (req, res) => {
 			return res.status(400).json({ error: "Gebruiker bestaat al." });
 		}
 
-		const saltRounds = 10;
-		const passwordHash = await bcrypt.hash(password, saltRounds);
-
+		// Store SHA256 hash directly (password is already hashed from frontend)
 		const [newUser] = await db("users")
 			.insert({
 				username,
 				email,
-				password_hash: passwordHash,
+				password_hash: password,
 			})
 			.returning(["id", "username", "email"]);
 
@@ -68,7 +65,8 @@ app.post("/api/login", async (req, res) => {
 			return res.status(401).json({ error: "Ongeldige inloggegevens." });
 		}
 
-		const validPassword = await bcrypt.compare(password, user.password_hash);
+		// Direct comparison since both are SHA256 hashes
+		const validPassword = password === user.password_hash;
 
 		if (!validPassword) {
 			return res.status(401).json({ error: "Ongeldige inloggegevens." });
