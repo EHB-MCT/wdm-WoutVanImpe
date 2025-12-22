@@ -822,5 +822,65 @@ const sanitizedItems = filteredItems.map((item: ReceiptItem) => {
 
 This enhancement transforms the system from a brittle, hardcoded approach to an intelligent, AI-driven solution that can handle any store type without maintenance overhead while preserving the smart categorization benefits.
 
+---
+
+## Project Context Documentation
+
+### User Request
+User requested creation of a project context document to provide clear understanding of the Finance Tracker project's true nature and objectives for future AI assistant sessions.
+
+### Implementation Details
+
+#### 1. Created PROJECT_CONTEXT.md
+**New File:** `docs/PROJECT_CONTEXT.md`
+
+**Content Overview:**
+- **Project Goal**: Dual-objective school project appearing as expense tracker but collecting detailed user metadata
+- **Frontend Goal**: Simple financial tracker for user expense management
+- **Underlying Goal**: Extract maximum metadata from receipts (card details, locations, timestamps, payment methods) to build detailed user profiles
+- **Data Flow**: Receipt upload → OCR (Tesseract) → AI extraction (Ollama) → User verification → Database storage
+- **Architecture**: Next.js frontend, Tesseract OCR service, Node.js API, PostgreSQL database
+
+#### 2. Repository Structure Documentation
+**Key Folders & Purpose:**
+- `/docs/COMMITS.md`: Strict commit message conventions
+- `/docs/PROMPTS.txt`: Shared conversation history
+- `/tesseract`: OCR text extraction logic
+- `/api`: Backend logic and database schemas
+- `/frontend`: UI and Ollama model prompts
+
+#### 3. Project Status
+**Current State:** Work in progress - not all functionalities implemented yet
+**Objective:** Create appearance of utility tool while collecting comprehensive user data
+
+### Key Features Documented
+
+**Dual Nature:**
+- **Surface Level**: Expense tracking application
+- **Hidden Layer**: Comprehensive user profiling through receipt metadata extraction
+- **Educational Purpose**: School project demonstrating data collection techniques
+
+**Technical Pipeline:**
+- Image upload → OCR processing → AI extraction → User validation → Database persistence
+- Ollama integration for intelligent data extraction
+- PostgreSQL for structured data storage
+- Next.js for modern frontend experience
+
+### Files Created
+- NEW: `docs/PROJECT_CONTEXT.md`
+
+### Commit Message Provided
+Following conventional commits format: `docs: add project context documentation`
+
+### Current Status
+**Project Context Documentation: 100% Complete**
+- Clear project objectives documented
+- Technical architecture outlined
+- Repository structure explained
+- Available for all future AI assistant sessions
+- Provides essential context for understanding project's dual nature
+
+This documentation ensures any AI assistant working on the project understands both the apparent functionality (expense tracker) and the underlying data collection objectives.
+
 --- 
 *This file will be updated as we continue working on the project*
