@@ -29,7 +29,7 @@ app.post("/OCR", upload.single("image"), async (req, res) => {
 });
 
 async function runOCR(image) {
-	const worker = await createWorker("nld");
+	const worker = await createWorker(["nld", "eng", "fra"]);
 
 	const ret = await worker.recognize(image);
 
