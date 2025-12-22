@@ -1,3 +1,202 @@
+/* --- DASHBOARD LAYOUT --- */
+.dashboardPage {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	min-height: 100vh;
+	padding: 60px 20px;
+	gap: 40px;
+}
+
+.dashboardContainer {
+	width: 100%;
+	max-width: 1200px;
+	display: flex;
+	flex-direction: column;
+	gap: 40px;
+}
+
+.welcomeSection {
+	text-align: center;
+}
+
+.currentDate {
+	font-size: 1.1rem;
+	color: var(--muted-color);
+	margin-top: 8px;
+}
+
+.ctaSection {
+	width: 100%;
+	max-width: 500px;
+	margin: 0 auto;
+}
+
+.ctaTitle {
+	font-size: 1.5rem;
+	font-weight: 700;
+	margin-bottom: 12px;
+	color: var(--foreground);
+}
+
+.ctaDescription {
+	color: var(--muted-color);
+	margin-bottom: 24px;
+}
+
+.monthlyOverview {
+	width: 100%;
+}
+
+.monthHeader {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	gap: 20px;
+	margin-bottom: 24px;
+}
+
+.monthTitle {
+	font-size: 1.75rem;
+	font-weight: 700;
+	color: var(--foreground);
+	text-align: center;
+}
+
+.monthNavButton {
+	background: var(--card-bg);
+	border: 1px solid var(--border-color);
+	color: var(--foreground);
+	width: 40px;
+	height: 40px;
+	border-radius: 8px;
+	font-size: 1.5rem;
+	cursor: pointer;
+	transition: all 0.2s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.monthNavButton:hover:not(:disabled) {
+	background: var(--muted-bg);
+	border-color: var(--brand-color);
+}
+
+.statsGrid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 24px;
+	width: 100%;
+	max-width: 900px;
+	margin: 0 auto;
+}
+
+.statCard {
+	padding: 32px;
+	display: flex;
+	flex-direction: column;
+	gap: 24px;
+	align-items: center;
+	justify-content: center;
+	text-align: center;
+}
+
+.statTitle {
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: var(--muted-color);
+	margin: 0;
+	margin-top: -10px;
+}
+
+.statAmount {
+	font-size: 2.5rem;
+	font-weight: 800;
+	color: var(--brand-color);
+	margin: 0;
+}
+
+.combinedContent {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 32px;
+	width: 100%;
+	align-items: start;
+}
+
+@media (max-width: 768px) {
+	.combinedContent {
+		grid-template-columns: 1fr;
+	}
+}
+
+.categoryList {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	align-self: center;
+}
+
+.categoryItem {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 14px;
+	background: var(--muted-bg);
+	border-radius: 8px;
+	transition: background 0.2s;
+}
+
+.categoryItem:hover {
+	background: var(--border-color);
+}
+
+.categoryInfo {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.categoryDot {
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	flex-shrink: 0;
+}
+
+.categoryName {
+	font-size: 0.95rem;
+	color: var(--foreground);
+	font-weight: 500;
+}
+
+.categoryAmount {
+	font-size: 1rem;
+	color: var(--foreground);
+	font-weight: 600;
+}
+
+.chartContainer {
+	display: flex;
+	flex-direction: column;
+	gap: 20px;
+	align-items: center;
+	width: 100%;
+	height: 400px;
+	padding: 20px 0;
+}
+
+.noDataMessage {
+	text-align: center;
+	color: var(--muted-color);
+	font-size: 1.1rem;
+	padding: 40px;
+	background: var(--card-bg);
+	border-radius: 12px;
+	border: 1px dashed var(--border-color);
+}
+
 /* --- OCR LAYOUT --- */
 .ocrPage {
 	display: flex;
