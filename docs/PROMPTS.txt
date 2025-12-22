@@ -964,5 +964,137 @@ Following conventional commits format with language-support scope:
 
 This enhancement makes the system significantly more robust for real-world usage in Belgium's multilingual environment, where receipts commonly contain multiple languages or are in languages other than Dutch.
 
+---
+
+## Dashboard Homepage Implementation
+
+### User Request
+User wanted to transform the empty homepage into a comprehensive financial dashboard with spending overview, monthly navigation, and category breakdown visualization.
+
+### Implementation Details
+
+#### 1. Complete Dashboard Redesign
+**Updated File:** `frontend/src/app/page.tsx`
+
+**New Features:**
+- **Welcome Section**: Personalized greeting with username and current date
+- **Call-to-Action**: Upload prompt with contextually appropriate messaging
+- **Monthly Overview**: Interactive month navigation with arrow controls
+- **Financial Statistics**: Total spending display and category distribution
+- **Data Visualization**: Professional pie chart using Recharts library
+- **Responsive Design**: Mobile-friendly layout with proper breakpoints
+
+#### 2. Data Fetching & State Management
+**Implementation:**
+- JWT-based authentication for secure API calls
+- Real-time receipt data fetching from backend
+- Monthly data filtering and aggregation
+- Category spending calculations with proper type conversions
+- Month navigation with future date protection
+
+#### 3. Recharts Integration
+**New Dependency:** `recharts` package for professional data visualization
+
+**Chart Features:**
+- Interactive pie chart with percentage labels
+- Color-coded categories with vibrant color scheme
+- Hover tooltips showing exact amounts
+- Built-in legend for category identification
+- Responsive container that adapts to screen size
+
+#### 4. Styling & Layout
+**Updated File:** `frontend/src/app/page.module.css`
+
+**Design Elements:**
+- Centered content layout with max-width constraints
+- Card-based design with proper spacing
+- Category breakdown list with color-coded dots
+- Professional color scheme: #E63946, #2A9D8F, #264653, #F4A261, #E9C46A, #F77F00, #D62828, #06A77D
+- Hover effects and smooth transitions
+- Fixed chart height (400px) to prevent dimension issues
+
+#### 5. Authentication & Security
+**Updated Files:** `frontend/src/app/account/page.tsx`, `api/server.js`
+
+**Security Improvements:**
+- Implemented SHA256 password hashing on frontend
+- Removed bcrypt dependency from API
+- Direct SHA256 hash comparison for authentication
+- Secure password transmission over HTTP
+- Updated dummy user with SHA256 password hash
+
+### Key Features Implemented
+
+**Dashboard Functionality:**
+- **Monthly Navigation**: Browse through different months with arrow controls
+- **Total Spending**: Large, prominent display of monthly expenditure
+- **Category Breakdown**: Detailed list showing exact amounts per category
+- **Visual Representation**: Pie chart for quick category proportion analysis
+- **Empty State Handling**: Appropriate messaging when no spending data exists
+- **Real-time Updates**: Automatic data fetching on page load
+
+**User Experience:**
+- **Dutch Localization**: All text and date formatting in Dutch
+- **Intuitive Navigation**: Clear month navigation with visual feedback
+- **Responsive Design**: Works seamlessly on desktop and mobile
+- **Professional Appearance**: Clean, modern interface with consistent styling
+- **Performance Optimized**: Efficient data filtering and memoization
+
+### Technical Challenges Resolved
+
+**TypeScript Issues:**
+- Fixed date formatting options type errors
+- Resolved Recharts data structure compatibility
+- Implemented proper type guards for numeric values from API
+- Fixed tooltip formatter type compatibility
+
+**Chart Rendering:**
+- Resolved negative dimension warnings
+- Implemented fixed container height for stability
+- Optimized chart size and outer radius for visibility
+- Ensured proper responsive behavior
+
+**Data Handling:**
+- Added proper type conversion for string/number values from PostgreSQL
+- Implemented safe numeric parsing with fallbacks
+- Fixed category data aggregation logic
+- Resolved percentage calculation in chart labels
+
+### Files Modified/Created
+- MODIFIED: `frontend/src/app/page.tsx` (complete dashboard implementation)
+- MODIFIED: `frontend/src/app/page.module.css` (dashboard styling)
+- MODIFIED: `frontend/src/app/account/page.tsx` (SHA256 password hashing)
+- MODIFIED: `api/server.js` (SHA256 authentication, removed bcrypt)
+- MODIFIED: `api/migrations/20251222185830_populate_dummy_data.js` (SHA256 password hash)
+- MODIFIED: `frontend/package.json` (added recharts dependency)
+
+### Commit Messages
+
+**Dashboard & Authentication:**
+1. `feat(frontend): add comprehensive financial dashboard with monthly spending overview`
+2. `feat(frontend): integrate Recharts library for professional data visualization`
+3. `feat(frontend): add monthly navigation with category breakdown and pie chart`
+4. `style(frontend): improve dashboard styling with centered content, vibrant colors, and updated CTA text`
+5. `refactor(frontend): merge stat cards into single comprehensive financial overview card`
+6. `style(frontend): increase chart spacing and size for better visual presentation`
+7. `fix(frontend): resolve TypeScript errors in dashboard component`
+8. `style(frontend): make pie chart use full container height for better visibility`
+9. `fix(frontend): add proper type conversion for numeric values from API`
+10. `fix(auth): implement SHA256 password hashing for secure transmission`
+11. `fix(api): update authentication to use SHA256 instead of bcrypt`
+12. `fix(migration): update dummy user password with SHA256 hash`
+13. `fix(frontend): resolve chart dimension warning by setting fixed container height`
+
+### Current Status
+**Dashboard Homepage: 100% Complete**
+- Complete financial overview with monthly navigation
+- Professional data visualization with Recharts
+- Secure authentication with SHA256 hashing
+- Responsive design with proper styling
+- All TypeScript errors resolved
+- Ready for production use
+
+The dashboard now provides a complete, professional financial overview with intuitive navigation, detailed breakdowns, and beautiful visualizations, making expense tracking both functional and visually appealing.
+
 --- 
 *This file will be updated as we continue working on the project*
