@@ -111,26 +111,51 @@ const refreshTokenIfNeeded = (req, res, next) => {
 	if (!token) return next();
 
 	try {
+		// Validate token format first
+		const parts = token.split('.');
+		if (parts.length !== 3) {
+			console.warn('Invalid token format for refresh - not a valid JWT structure');
+			return next();
+		}
+
 		const decoded = jwt.decode(token);
+		
+		// Validate decoded payload structure
+		if (!decoded || typeof decoded !== 'object' || !decoded.exp || !decoded.userId) {
+			console.warn('Invalid token payload for refresh - missing required fields');
+			return next();
+		}
+
 		const now = Math.floor(Date.now() / 1000);
 		const timeUntilExpiration = decoded.exp - now;
 		
-		// Refresh token if less than 15 minutes remaining
-		if (timeUntilExpiration < 900) {
-			const newToken = jwt.sign(
-				{ userId: decoded.userId, username: decoded.username }, 
-				JWT_SECRET, 
-				{ expiresIn: "1h" }
-			);
-			
-			// Add new token to response headers
-			res.setHeader('X-New-Token', newToken);
-			res.setHeader('X-Token-Refresh', 'true');
+		// Only refresh if token is still valid but expiring soon
+		if (timeUntilExpiration < 900 && timeUntilExpiration > 0) {
+			try {
+				const newToken = jwt.sign(
+					{ userId: decoded.userId, username: decoded.username || 'user' }, 
+					JWT_SECRET, 
+					{ expiresIn: "1h" }
+				);
+				
+				res.setHeader('X-New-Token', newToken);
+				res.setHeader('X-Token-Refresh', 'true');
+				console.log('Token automatically refreshed for user:', decoded.userId);
+			} catch (signError) {
+				console.error('Failed to sign new token:', signError.message);
+				// Continue with original token - user will get auth error later if needed
+				// This prevents breaking the request flow for signing errors
+			}
+		} else if (timeUntilExpiration <= 0) {
+			// Token is expired, don't attempt refresh - let main auth middleware handle it
+			console.log('Token already expired, skipping refresh attempt');
 		}
 		
 		next();
 	} catch (error) {
-		// If we can't decode, just continue - the main auth middleware will handle it
+		console.error('Token refresh error:', error.message);
+		// Continue - main auth middleware will handle invalid tokens
+		// This ensures the refresh middleware doesn't break the authentication flow
 		next();
 	}
 };
