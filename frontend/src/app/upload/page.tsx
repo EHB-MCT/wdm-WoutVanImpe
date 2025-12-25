@@ -2,7 +2,7 @@
 import { useRef, useState, useEffect } from "react";
 import { ReceiptData, ReceiptItem } from "@/types/receipt";
 import { validateReceiptData, ValidationResult } from "./utils/receiptValidation";
-import { removeExpiredTokens, isUserAuthenticated } from "../utils/auth";
+import { removeExpiredTokens, isUserAuthenticated, handleTokenRefresh } from "../../utils/auth";
 import AuthGuard from "../components/AuthGuard";
 import ImageUpload from "./components/ImageUpload";
 import ReceiptForm from "../components/ReceiptForm";
@@ -161,7 +161,7 @@ export default function Home() {
 				items: editableData.items || []
 			};
 
-			const response = await fetch("http://localhost:5000/api/receipts", {
+const response = await fetch("http://localhost:5000/api/receipts", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -169,6 +169,9 @@ export default function Home() {
 				},
 				body: JSON.stringify(receiptPayload),
 			});
+			
+			// Handle automatic token refresh
+			handleTokenRefresh(response);
 			
 			if (!response.ok) {
 				const errorData = await response.json();
@@ -221,8 +224,10 @@ export default function Home() {
 	useEffect(() => {
 		const fetchCategories = async () => {
 			try {
-				const response = await fetch("http://localhost:5000/api/categories");
+const response = await fetch("http://localhost:5000/api/categories");
 				if (response.ok) {
+					// Handle automatic token refresh (though categories endpoint doesn't require auth)
+					handleTokenRefresh(response);
 					const categoriesData: { id: number; name: string }[] = await response.json();
 					setCategories(categoriesData.map((cat) => cat.name));
 				}

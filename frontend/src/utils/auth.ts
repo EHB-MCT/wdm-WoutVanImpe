@@ -91,3 +91,13 @@ export const getTokenInfo = (): { isValid: boolean; expiresIn: number | null; is
 		isExpired
 	};
 };
+
+export const handleTokenRefresh = (response: Response): void => {
+	const newToken = response.headers.get('X-New-Token');
+	const tokenRefresh = response.headers.get('X-Token-Refresh');
+	
+	if (newToken && tokenRefresh === 'true') {
+		console.log('Token refreshed automatically');
+		localStorage.setItem('token', newToken);
+	}
+};

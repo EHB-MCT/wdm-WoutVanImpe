@@ -4,7 +4,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
-import { removeExpiredTokens, getStoredUser } from "../utils/auth";
+import { removeExpiredTokens, getStoredUser, handleTokenRefresh } from "../utils/auth";
 import AuthGuard from "./components/AuthGuard";
 import styles from "./page.module.css";
 
@@ -67,7 +67,9 @@ export default function HomePage() {
 				},
 			});
 
-			if (response.ok) {
+if (response.ok) {
+				// Handle automatic token refresh
+				handleTokenRefresh(response);
 				const data = await response.json();
 				setReceipts(data);
 			}

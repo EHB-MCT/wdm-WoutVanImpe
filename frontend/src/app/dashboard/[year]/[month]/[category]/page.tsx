@@ -4,7 +4,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Cell, ResponsiveContainer, Tooltip, LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
-import { removeExpiredTokens, isUserAuthenticated } from "../../../../../utils/auth";
+import { removeExpiredTokens, isUserAuthenticated, handleTokenRefresh } from "../../../../../utils/auth";
 import AuthGuard from "../../../../components/AuthGuard";
 import styles from "./dashboard.module.css";
 
@@ -109,7 +109,9 @@ export default function DashboardPage() {
 			const receiptsResponse = await fetch("http://localhost:5000/api/receipts", {
 				headers: { Authorization: `Bearer ${token}` },
 			});
-			if (receiptsResponse.ok) {
+if (receiptsResponse.ok) {
+				// Handle automatic token refresh
+				handleTokenRefresh(receiptsResponse);
 				const data = await receiptsResponse.json();
 				setReceipts(data);
 			}
@@ -409,7 +411,9 @@ export default function DashboardPage() {
 				}),
 			});
 
-			if (response.ok) {
+if (response.ok) {
+				// Handle automatic token refresh
+				handleTokenRefresh(response);
 				const updatedReceipt = await response.json();
 				setReceipts(receipts.map((r) => (r.id === updatedReceipt.id ? updatedReceipt : r)));
 				setSelectedReceipt(updatedReceipt);
@@ -433,7 +437,9 @@ export default function DashboardPage() {
 				headers: { Authorization: `Bearer ${token}` },
 			});
 
-			if (response.ok) {
+if (response.ok) {
+				// Handle automatic token refresh
+				handleTokenRefresh(response);
 				setReceipts(receipts.filter((r) => r.id !== receiptId));
 				closeReceiptModal();
 			}
