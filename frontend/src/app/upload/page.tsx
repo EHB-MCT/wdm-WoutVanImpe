@@ -170,8 +170,11 @@ const response = await fetch("http://localhost:5000/api/receipts", {
 				body: JSON.stringify(receiptPayload),
 			});
 			
-			// Handle automatic token refresh
-			handleTokenRefresh(response);
+// Handle automatic token refresh
+			const refreshSuccess = handleTokenRefresh(response);
+			if (!refreshSuccess) {
+				console.warn('Token refresh failed, continuing with current session');
+			}
 			
 			if (!response.ok) {
 				const errorData = await response.json();
@@ -225,9 +228,12 @@ const response = await fetch("http://localhost:5000/api/receipts", {
 		const fetchCategories = async () => {
 			try {
 const response = await fetch("http://localhost:5000/api/categories");
-				if (response.ok) {
+if (response.ok) {
 					// Handle automatic token refresh (though categories endpoint doesn't require auth)
-					handleTokenRefresh(response);
+					const refreshSuccess = handleTokenRefresh(response);
+					if (!refreshSuccess) {
+						console.warn('Token refresh failed during categories fetch');
+					}
 					const categoriesData: { id: number; name: string }[] = await response.json();
 					setCategories(categoriesData.map((cat) => cat.name));
 				}

@@ -111,7 +111,10 @@ export default function DashboardPage() {
 			});
 if (receiptsResponse.ok) {
 				// Handle automatic token refresh
-				handleTokenRefresh(receiptsResponse);
+				const refreshSuccess = handleTokenRefresh(receiptsResponse);
+				if (!refreshSuccess) {
+					console.warn('Token refresh failed during receipts fetch');
+				}
 				const data = await receiptsResponse.json();
 				setReceipts(data);
 			}
@@ -413,7 +416,10 @@ if (receiptsResponse.ok) {
 
 if (response.ok) {
 				// Handle automatic token refresh
-				handleTokenRefresh(response);
+				const refreshSuccess = handleTokenRefresh(response);
+				if (!refreshSuccess) {
+					console.warn('Token refresh failed during receipt update');
+				}
 				const updatedReceipt = await response.json();
 				setReceipts(receipts.map((r) => (r.id === updatedReceipt.id ? updatedReceipt : r)));
 				setSelectedReceipt(updatedReceipt);
@@ -439,7 +445,10 @@ if (response.ok) {
 
 if (response.ok) {
 				// Handle automatic token refresh
-				handleTokenRefresh(response);
+				const refreshSuccess = handleTokenRefresh(response);
+				if (!refreshSuccess) {
+					console.warn('Token refresh failed during receipt deletion');
+				}
 				setReceipts(receipts.filter((r) => r.id !== receiptId));
 				closeReceiptModal();
 			}

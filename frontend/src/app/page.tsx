@@ -69,7 +69,10 @@ export default function HomePage() {
 
 if (response.ok) {
 				// Handle automatic token refresh
-				handleTokenRefresh(response);
+				const refreshSuccess = handleTokenRefresh(response);
+				if (!refreshSuccess) {
+					console.warn('Token refresh failed during receipts fetch');
+				}
 				const data = await response.json();
 				setReceipts(data);
 			}
@@ -124,14 +127,14 @@ const goToNextMonth = () => {
 			return receiptDate.getFullYear() === year && receiptDate.getMonth() === month;
 		});
 
-		const totalSpent = monthlyReceipts.reduce((sum, receipt) => sum + (typeof receipt.total_amount === 'number' ? receipt.total_amount : parseFloat(receipt.total_amount || 0)), 0);
+		const totalSpent = monthlyReceipts.reduce((sum, receipt) => sum + (typeof receipt.total_amount === 'number' ? receipt.total_amount : Number.parseFloat(receipt.total_amount || 0)), 0);
 
 		const categorySpending: { [key: string]: number } = {};
 		monthlyReceipts.forEach((receipt) => {
 			receipt.items.forEach((item) => {
 				const category = item.category || "Overig";
-				const itemPrice = typeof item.price === 'number' ? item.price : parseFloat(item.price || 0);
-				const itemQuantity = typeof item.quantity === 'number' ? item.quantity : parseFloat(item.quantity || 1);
+				const itemPrice = typeof item.price === 'number' ? item.price : Number.parseFloat(item.price || 0);
+				const itemQuantity = typeof item.quantity === 'number' ? item.quantity : Number.parseFloat(item.quantity || 1);
 				const itemTotal = itemPrice * itemQuantity;
 				categorySpending[category] = (categorySpending[category] || 0) + itemTotal;
 			});
