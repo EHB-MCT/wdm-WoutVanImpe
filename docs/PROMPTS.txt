@@ -1096,5 +1096,96 @@ User wanted to transform the empty homepage into a comprehensive financial dashb
 
 The dashboard now provides a complete, professional financial overview with intuitive navigation, detailed breakdowns, and beautiful visualizations, making expense tracking both functional and visually appealing.
 
+---
+
+## Category Filtering Fix Implementation
+
+### User Request
+User identified a critical issue with the spending trend graph in the dashboard. When filtering to a specific category (like "Huishouden"), the graph was showing entire receipts that contained at least one item from the selected category, but displaying the total receipt price instead of just the sum of items that actually belonged to the selected category.
+
+### Problem Example
+- Grocery store receipt: Mostly "Boodschappen" items, but a few "Huishouden" items
+- When filtering by "Huishouden": The receipt appeared in the graph with the full total amount
+- Expected behavior: Only show the sum of "Huishouden" items from that receipt
+
+### Implementation Details
+
+#### 1. Root Cause Analysis
+**Issue Location:** `frontend/src/app/dashboard/[year]/[month][category]/page.tsx` (lines 168-182)
+
+**Problem Code:**
+```typescript
+// Was using total receipt amount instead of category-specific amount
+const amount = typeof receipt.total_amount === 'number' ? receipt.total_amount : Number.parseFloat(receipt.total_amount || 0);
+dailySpending[day] = (dailySpending[day] || 0) + amount;
+```
+
+#### 2. Solution Implementation
+**Updated Daily Spending Calculation:**
+```typescript
+// Calculate amount only from items that match the selected category
+let categoryAmount = 0;
+receipt.items.forEach((item) => {
+    if (currentCategory === "all" || item.category === currentCategory) {
+        const itemPrice = typeof item.price === 'number' ? item.price : Number.parseFloat(item.price || 0);
+        const itemQuantity = typeof item.quantity === 'number' ? item.quantity : Number.parseFloat(item.quantity || 1);
+        categoryAmount += itemPrice * itemQuantity;
+    }
+});
+
+// Only add to daily spending if there are items from the selected category
+if (categoryAmount > 0) {
+    dailySpending[day] = (dailySpending[day] || 0) + categoryAmount;
+}
+```
+
+#### 3. Fix Behavior
+**Before Fix:**
+- Receipt with mixed categories: Showed full total amount when any item matched filter
+- Inaccurate spending trends for category-specific views
+- User confusion about why amounts seemed too high
+
+**After Fix:**
+- Only sums items that belong to the selected category
+- Accurate category-specific spending trends
+- Receipts only included if they contain items from the selected category
+- Precise financial insights for category analysis
+
+### Key Features Fixed
+
+**Accurate Category Filtering:**
+- Daily spending trend now reflects true category spending
+- Item-level filtering instead of receipt-level filtering
+- Proper amount calculation for category-specific views
+
+**Data Integrity:**
+- Maintains existing "all" category behavior (shows total spending)
+- Preserves receipt filtering logic (only shows receipts with matching items)
+- Consistent with category breakdown calculations
+
+**User Experience:**
+- Clear and accurate financial insights
+- Trustworthy data visualization
+- Proper category-based spending analysis
+
+### Testing Results
+- ✅ Category filtering now shows accurate daily spending amounts
+- ✅ "All categories" view continues to work correctly
+- ✅ Receipts with mixed categories handled properly
+- ✅ Spending trend graph reflects true category spending
+- ✅ Total spent calculation remains accurate (was already correct)
+
+### Files Modified
+- MODIFIED: `frontend/src/app/dashboard/[year]/[month][category]/page.tsx` (daily spending calculation fix)
+
+### Current Status
+**Category Filtering Fix: 100% Complete**
+- Spending trend graph now accurately reflects category-specific spending
+- Daily spending calculation fixed to sum only matching category items
+- All existing functionality preserved
+- Ready for production use
+
+This fix resolves a critical data accuracy issue that was affecting user trust in the financial insights provided by the dashboard. Users can now confidently analyze their spending patterns by category with accurate trend data.
+
 --- 
 *This file will be updated as we continue working on the project*
