@@ -15,6 +15,7 @@ export default function AuthPage() {
 		email: "",
 		password: "",
 	});
+	const [stayLoggedIn, setStayLoggedIn] = useState(false);
 
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
@@ -39,6 +40,7 @@ export default function AuthPage() {
 			? {
 					email: formData.email,
 					password: hashedPassword,
+					stayLoggedIn: stayLoggedIn,
 			  }
 			: {
 					username: formData.name,
@@ -66,9 +68,12 @@ export default function AuthPage() {
 			if (data.token) {
 				localStorage.setItem("token", data.token);
 				localStorage.setItem("user", JSON.stringify(data.user));
+				if (stayLoggedIn) {
+					localStorage.setItem("stayLoggedIn", "true");
+				}
 			}
 
-			setMessage(isLogin ? "Succesvol ingelogd!" : "Account aangemaakt!");
+			setMessage(isLogin ? (stayLoggedIn ? "Succesvol ingelogd! Je blijft 5 dagen ingelogd." : "Succesvol ingelogd!") : "Account aangemaakt!");
 			setIsSuccess(true);
 			
 			// Redirect to home page after 1.5 seconds
@@ -122,6 +127,24 @@ export default function AuthPage() {
 							</label>
 							<input type="password" id="password" name="password" value={formData.password} onChange={handleChange} className="input-field" required placeholder="••••••••" />
 						</div>
+
+						{isLogin && (
+							<div style={{ display: "flex", alignItems: "center", marginBottom: "10px", padding: "8px", backgroundColor: stayLoggedIn ? "#f0f9ff" : "transparent", borderRadius: "6px", border: stayLoggedIn ? "1px solid #0ea5e9" : "1px solid #e5e7eb" }}>
+								<input
+									type="checkbox"
+									id="stayLoggedIn"
+									checked={stayLoggedIn}
+									onChange={(e) => setStayLoggedIn(e.target.checked)}
+									style={{ marginRight: "8px", transform: "scale(1.1)" }}
+								/>
+								<label htmlFor="stayLoggedIn" style={{ fontSize: "14px", cursor: "pointer", color: stayLoggedIn ? "#0369a1" : "#374151", flex: 1 }}>
+									Ingelogd blijven
+									<span style={{ display: "block", fontSize: "12px", color: stayLoggedIn ? "#0891b2" : "#6b7280", marginTop: "2px" }}>
+										{stayLoggedIn ? "Sessie blijft 5 dagen actief" : "Sessie vervalt na 1 uur"}
+									</span>
+								</label>
+							</div>
+						)}
 
 						{message && (
 							<p className={isSuccess ? "success-msg" : "error-msg"}>

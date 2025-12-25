@@ -99,8 +99,65 @@ const authenticateToken = (req, res, next) => {
 		if (err) return res.status(403).json({ error: "Token ongeldig" });
 
 		req.user = user;
+		req.token = token;
 		next();
 	});
+};
+
+const refreshTokenIfNeeded = (req, res, next) => {
+	const authHeader = req.headers["authorization"];
+	const token = authHeader && authHeader.split(" ")[1];
+
+	if (!token) return next();
+
+	try {
+		// Validate token format first
+		const parts = token.split('.');
+		if (parts.length !== 3) {
+			console.warn('Invalid token format for refresh - not a valid JWT structure');
+			return next();
+		}
+
+		const decoded = jwt.decode(token);
+		
+		// Validate decoded payload structure
+		if (!decoded || typeof decoded !== 'object' || !decoded.exp || !decoded.userId) {
+			console.warn('Invalid token payload for refresh - missing required fields');
+			return next();
+		}
+
+		const now = Math.floor(Date.now() / 1000);
+		const timeUntilExpiration = decoded.exp - now;
+		
+		// Only refresh if token is still valid but expiring soon
+		if (timeUntilExpiration < 900 && timeUntilExpiration > 0) {
+			try {
+				const newToken = jwt.sign(
+					{ userId: decoded.userId, username: decoded.username || 'user' }, 
+					JWT_SECRET, 
+					{ expiresIn: "1h" }
+				);
+				
+				res.setHeader('X-New-Token', newToken);
+				res.setHeader('X-Token-Refresh', 'true');
+				console.log('Token automatically refreshed for user:', decoded.userId);
+			} catch (signError) {
+				console.error('Failed to sign new token:', signError.message);
+				// Continue with original token - user will get auth error later if needed
+				// This prevents breaking the request flow for signing errors
+			}
+		} else if (timeUntilExpiration <= 0) {
+			// Token is expired, don't attempt refresh - let main auth middleware handle it
+			console.log('Token already expired, skipping refresh attempt');
+		}
+		
+		next();
+	} catch (error) {
+		console.error('Token refresh error:', error.message);
+		// Continue - main auth middleware will handle invalid tokens
+		// This ensures the refresh middleware doesn't break the authentication flow
+		next();
+	}
 };
 
 // ==========================================
@@ -117,7 +174,7 @@ app.get("/api/categories", async (req, res) => {
 	}
 });
 
-app.post("/api/categories", authenticateToken, async (req, res) => {
+app.post("/api/categories", authenticateToken, refreshTokenIfNeeded, async (req, res) => {
 	const { name } = req.body;
 
 	if (!name || name.trim() === "") {
@@ -143,7 +200,7 @@ app.post("/api/categories", authenticateToken, async (req, res) => {
 // RECEIPTS ROUTES
 // ==========================================
 
-app.get("/api/receipts", authenticateToken, async (req, res) => {
+app.get("/api/receipts", authenticateToken, refreshTokenIfNeeded, async (req, res) => {
 	try {
 		const receipts = await db("receipts")
 			.where("user_id", req.user.userId)
@@ -181,7 +238,7 @@ app.get("/api/receipts", authenticateToken, async (req, res) => {
 	}
 });
 
-app.get("/api/receipts/:id", authenticateToken, async (req, res) => {
+app.get("/api/receipts/:id", authenticateToken, refreshTokenIfNeeded, async (req, res) => {
 	const { id } = req.params;
 
 	try {
@@ -219,7 +276,7 @@ app.get("/api/receipts/:id", authenticateToken, async (req, res) => {
 	}
 });
 
-app.post("/api/receipts", authenticateToken, async (req, res) => {
+app.post("/api/receipts", authenticateToken, refreshTokenIfNeeded, async (req, res) => {
 	const { store_name, purchase_date, purchase_time, payment_method, total_amount, raw_ocr_text, items } = req.body;
 
 	if (!store_name || !purchase_date || !purchase_time || !total_amount || !items || !Array.isArray(items)) {
@@ -239,7 +296,7 @@ app.post("/api/receipts", authenticateToken, async (req, res) => {
 					purchase_date,
 					purchase_time,
 					payment_method: payment_method || null,
-					total_amount: parseFloat(total_amount),
+					total_amount: Number.parseFloat(total_amount),
 					raw_ocr_text: raw_ocr_text || null
 				})
 				.returning("*");
@@ -253,8 +310,8 @@ app.post("/api/receipts", authenticateToken, async (req, res) => {
 					receipt_id: newReceipt.id,
 					category_id: categoryId,
 					product_name: item.name.trim(),
-					quantity: parseFloat(item.quantity) || 1,
-					price: parseFloat(item.price)
+					quantity: Number.parseFloat(item.quantity) || 1,
+					price: Number.parseFloat(item.price)
 				};
 			});
 
@@ -292,7 +349,7 @@ app.post("/api/receipts", authenticateToken, async (req, res) => {
 	}
 });
 
-app.put("/api/receipts/:id", authenticateToken, async (req, res) => {
+app.put("/api/receipts/:id", authenticateToken, refreshTokenIfNeeded, async (req, res) => {
 	const { id } = req.params;
 	const { store_name, purchase_date, purchase_time, payment_method, total_amount, items } = req.body;
 
@@ -323,7 +380,7 @@ app.put("/api/receipts/:id", authenticateToken, async (req, res) => {
 					purchase_date,
 					purchase_time,
 					payment_method: payment_method || null,
-					total_amount: parseFloat(total_amount)
+					total_amount: Number.parseFloat(total_amount)
 				});
 
 			const itemsToInsert = items.map(item => {
@@ -332,11 +389,11 @@ app.put("/api/receipts/:id", authenticateToken, async (req, res) => {
 					: null;
 
 				return {
-					receipt_id: parseInt(id),
+					receipt_id: Number.parseInt(id),
 					category_id: categoryId,
 					product_name: item.name.trim(),
-					quantity: parseFloat(item.quantity) || 1,
-					price: parseFloat(item.price)
+					quantity: Number.parseFloat(item.quantity) || 1,
+					price: Number.parseFloat(item.price)
 				};
 			});
 
@@ -376,7 +433,7 @@ app.put("/api/receipts/:id", authenticateToken, async (req, res) => {
 	}
 });
 
-app.delete("/api/receipts/:id", authenticateToken, async (req, res) => {
+app.delete("/api/receipts/:id", authenticateToken, refreshTokenIfNeeded, async (req, res) => {
 	const { id } = req.params;
 
 	try {

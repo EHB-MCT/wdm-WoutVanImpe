@@ -50,6 +50,42 @@
 	margin-bottom: 24px;
 }
 
+/* --- AUTHENTICATION --- */
+.authContainer {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
+	padding: 20px;
+	background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.authWrapper {
+	width: 100%;
+	max-width: 400px;
+}
+
+.authTitle {
+	font-size: 1.8rem;
+	font-weight: 700;
+	color: var(--foreground);
+	text-align: center;
+}
+
+.formStack {
+	display: flex;
+	flex-direction: column;
+	gap: 16px;
+}
+
+.footer {
+	text-align: center;
+	margin-top: 20px;
+	padding-top: 20px;
+	border-top: 1px solid #e5e7eb;
+}
+
+
 .monthlyOverview {
 	width: 100%;
 }
@@ -261,39 +297,4 @@
 	white-space: pre-wrap;
 	line-height: 1.6;
 	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-}
-
-/* --- AUTH LAYOUT --- */
-.authContainer {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	min-height: 100vh;
-	padding: 20px;
-}
-
-.authWrapper {
-	width: 100%;
-	max-width: 420px;
-}
-
-.authTitle {
-	text-align: center;
-	margin-bottom: 2rem;
-	font-size: 1.75rem;
-	font-weight: 800;
-	letter-spacing: -0.025em;
-}
-
-.formStack {
-	display: flex;
-	flex-direction: column;
-	gap: 1.25rem;
-}
-
-.footer {
-	margin-top: 2rem;
-	text-align: center;
-	font-size: 0.9rem;
-	color: var(--muted-color);
 }
