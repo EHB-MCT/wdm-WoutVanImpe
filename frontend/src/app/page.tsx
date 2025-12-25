@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
 import styles from "./page.module.css";
 
@@ -34,6 +35,7 @@ interface CategorySpending {
 }
 
 export default function HomePage() {
+	const router = useRouter();
 	const [user, setUser] = useState<User | null>(null);
 	const [loading, setLoading] = useState(true);
 	const [receipts, setReceipts] = useState<Receipt[]>([]);
@@ -80,11 +82,22 @@ export default function HomePage() {
 		setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
 	};
 
-	const goToNextMonth = () => {
+const goToNextMonth = () => {
 		const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1);
 		const now = new Date();
 		if (nextMonth <= new Date(now.getFullYear(), now.getMonth())) {
 			setCurrentDate(nextMonth);
+		}
+	};
+
+	const navigateToDashboard = (category: string) => {
+		const year = currentDate.getFullYear();
+		const month = currentDate.getMonth() + 1;
+		
+		if (category === "all") {
+			router.push(`/dashboard/${year}/${month}/all`);
+		} else {
+			router.push(`/dashboard/${year}/${month}/all?category=${encodeURIComponent(category)}`);
 		}
 	};
 
@@ -163,11 +176,21 @@ export default function HomePage() {
 							<p className={styles.ctaDescription}>
 								Voeg je recente aankopen toe om je financiële overzicht up-to-date te houden
 							</p>
-							<Link href="/upload">
-								<button className="btn btn-primary" style={{ width: "100%" }}>
-									Upload Ticket
-								</button>
-							</Link>
+							<div className={styles.ctaButtonContainer}>
+								<Link href="/upload" style={{ flex: 1 }}>
+									<button className="btn btn-primary" style={{ width: "100%" }}>
+										Upload Ticket
+									</button>
+								</Link>
+								<Link 
+									href={`/dashboard/${currentDate.getFullYear()}/${currentDate.getMonth() + 1}/all`}
+									style={{ flex: 1 }}
+								>
+									<button className="btn btn-secondary" style={{ width: "100%" }}>
+										Bekijk Dashboard
+									</button>
+								</Link>
+							</div>
 						</div>
 					</div>
 
@@ -216,7 +239,12 @@ export default function HomePage() {
 													"#06A77D",
 												];
 												return (
-													<div key={cat.name} className={styles.categoryItem}>
+													<div 
+														key={cat.name} 
+														className={styles.categoryItem}
+														onClick={() => navigateToDashboard(cat.name)}
+														style={{ cursor: 'pointer' }}
+													>
 														<div className={styles.categoryInfo}>
 															<div 
 																className={styles.categoryDot} 

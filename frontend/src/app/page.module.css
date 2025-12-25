@@ -32,6 +32,12 @@
 	margin: 0 auto;
 }
 
+.ctaButtonContainer {
+	display: flex;
+	gap: 12px;
+	width: 100%;
+}
+
 .ctaTitle {
 	font-size: 1.5rem;
 	font-weight: 700;
@@ -146,6 +152,7 @@
 	background: var(--muted-bg);
 	border-radius: 8px;
 	transition: background 0.2s;
+	cursor: pointer;
 }
 
 .categoryItem:hover {
