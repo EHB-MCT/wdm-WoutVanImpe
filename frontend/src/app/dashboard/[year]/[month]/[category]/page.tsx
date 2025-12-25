@@ -3,11 +3,8 @@
 import React, { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { 
-	Cell, ResponsiveContainer, Tooltip, 
-	LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid
-} from "recharts";
-import { removeExpiredTokens, isUserAuthenticated } from "../../../../utils/auth";
+import { Cell, ResponsiveContainer, Tooltip, LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
+import { removeExpiredTokens, isUserAuthenticated } from "../../../../../utils/auth";
 import AuthGuard from "../../../../components/AuthGuard";
 import styles from "./dashboard.module.css";
 
@@ -54,10 +51,10 @@ export default function DashboardPage() {
 
 	// Parse URL params and validate
 	const validCategories = ["Boodschappen", "Huishouden", "Verkeer & Vervoer", "Gezondheid & Zorg", "Vrije Tijd & Uitgaan", "Winkels & Kleding", "Financieel & Diensten", "Overig"];
-	
+
 	const { year: yearParam, month: monthParam, category: categoryParam } = params;
 	const searchParams = useSearchParams();
-	
+
 	const currentDate = useMemo(() => {
 		const year = yearParam ? Number.parseInt(yearParam as string) : new Date().getFullYear();
 		const month = monthParam ? Number.parseInt(monthParam as string) - 1 : new Date().getMonth(); // JavaScript months are 0-indexed
@@ -71,18 +68,16 @@ export default function DashboardPage() {
 	}, [yearParam, monthParam]);
 
 	// Use only query parameters for category - ignore route param
-	const categoryFromQuery = searchParams.get('category');
-	const currentCategory = categoryFromQuery && validCategories.includes(categoryFromQuery) 
-		? categoryFromQuery 
-		: "all";
-	
-	console.log('Category from query:', categoryFromQuery);
-	console.log('Current category:', currentCategory);
+	const categoryFromQuery = searchParams.get("category");
+	const currentCategory = categoryFromQuery && validCategories.includes(categoryFromQuery) ? categoryFromQuery : "all";
+
+	console.log("Category from query:", categoryFromQuery);
+	console.log("Current category:", currentCategory);
 
 	useEffect(() => {
 		// Clean up expired tokens first
 		removeExpiredTokens();
-		
+
 		const token = localStorage.getItem("token");
 		if (token && isUserAuthenticated()) {
 			const storedUser = localStorage.getItem("user");
@@ -105,11 +100,11 @@ export default function DashboardPage() {
 			// Clean up expired tokens and get fresh token
 			removeExpiredTokens();
 			const token = localStorage.getItem("token");
-			
+
 			if (!token) {
 				throw new Error("Niet ingelogd");
 			}
-			
+
 			// Fetch receipts
 			const receiptsResponse = await fetch("http://localhost:5000/api/receipts", {
 				headers: { Authorization: `Bearer ${token}` },
@@ -118,8 +113,6 @@ export default function DashboardPage() {
 				const data = await receiptsResponse.json();
 				setReceipts(data);
 			}
-
-			
 		} catch (error) {
 			console.error("Error fetching data:", error);
 		}
@@ -150,7 +143,7 @@ export default function DashboardPage() {
 	const navigateToMonth = (date: Date, category: string) => {
 		const year = date.getFullYear();
 		const month = date.getMonth() + 1; // URL months are 1-indexed
-		
+
 		// Always use query parameters for category to avoid URL encoding issues
 		router.push(`/dashboard/${year}/${month}/all?category=${encodeURIComponent(category)}`);
 	};
@@ -170,30 +163,28 @@ export default function DashboardPage() {
 		const monthlyReceipts = receipts.filter((receipt) => {
 			const receiptDate = new Date(receipt.purchase_date);
 			const dateMatch = receiptDate.getFullYear() === year && receiptDate.getMonth() === month;
-			
+
 			if (currentCategory === "all") return dateMatch;
-			
-			const hasCategoryInItems = receipt.items.some(item => item.category === currentCategory);
+
+			const hasCategoryInItems = receipt.items.some((item) => item.category === currentCategory);
 			return dateMatch && hasCategoryInItems;
 		});
-
-		
 
 		// Daily spending for trend chart - category-specific
 		const dailySpending: { [key: string]: number } = {};
 		monthlyReceipts.forEach((receipt) => {
 			const day = new Date(receipt.purchase_date).getDate();
-			
+
 			// Calculate amount only from items that match the selected category
 			let categoryAmount = 0;
 			receipt.items.forEach((item) => {
 				if (currentCategory === "all" || item.category === currentCategory) {
-					const itemPrice = typeof item.price === 'number' ? item.price : Number.parseFloat(item.price || 0);
-					const itemQuantity = typeof item.quantity === 'number' ? item.quantity : Number.parseFloat(item.quantity || 1);
+					const itemPrice = typeof item.price === "number" ? item.price : Number.parseFloat(item.price || 0);
+					const itemQuantity = typeof item.quantity === "number" ? item.quantity : Number.parseFloat(item.quantity || 1);
 					categoryAmount += itemPrice * itemQuantity;
 				}
 			});
-			
+
 			// Only add to daily spending if there are items from the selected category
 			if (categoryAmount > 0) {
 				dailySpending[day] = (dailySpending[day] || 0) + categoryAmount;
@@ -209,11 +200,11 @@ export default function DashboardPage() {
 		monthlyReceipts.forEach((receipt) => {
 			receipt.items.forEach((item) => {
 				const category = item.category || "Overig";
-				
+
 				// Only include item if we're showing "all" or if item matches the selected category
 				if (currentCategory === "all" || item.category === currentCategory) {
-					const itemPrice = typeof item.price === 'number' ? item.price : Number.parseFloat(item.price || 0);
-					const itemQuantity = typeof item.quantity === 'number' ? item.quantity : Number.parseFloat(item.quantity || 1);
+					const itemPrice = typeof item.price === "number" ? item.price : Number.parseFloat(item.price || 0);
+					const itemQuantity = typeof item.quantity === "number" ? item.quantity : Number.parseFloat(item.quantity || 1);
 					const itemTotal = itemPrice * itemQuantity;
 					categorySpending[category] = (categorySpending[category] || 0) + itemTotal;
 				}
@@ -271,21 +262,21 @@ export default function DashboardPage() {
 		setIsEditing(false);
 	};
 
-const calculateTotalFromItems = (items: ReceiptItem[]): number => {
+	const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 		return items.reduce((total, item) => {
-			const price = typeof item.price === 'number' ? item.price : Number.parseFloat(item.price || 0);
-			const quantity = typeof item.quantity === 'number' ? item.quantity : Number.parseFloat(item.quantity || 1);
-			return total + (price * quantity);
+			const price = typeof item.price === "number" ? item.price : Number.parseFloat(item.price || 0);
+			const quantity = typeof item.quantity === "number" ? item.quantity : Number.parseFloat(item.quantity || 1);
+			return total + price * quantity;
 		}, 0);
 	};
 
-		const updateEditedReceipt = (field: string, value: string | number | ReceiptItem[]) => {
+	const updateEditedReceipt = (field: string, value: string | number | ReceiptItem[]) => {
 		if (!editedReceipt) return;
 
 		const newData = { ...editedReceipt, [field]: value };
 
 		// Recalculate total if items change
-		if (field === 'items') {
+		if (field === "items") {
 			newData.total_amount = calculateTotalFromItems(value as ReceiptItem[]);
 		}
 
@@ -305,7 +296,7 @@ const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 		const newData = {
 			...editedReceipt,
 			items: updatedItems,
-			total_amount: newTotal
+			total_amount: newTotal,
 		};
 
 		setEditedReceipt(newData);
@@ -318,14 +309,14 @@ const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 			name: "",
 			category: "",
 			price: 0,
-			quantity: 1
+			quantity: 1,
 		};
 		const newItems = [newItem, ...editedReceipt.items];
 		const newTotal = calculateTotalFromItems(newItems);
 		setEditedReceipt({
 			...editedReceipt,
 			items: newItems,
-			total_amount: newTotal
+			total_amount: newTotal,
 		});
 	};
 
@@ -336,7 +327,7 @@ const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 		setEditedReceipt({
 			...editedReceipt,
 			items: newItems,
-			total_amount: newTotal
+			total_amount: newTotal,
 		});
 	};
 
@@ -360,10 +351,8 @@ const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 			return;
 		}
 
-		const totalAmount = typeof editedReceipt.total_amount === 'number' 
-			? editedReceipt.total_amount 
-			: Number.parseFloat(editedReceipt.total_amount || 0);
-		
+		const totalAmount = typeof editedReceipt.total_amount === "number" ? editedReceipt.total_amount : Number.parseFloat(editedReceipt.total_amount || 0);
+
 		if (totalAmount <= 0) {
 			alert("Totaal bedrag moet groter zijn dan 0");
 			return;
@@ -382,8 +371,8 @@ const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 				return;
 			}
 
-			const price = typeof item.price === 'number' ? item.price : Number.parseFloat(item.price || 0);
-			const quantity = typeof item.quantity === 'number' ? item.quantity : Number.parseFloat(item.quantity || 1);
+			const price = typeof item.price === "number" ? item.price : Number.parseFloat(item.price || 0);
+			const quantity = typeof item.quantity === "number" ? item.quantity : Number.parseFloat(item.quantity || 1);
 
 			if (price <= 0) {
 				alert(`Item ${i + 1}: Prijs moet groter zijn dan 0`);
@@ -407,22 +396,22 @@ const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 				body: JSON.stringify({
 					store_name: editedReceipt.store_name,
 					purchase_date: editedReceipt.purchase_date,
-					purchase_time: editedReceipt.purchase_date?.split('T')[1] || "12:00:00",
+					purchase_time: editedReceipt.purchase_date?.split("T")[1] || "12:00:00",
 					total_amount: totalAmount,
 					payment_method: editedReceipt.payment_method,
 					raw_ocr_text: editedReceipt.raw_ocr_text,
-					items: editedReceipt.items.map(item => ({
+					items: editedReceipt.items.map((item) => ({
 						name: item.name,
 						category: item.category,
-						quantity: typeof item.quantity === 'number' ? item.quantity : Number.parseFloat(item.quantity || 1),
-						price: typeof item.price === 'number' ? item.price : Number.parseFloat(item.price || 0)
-					}))
+						quantity: typeof item.quantity === "number" ? item.quantity : Number.parseFloat(item.quantity || 1),
+						price: typeof item.price === "number" ? item.price : Number.parseFloat(item.price || 0),
+					})),
 				}),
 			});
 
 			if (response.ok) {
 				const updatedReceipt = await response.json();
-				setReceipts(receipts.map(r => r.id === updatedReceipt.id ? updatedReceipt : r));
+				setReceipts(receipts.map((r) => (r.id === updatedReceipt.id ? updatedReceipt : r)));
 				setSelectedReceipt(updatedReceipt);
 				setEditedReceipt(updatedReceipt);
 				setIsEditing(false);
@@ -445,7 +434,7 @@ const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 			});
 
 			if (response.ok) {
-				setReceipts(receipts.filter(r => r.id !== receiptId));
+				setReceipts(receipts.filter((r) => r.id !== receiptId));
 				closeReceiptModal();
 			}
 		} catch (error) {
@@ -464,20 +453,20 @@ const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 	}
 
 	if (!user) {
-	return (
-		<AuthGuard>
-			<main className={styles.dashboardPage}>
-				<div className="card" style={{ textAlign: "center", maxWidth: "500px" }}>
-					<p className="label-text" style={{ marginBottom: "20px" }}>
-						Je moet ingelogd zijn om het dashboard te bekijken.
-					</p>
-					<Link href="/account">
-						<button className="btn btn-primary">Naar Login</button>
-					</Link>
-			</div>
-			</main>
-		</AuthGuard>
-	);
+		return (
+			<AuthGuard>
+				<main className={styles.dashboardPage}>
+					<div className="card" style={{ textAlign: "center", maxWidth: "500px" }}>
+						<p className="label-text" style={{ marginBottom: "20px" }}>
+							Je moet ingelogd zijn om het dashboard te bekijken.
+						</p>
+						<Link href="/account">
+							<button className="btn btn-primary">Naar Login</button>
+						</Link>
+					</div>
+				</main>
+			</AuthGuard>
+		);
 	}
 
 	return (
@@ -489,42 +478,28 @@ const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 						← Terug naar homepage
 					</Link>
 					<h1 className={styles.pageTitle}>Dashboard: {formatMonthYear(currentDate)}</h1>
-					{currentCategory !== "all" && (
-						<p className={styles.categoryLabel}>Categorie: {currentCategory}</p>
-					)}
+					{currentCategory !== "all" && <p className={styles.categoryLabel}>Categorie: {currentCategory}</p>}
 				</div>
 
 				{/* Controls */}
 				<div className={styles.controls}>
 					<div className={styles.monthNavigation}>
-						<button
-							className={styles.monthNavButton}
-							onClick={goToPreviousMonth}
-							aria-label="Vorige maand"
-						>
+						<button className={styles.monthNavButton} onClick={goToPreviousMonth} aria-label="Vorige maand">
 							←
 						</button>
 						<span className={styles.monthLabel}>{formatMonthYear(currentDate)}</span>
-						<button
-							className={styles.monthNavButton}
-							onClick={goToNextMonth}
-							disabled={!canGoNext}
-							aria-label="Volgende maand"
-							style={{ opacity: canGoNext ? 1 : 0.3, cursor: canGoNext ? "pointer" : "not-allowed" }}
-						>
+						<button className={styles.monthNavButton} onClick={goToNextMonth} disabled={!canGoNext} aria-label="Volgende maand" style={{ opacity: canGoNext ? 1 : 0.3, cursor: canGoNext ? "pointer" : "not-allowed" }}>
 							→
 						</button>
 					</div>
 
 					<div className={styles.filterControls}>
-						<select
-							className={styles.categoryFilter}
-							value={currentCategory}
-							onChange={(e) => handleCategoryChange(e.target.value)}
-						>
+						<select className={styles.categoryFilter} value={currentCategory} onChange={(e) => handleCategoryChange(e.target.value)}>
 							<option value="all">Alle categorieën</option>
-							{validCategories.map(cat => (
-								<option key={cat} value={cat}>{cat}</option>
+							{validCategories.map((cat) => (
+								<option key={cat} value={cat}>
+									{cat}
+								</option>
 							))}
 						</select>
 
@@ -539,8 +514,9 @@ const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 
 				{getFilteredData.hasReceipts === false ? (
 					<div className={styles.noDataMessage}>
-						<p>Geen uitgaven gevonden voor {formatMonthYear(currentDate)}
-						{currentCategory !== "all" && ` in categorie ${currentCategory}`}
+						<p>
+							Geen uitgaven gevonden voor {formatMonthYear(currentDate)}
+							{currentCategory !== "all" && ` in categorie ${currentCategory}`}
 						</p>
 					</div>
 				) : (
@@ -563,8 +539,8 @@ const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 									<ResponsiveContainer width="100%" height={300}>
 										<LineChart data={getFilteredData.dailySpendingData}>
 											<CartesianGrid strokeDasharray="3 3" />
-											<XAxis dataKey="day" label={{ value: 'Dag', position: 'insideBottom', offset: -5 }} />
-											<YAxis label={{ value: 'Bedrag (€)', angle: -90, position: 'insideLeft' }} />
+											<XAxis dataKey="day" label={{ value: "Dag", position: "insideBottom", offset: -5 }} />
+											<YAxis label={{ value: "Bedrag (€)", angle: -90, position: "insideLeft" }} />
 											<Tooltip formatter={(value: number | undefined) => `€${(value || 0).toFixed(2)}`} />
 											<Line type="monotone" dataKey="amount" stroke="#E63946" strokeWidth={2} />
 										</LineChart>
@@ -584,10 +560,7 @@ const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 											<Tooltip formatter={(value: number | undefined) => `€${(value || 0).toFixed(2)}`} />
 											<Bar dataKey="value" fill="#2A9D8F">
 												{getFilteredData.categoryData.map((entry, index) => (
-													<Cell key={`cell-${index}`} fill={[
-														"#E63946", "#2A9D8F", "#264653", "#F4A261",
-														"#E9C46A", "#F77F00", "#D62828", "#06A77D"
-													][index % 8]} />
+													<Cell key={`cell-${index}`} fill={["#E63946", "#2A9D8F", "#264653", "#F4A261", "#E9C46A", "#F77F00", "#D62828", "#06A77D"][index % 8]} />
 												))}
 											</Bar>
 										</BarChart>
@@ -604,17 +577,15 @@ const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 									<button key={receipt.id} className={`${styles.receiptCard} card`} onClick={() => openReceiptModal(receipt)} type="button">
 										<div className={styles.receiptHeader}>
 											<h4 className={styles.receiptStore}>{receipt.store_name}</h4>
-											<p className={styles.receiptDate}>
-												{new Date(receipt.purchase_date).toLocaleDateString("nl-BE")}
-											</p>
+											<p className={styles.receiptDate}>{new Date(receipt.purchase_date).toLocaleDateString("nl-BE")}</p>
 										</div>
 										<div className={styles.receiptDetails}>
-											<p className={styles.receiptAmount}>€{(typeof receipt.total_amount === 'number' ? receipt.total_amount : Number.parseFloat(receipt.total_amount || 0)).toFixed(2)}</p>
+											<p className={styles.receiptAmount}>€{(typeof receipt.total_amount === "number" ? receipt.total_amount : Number.parseFloat(receipt.total_amount || 0)).toFixed(2)}</p>
 											<p className={styles.receiptPayment}>{receipt.payment_method}</p>
 										</div>
 										<div className={styles.receiptItems}>
 											{receipt.items.slice(0, 3).map((item, index) => {
-												const price = typeof item.price === 'number' ? item.price : Number.parseFloat(item.price || 0);
+												const price = typeof item.price === "number" ? item.price : Number.parseFloat(item.price || 0);
 												return (
 													<div key={`${receipt.id}-${index}`} className={styles.receiptItem}>
 														<span>{item.name}</span>
@@ -622,9 +593,7 @@ const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 													</div>
 												);
 											})}
-											{receipt.items.length > 3 && (
-												<p className={styles.receiptMore}>+{receipt.items.length - 3} meer items</p>
-											)}
+											{receipt.items.length > 3 && <p className={styles.receiptMore}>+{receipt.items.length - 3} meer items</p>}
 										</div>
 									</button>
 								))}
@@ -639,7 +608,9 @@ const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 						<div className={styles.modalContent}>
 							<div className={styles.modalHeader}>
 								<h2>{editedReceipt?.store_name || selectedReceipt.store_name}</h2>
-								<button className={styles.modalCloseButton} onClick={closeReceiptModal}>×</button>
+								<button className={styles.modalCloseButton} onClick={closeReceiptModal}>
+									×
+								</button>
 							</div>
 							<div className={styles.modalBody}>
 								{isEditing === false ? (
@@ -651,7 +622,7 @@ const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 												<strong>Datum:</strong> {new Date(selectedReceipt.purchase_date).toLocaleDateString("nl-BE")}
 											</div>
 											<div className={styles.detailRow}>
-												<strong>Totaal:</strong> €{(typeof selectedReceipt.total_amount === 'number' ? selectedReceipt.total_amount : Number.parseFloat(selectedReceipt.total_amount || 0)).toFixed(2)}
+												<strong>Totaal:</strong> €{(typeof selectedReceipt.total_amount === "number" ? selectedReceipt.total_amount : Number.parseFloat(selectedReceipt.total_amount || 0)).toFixed(2)}
 											</div>
 										</div>
 
@@ -659,12 +630,14 @@ const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 										<div className={styles.itemsSection}>
 											<h3>Items ({selectedReceipt.items.length})</h3>
 											{selectedReceipt.items.map((item, index) => {
-												const price = typeof item.price === 'number' ? item.price : Number.parseFloat(item.price || 0);
-												const quantity = typeof item.quantity === 'number' ? item.quantity : Number.parseFloat(item.quantity || 1);
+												const price = typeof item.price === "number" ? item.price : Number.parseFloat(item.price || 0);
+												const quantity = typeof item.quantity === "number" ? item.quantity : Number.parseFloat(item.quantity || 1);
 												return (
 													<div key={`${selectedReceipt.id}-item-${index}-${item.name}-${item.category}`} className={styles.itemRow}>
 														<span>{item.name}</span>
-														<span>€{price.toFixed(2)} × {quantity}</span>
+														<span>
+															€{price.toFixed(2)} × {quantity}
+														</span>
 														<span className={styles.itemCategory}>{item.category}</span>
 													</div>
 												);
@@ -676,11 +649,11 @@ const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 											<button className="btn btn-primary" onClick={startEditing}>
 												Bewerken
 											</button>
-											<button 
+											<button
 												className="btn btn-danger"
 												onClick={() => {
 													if (confirm("Weet je zeker dat je dit ticket wilt verwijderen?")) {
-															deleteReceipt(selectedReceipt.id);
+														deleteReceipt(selectedReceipt.id);
 													}
 												}}
 											>
@@ -696,38 +669,29 @@ const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 										{/* Edit Mode - Using Upload Page Structure */}
 										<div className={styles.receiptFormGrid}>
 											<div>
-												<label htmlFor="store-name" className="label-text">Winkelnaam</label>
-												<input 
-													id="store-name"
-													type="text" 
-													value={editedReceipt?.store_name || ""} 
-													onChange={(e) => updateEditedReceipt("store_name", e.target.value)}
-													className={getFieldClassName(editedReceipt?.store_name || null)}
-												/>
+												<label htmlFor="store-name" className="label-text">
+													Winkelnaam
+												</label>
+												<input id="store-name" type="text" value={editedReceipt?.store_name || ""} onChange={(e) => updateEditedReceipt("store_name", e.target.value)} className={getFieldClassName(editedReceipt?.store_name || null)} />
 											</div>
 											<div>
-												<label htmlFor="purchase-date" className="label-text">Datum (YYYY-MM-DD)</label>
-												<input 
-													id="purchase-date"
-													type="date" 
-													value={editedReceipt?.purchase_date?.split('T')[0] || ""} 
-													onChange={(e) => updateEditedReceipt("purchase_date", e.target.value)}
-													className={getFieldClassName(editedReceipt?.purchase_date?.split('T')[0] || null)}
-												/>
-											</div>
-											<div>
-												<label htmlFor="total-amount" className="label-text">Totaal Bedrag (€)</label>
+												<label htmlFor="purchase-date" className="label-text">
+													Datum (YYYY-MM-DD)
+												</label>
 												<input
-													id="total-amount"
-													type="number"
-													step="0.01"
-													value={editedReceipt?.total_amount || 0}
-													readOnly
-													className="input-field readonly-field"
+													id="purchase-date"
+													type="date"
+													value={editedReceipt?.purchase_date?.split("T")[0] || ""}
+													onChange={(e) => updateEditedReceipt("purchase_date", e.target.value)}
+													className={getFieldClassName(editedReceipt?.purchase_date?.split("T")[0] || null)}
 												/>
-												<small style={{ color: 'var(--muted-color)', fontSize: '0.8em', marginTop: '4px', display: 'block' }}>
-													Automatically calculated from item prices
-												</small>
+											</div>
+											<div>
+												<label htmlFor="total-amount" className="label-text">
+													Totaal Bedrag (€)
+												</label>
+												<input id="total-amount" type="number" step="0.01" value={editedReceipt?.total_amount || 0} readOnly className="input-field readonly-field" />
+												<small style={{ color: "var(--muted-color)", fontSize: "0.8em", marginTop: "4px", display: "block" }}>Automatically calculated from item prices</small>
 											</div>
 										</div>
 
@@ -749,24 +713,24 @@ const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 																	<label htmlFor={`item-name-${index}`} className="label-text" style={{ fontSize: "0.8em" }}>
 																		Item Name
 																	</label>
-																	<input 
+																	<input
 																		id={`item-name-${index}`}
-																		type="text" 
-																		value={item.name || ""} 
-																		onChange={(e) => updateItem(index, "name", e.target.value)} 
+																		type="text"
+																		value={item.name || ""}
+																		onChange={(e) => updateItem(index, "name", e.target.value)}
 																		className={getFieldClassName(item.name)}
-																		placeholder="Item name" 
-																		style={{ fontSize: "0.9em" }} 
+																		placeholder="Item name"
+																		style={{ fontSize: "0.9em" }}
 																	/>
 																</div>
 																<div>
 																	<label htmlFor={`item-category-${index}`} className="label-text" style={{ fontSize: "0.8em" }}>
 																		Category
 																	</label>
-																	<select 
+																	<select
 																		id={`item-category-${index}`}
-																		value={item.category || ""} 
-																		onChange={(e) => updateItem(index, "category", e.target.value)} 
+																		value={item.category || ""}
+																		onChange={(e) => updateItem(index, "category", e.target.value)}
 																		className={getFieldClassName(item.category)}
 																		style={{ fontSize: "0.9em", width: "100%" }}
 																	>
@@ -820,9 +784,7 @@ const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 													))}
 												</div>
 											) : (
-												<div className={styles.noItemsMessage}>
-													No items found. Click "Add Item" to add items manually.
-												</div>
+												<div className={styles.noItemsMessage}>No items found. Click "Add Item" to add items manually.</div>
 											)}
 										</div>
 

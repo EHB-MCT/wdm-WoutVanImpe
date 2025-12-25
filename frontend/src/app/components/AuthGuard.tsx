@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { removeExpiredTokens, isUserAuthenticated } from "../utils/auth";
+import { removeExpiredTokens, isUserAuthenticated } from "../../utils/auth";
 
 interface AuthGuardProps {
 	children: React.ReactNode;
