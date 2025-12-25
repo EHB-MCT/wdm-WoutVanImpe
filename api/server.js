@@ -239,7 +239,7 @@ app.post("/api/receipts", authenticateToken, async (req, res) => {
 					purchase_date,
 					purchase_time,
 					payment_method: payment_method || null,
-					total_amount: parseFloat(total_amount),
+					total_amount: Number.parseFloat(total_amount),
 					raw_ocr_text: raw_ocr_text || null
 				})
 				.returning("*");
@@ -253,8 +253,8 @@ app.post("/api/receipts", authenticateToken, async (req, res) => {
 					receipt_id: newReceipt.id,
 					category_id: categoryId,
 					product_name: item.name.trim(),
-					quantity: parseFloat(item.quantity) || 1,
-					price: parseFloat(item.price)
+					quantity: Number.parseFloat(item.quantity) || 1,
+					price: Number.parseFloat(item.price)
 				};
 			});
 
@@ -323,7 +323,7 @@ app.put("/api/receipts/:id", authenticateToken, async (req, res) => {
 					purchase_date,
 					purchase_time,
 					payment_method: payment_method || null,
-					total_amount: parseFloat(total_amount)
+					total_amount: Number.parseFloat(total_amount)
 				});
 
 			const itemsToInsert = items.map(item => {
@@ -332,11 +332,11 @@ app.put("/api/receipts/:id", authenticateToken, async (req, res) => {
 					: null;
 
 				return {
-					receipt_id: parseInt(id),
+					receipt_id: Number.parseInt(id),
 					category_id: categoryId,
 					product_name: item.name.trim(),
-					quantity: parseFloat(item.quantity) || 1,
-					price: parseFloat(item.price)
+					quantity: Number.parseFloat(item.quantity) || 1,
+					price: Number.parseFloat(item.price)
 				};
 			});
 
