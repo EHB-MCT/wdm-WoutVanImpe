@@ -99,8 +99,40 @@ const authenticateToken = (req, res, next) => {
 		if (err) return res.status(403).json({ error: "Token ongeldig" });
 
 		req.user = user;
+		req.token = token;
 		next();
 	});
+};
+
+const refreshTokenIfNeeded = (req, res, next) => {
+	const authHeader = req.headers["authorization"];
+	const token = authHeader && authHeader.split(" ")[1];
+
+	if (!token) return next();
+
+	try {
+		const decoded = jwt.decode(token);
+		const now = Math.floor(Date.now() / 1000);
+		const timeUntilExpiration = decoded.exp - now;
+		
+		// Refresh token if less than 15 minutes remaining
+		if (timeUntilExpiration < 900) {
+			const newToken = jwt.sign(
+				{ userId: decoded.userId, username: decoded.username }, 
+				JWT_SECRET, 
+				{ expiresIn: "1h" }
+			);
+			
+			// Add new token to response headers
+			res.setHeader('X-New-Token', newToken);
+			res.setHeader('X-Token-Refresh', 'true');
+		}
+		
+		next();
+	} catch (error) {
+		// If we can't decode, just continue - the main auth middleware will handle it
+		next();
+	}
 };
 
 // ==========================================
@@ -117,7 +149,7 @@ app.get("/api/categories", async (req, res) => {
 	}
 });
 
-app.post("/api/categories", authenticateToken, async (req, res) => {
+app.post("/api/categories", authenticateToken, refreshTokenIfNeeded, async (req, res) => {
 	const { name } = req.body;
 
 	if (!name || name.trim() === "") {
@@ -143,7 +175,7 @@ app.post("/api/categories", authenticateToken, async (req, res) => {
 // RECEIPTS ROUTES
 // ==========================================
 
-app.get("/api/receipts", authenticateToken, async (req, res) => {
+app.get("/api/receipts", authenticateToken, refreshTokenIfNeeded, async (req, res) => {
 	try {
 		const receipts = await db("receipts")
 			.where("user_id", req.user.userId)
@@ -181,7 +213,7 @@ app.get("/api/receipts", authenticateToken, async (req, res) => {
 	}
 });
 
-app.get("/api/receipts/:id", authenticateToken, async (req, res) => {
+app.get("/api/receipts/:id", authenticateToken, refreshTokenIfNeeded, async (req, res) => {
 	const { id } = req.params;
 
 	try {
@@ -219,7 +251,7 @@ app.get("/api/receipts/:id", authenticateToken, async (req, res) => {
 	}
 });
 
-app.post("/api/receipts", authenticateToken, async (req, res) => {
+app.post("/api/receipts", authenticateToken, refreshTokenIfNeeded, async (req, res) => {
 	const { store_name, purchase_date, purchase_time, payment_method, total_amount, raw_ocr_text, items } = req.body;
 
 	if (!store_name || !purchase_date || !purchase_time || !total_amount || !items || !Array.isArray(items)) {
@@ -292,7 +324,7 @@ app.post("/api/receipts", authenticateToken, async (req, res) => {
 	}
 });
 
-app.put("/api/receipts/:id", authenticateToken, async (req, res) => {
+app.put("/api/receipts/:id", authenticateToken, refreshTokenIfNeeded, async (req, res) => {
 	const { id } = req.params;
 	const { store_name, purchase_date, purchase_time, payment_method, total_amount, items } = req.body;
 
@@ -376,7 +408,7 @@ app.put("/api/receipts/:id", authenticateToken, async (req, res) => {
 	}
 });
 
-app.delete("/api/receipts/:id", authenticateToken, async (req, res) => {
+app.delete("/api/receipts/:id", authenticateToken, refreshTokenIfNeeded, async (req, res) => {
 	const { id } = req.params;
 
 	try {
