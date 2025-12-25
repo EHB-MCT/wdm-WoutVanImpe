@@ -7,6 +7,8 @@ import {
 	Cell, ResponsiveContainer, Tooltip, 
 	LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid
 } from "recharts";
+import { removeExpiredTokens, isUserAuthenticated } from "../../../../utils/auth";
+import AuthGuard from "../../../../components/AuthGuard";
 import styles from "./dashboard.module.css";
 
 interface User {
@@ -78,10 +80,16 @@ export default function DashboardPage() {
 	console.log('Current category:', currentCategory);
 
 	useEffect(() => {
-		const storedUser = localStorage.getItem("user");
-		if (storedUser) {
-			setUser(JSON.parse(storedUser));
-			fetchData();
+		// Clean up expired tokens first
+		removeExpiredTokens();
+		
+		const token = localStorage.getItem("token");
+		if (token && isUserAuthenticated()) {
+			const storedUser = localStorage.getItem("user");
+			if (storedUser) {
+				setUser(JSON.parse(storedUser));
+				fetchData();
+			}
 		}
 		setLoading(false);
 	}, []);
@@ -94,7 +102,13 @@ export default function DashboardPage() {
 
 	const fetchData = async () => {
 		try {
+			// Clean up expired tokens and get fresh token
+			removeExpiredTokens();
 			const token = localStorage.getItem("token");
+			
+			if (!token) {
+				throw new Error("Niet ingelogd");
+			}
 			
 			// Fetch receipts
 			const receiptsResponse = await fetch("http://localhost:5000/api/receipts", {
@@ -450,7 +464,8 @@ const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 	}
 
 	if (!user) {
-		return (
+	return (
+		<AuthGuard>
 			<main className={styles.dashboardPage}>
 				<div className="card" style={{ textAlign: "center", maxWidth: "500px" }}>
 					<p className="label-text" style={{ marginBottom: "20px" }}>
@@ -459,9 +474,10 @@ const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 					<Link href="/account">
 						<button className="btn btn-primary">Naar Login</button>
 					</Link>
-				</div>
+			</div>
 			</main>
-		);
+		</AuthGuard>
+	);
 	}
 
 	return (

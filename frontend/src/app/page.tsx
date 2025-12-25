@@ -4,6 +4,8 @@ import React, { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
+import { removeExpiredTokens, getStoredUser } from "../utils/auth";
+import AuthGuard from "./components/AuthGuard";
 import styles from "./page.module.css";
 
 interface User {
@@ -42,13 +44,17 @@ export default function HomePage() {
 	const [currentDate, setCurrentDate] = useState(new Date());
 
 	useEffect(() => {
-		const storedUser = localStorage.getItem("user");
-
+		// Clean up expired tokens first
+		removeExpiredTokens();
+		
+		// Get stored user (only if token is valid)
+		const storedUser = getStoredUser();
+		
 		if (storedUser) {
-			setUser(JSON.parse(storedUser));
+			setUser(storedUser);
 			fetchReceipts();
 		}
-
+		
 		setLoading(false);
 	}, []);
 
@@ -148,7 +154,8 @@ const goToNextMonth = () => {
 	}
 
 	return (
-		<main className={styles.dashboardPage}>
+		<AuthGuard>
+			<main className={styles.dashboardPage}>
 			{!user ? (
 				<>
 					<h1 className={styles.pageTitle}>Welkom, Gast!</h1>
@@ -308,5 +315,6 @@ const goToNextMonth = () => {
 				</div>
 			)}
 		</main>
+		</AuthGuard>
 	);
 }

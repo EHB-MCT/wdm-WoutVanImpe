@@ -2,6 +2,8 @@
 import { useRef, useState, useEffect } from "react";
 import { ReceiptData, ReceiptItem } from "@/types/receipt";
 import { validateReceiptData, ValidationResult } from "./utils/receiptValidation";
+import { removeExpiredTokens, isUserAuthenticated } from "../utils/auth";
+import AuthGuard from "../components/AuthGuard";
 import ImageUpload from "./components/ImageUpload";
 import ReceiptForm from "../components/ReceiptForm";
 import ReceiptItemsList from "../components/ReceiptItemsList";
@@ -141,10 +143,13 @@ export default function Home() {
 		setShowValidationModal(false);
 		setIsSaving(true);
 		try {
-			const token = localStorage.getItem("token");
-			if (!token) {
+			// Clean up expired tokens and check authentication
+			removeExpiredTokens();
+			if (!isUserAuthenticated()) {
 				throw new Error("Je moet ingelogd zijn om bonnen op te slaan.");
 			}
+			
+			const token = localStorage.getItem("token");
 
 			const receiptPayload = {
 				store_name: editableData.store_name,
@@ -250,7 +255,8 @@ export default function Home() {
 	}, [editableData]); // Include editableData as dependency
 
 	return (
-		<div className={styles.ocrPage}>
+		<AuthGuard>
+			<div className={styles.ocrPage}>
 			<h1 className={styles.pageTitle}>Upload your tickets here!</h1>
 
 			{imgSubmitted && (
@@ -297,6 +303,7 @@ export default function Home() {
 			)}
 
 			<ImageUpload imgInputRef={imgInputRef} imgPreview={imgPreview} onChange={handleChange} isLoading={isLoading} onSubmit={handleFormSubmit} />
-		</div>
+			</div>
+		</AuthGuard>
 	);
 }
