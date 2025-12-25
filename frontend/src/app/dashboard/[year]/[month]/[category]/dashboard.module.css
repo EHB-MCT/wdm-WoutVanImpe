@@ -1,0 +1,547 @@
+.dashboardPage {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh;
+	padding: 40px 20px;
+	background: var(--muted-bg);
+}
+
+.dashboardContainer {
+	max-width: 1400px;
+	margin: 0 auto;
+	width: 100%;
+}
+
+.dashboardHeader {
+	margin-bottom: 32px;
+}
+
+.backButton {
+	display: inline-block;
+	color: var(--muted-color);
+	text-decoration: none;
+	margin-bottom: 16px;
+	transition: color 0.2s;
+}
+
+.backButton:hover {
+	color: var(--brand-color);
+}
+
+.pageTitle {
+	font-size: 2rem;
+	font-weight: 800;
+	color: var(--foreground);
+	margin: 0 0 8px 0;
+}
+
+.categoryLabel {
+	font-size: 1.1rem;
+	color: var(--muted-color);
+	margin: 0;
+}
+
+.controls {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	gap: 20px;
+	margin-bottom: 32px;
+	flex-wrap: wrap;
+}
+
+.monthNavigation {
+	display: flex;
+	align-items: center;
+	gap: 16px;
+}
+
+.monthNavButton {
+	background: var(--card-bg);
+	border: 1px solid var(--border-color);
+	color: var(--foreground);
+	width: 40px;
+	height: 40px;
+	border-radius: 8px;
+	font-size: 1.5rem;
+	cursor: pointer;
+	transition: all 0.2s;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.monthNavButton:hover:not(:disabled) {
+	background: var(--muted-bg);
+	border-color: var(--brand-color);
+}
+
+.monthLabel {
+	font-size: 1.25rem;
+	font-weight: 600;
+	color: var(--foreground);
+	min-width: 200px;
+	text-align: center;
+}
+
+.filterControls {
+	display: flex;
+	gap: 12px;
+	align-items: center;
+}
+
+.categoryFilter {
+	padding: 10px 16px;
+	border: 1px solid var(--border-color);
+	border-radius: 8px;
+	background: var(--card-bg);
+	color: var(--foreground);
+	font-size: 0.95rem;
+	cursor: pointer;
+	transition: border-color 0.2s;
+}
+
+.categoryFilter:hover {
+	border-color: var(--brand-color);
+}
+
+.controlButton {
+	padding: 10px 20px;
+	border: 1px solid var(--border-color);
+	border-radius: 8px;
+	background: var(--card-bg);
+	color: var(--foreground);
+	font-size: 0.95rem;
+	cursor: pointer;
+	transition: all 0.2s;
+}
+
+.controlButton:hover {
+	background: var(--muted-bg);
+	border-color: var(--brand-color);
+}
+
+.summaryCards {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: 24px;
+	margin-bottom: 32px;
+}
+
+.summaryCard {
+	padding: 24px;
+	text-align: center;
+}
+
+.summaryTitle {
+	font-size: 1rem;
+	font-weight: 600;
+	color: var(--muted-color);
+	margin: 0 0 16px 0;
+}
+
+.summaryAmount {
+	font-size: 2.5rem;
+	font-weight: 800;
+	color: var(--brand-color);
+	margin: 0 0 8px 0;
+}
+
+.summarySubtext {
+	font-size: 0.9rem;
+	color: var(--muted-color);
+	margin: 0;
+}
+
+.chartsGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+	gap: 24px;
+	margin-bottom: 32px;
+}
+
+.chartCard {
+	padding: 24px;
+}
+
+.chartTitle {
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: var(--foreground);
+	margin: 0 0 20px 0;
+}
+
+.chartContainer {
+	width: 100%;
+	height: 300px;
+}
+
+.receiptsSection {
+	margin-top: 32px;
+}
+
+.sectionTitle {
+	font-size: 1.5rem;
+	font-weight: 700;
+	color: var(--foreground);
+	margin: 0 0 24px 0;
+}
+
+.receiptsList {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 20px;
+}
+
+.receiptCard {
+	padding: 20px;
+	cursor: pointer;
+	transition: transform 0.2s, box-shadow 0.2s;
+	text-align: left;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.receiptCard:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+button.receiptCard {
+	border: none;
+	background: none;
+	font-family: inherit;
+	text-align: left;
+	width: 100%;
+	margin: 0;
+}
+
+button.receiptCard.card {
+	padding: 20px;
+	text-align: left;
+}
+
+.receiptHeader {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	margin-bottom: 12px;
+}
+
+.receiptStore {
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: var(--foreground);
+	margin: 0;
+}
+
+.receiptDate {
+	font-size: 0.9rem;
+	color: var(--muted-color);
+	margin: 0;
+}
+
+.receiptDetails {
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	margin-bottom: 12px;
+}
+
+.receiptAmount {
+	font-size: 1.5rem;
+	font-weight: 700;
+	color: var(--brand-color);
+	margin: 0;
+}
+
+.receiptPayment {
+	font-size: 0.9rem;
+	color: var(--muted-color);
+	margin: 0;
+}
+
+.receiptItems {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
+.receiptItem {
+	display: flex;
+	justify-content: space-between;
+	font-size: 0.9rem;
+	color: var(--foreground);
+	padding: 4px 0;
+	border-bottom: 1px solid var(--border-color);
+}
+
+.receiptMore {
+	font-size: 0.85rem;
+	color: var(--muted-color);
+	font-style: italic;
+	margin: 4px 0 0 0;
+}
+
+.noDataMessage {
+	text-align: center;
+	padding: 60px 20px;
+	background: var(--card-bg);
+	border-radius: 12px;
+	border: 2px dashed var(--border-color);
+	color: var(--muted-color);
+	font-size: 1.1rem;
+}
+
+/* Modal Styles */
+.modalBackdrop {
+	position: fixed;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(0, 0, 0, 0.7);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	z-index: 1000;
+	animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+	from {
+		opacity: 0;
+	}
+	to {
+		opacity: 1;
+	}
+}
+
+.modalContent {
+	background: var(--card-bg);
+	border-radius: 12px;
+	max-width: 600px;
+	width: 90%;
+	max-height: 80vh;
+	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+	animation: slideUp 0.3s ease-out;
+	display: flex;
+	flex-direction: column;
+}
+
+@keyframes slideUp {
+	from {
+		transform: translateY(20px);
+		opacity: 0;
+	}
+	to {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
+.modalHeader {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 24px;
+	border-bottom: 1px solid var(--border-color);
+}
+
+.modalHeader h2 {
+	margin: 0;
+	font-size: 1.5rem;
+	color: var(--foreground);
+}
+
+.modalCloseButton {
+	background: none;
+	border: none;
+	font-size: 2rem;
+	color: var(--muted-color);
+	cursor: pointer;
+	padding: 0;
+	width: 32px;
+	height: 32px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 4px;
+	transition: all 0.2s;
+}
+
+.modalCloseButton:hover {
+	background: var(--muted-bg);
+	color: var(--foreground);
+}
+
+.modalBody {
+	padding: 24px;
+	overflow-y: auto;
+	flex: 1;
+}
+
+.harmfulDataSection {
+	padding: 16px;
+	border-radius: 8px;
+	margin-bottom: 24px;
+	border: 2px solid #d62828;
+	background: #fff5f5;
+}
+
+.harmfulDataSection h3 {
+	margin: 0 0 12px 0;
+	color: #d62828;
+	font-size: 1.1rem;
+}
+
+.harmfulDataItem {
+	padding: 12px;
+	background: rgba(214, 40, 40, 0.1);
+	border-radius: 6px;
+	margin-bottom: 8px;
+}
+
+.harmfulDataItem p {
+	margin: 4px 0;
+	color: #333;
+}
+
+.receiptDetailsSection {
+	margin-bottom: 24px;
+}
+
+.receiptDetailsSection h3 {
+	margin: 0 0 16px 0;
+	color: var(--foreground);
+}
+
+.detailRow {
+	padding: 8px 0;
+	border-bottom: 1px solid var(--border-color);
+	color: var(--foreground);
+}
+
+.itemsSection {
+	margin-bottom: 24px;
+}
+
+.itemsSection h3 {
+	margin: 0 0 16px 0;
+	color: var(--foreground);
+}
+
+.itemRow {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 12px;
+	background: var(--muted-bg);
+	border-radius: 6px;
+	margin-bottom: 8px;
+}
+
+.itemCategory {
+	padding: 4px 8px;
+	background: var(--brand-color);
+	color: white;
+	border-radius: 4px;
+	font-size: 0.85rem;
+}
+
+/* Receipt Form Styles */
+.receiptFormGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 10px;
+	margin-bottom: 20px;
+}
+
+/* Items Section Styles */
+.itemsHeader {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.itemsGrid {
+	display: grid;
+	grid-template-columns: 1fr;
+	gap: 10px;
+}
+
+.itemCard {
+	border: 1px solid var(--border-color);
+	padding: 12px;
+	border-radius: 6px;
+	background-color: var(--muted-bg);
+}
+
+.itemFieldsGrid {
+	display: grid;
+	grid-template-columns: 2fr 1fr 1fr 1fr auto;
+	gap: 8px;
+	align-items: center;
+}
+
+.itemField {
+	font-size: 0.9em;
+}
+
+.itemRemoveBtn {
+	padding-top: 20px;
+}
+
+.noItemsMessage {
+	text-align: center;
+	padding: 20px;
+	color: var(--muted-color);
+	background-color: var(--muted-bg);
+	border-radius: 4px;
+}
+
+/* Incomplete field styling */
+.incompleteField {
+	border-color: var(--error-color) !important;
+	background-color: #fff5f5 !important;
+}
+
+.readonly-field {
+	background-color: var(--muted-bg) !important;
+	cursor: not-allowed !important;
+}
+
+.modalActions {
+	display: flex;
+	gap: 12px;
+	justify-content: flex-end;
+	padding: 24px;
+	border-top: 1px solid var(--border-color);
+	background: var(--card-bg);
+	border-radius: 0 0 12px 12px;
+	position: sticky;
+	bottom: 0;
+	z-index: 10;
+}
+
+@media (max-width: 768px) {
+	.controls {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.filterControls {
+		flex-direction: column;
+	}
+
+	.chartsGrid {
+		grid-template-columns: 1fr;
+	}
+
+	.receiptsList {
+		grid-template-columns: 1fr;
+	}
+}
