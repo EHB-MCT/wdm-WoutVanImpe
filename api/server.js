@@ -161,6 +161,127 @@ const refreshTokenIfNeeded = (req, res, next) => {
 };
 
 // ==========================================
+// USER PROFILE ROUTES
+// ==========================================
+
+app.get("/api/users/profile", authenticateToken, refreshTokenIfNeeded, async (req, res) => {
+	try {
+		const user = await db("users")
+			.where("id", req.user.userId)
+			.select("id", "username", "email", "created_at", "updated_at")
+			.first();
+
+		if (!user) {
+			return res.status(404).json({ error: "Gebruiker niet gevonden." });
+		}
+
+		res.json(user);
+	} catch (error) {
+		console.error("Profiel ophalen fout:", error);
+		res.status(500).json({ error: "Er ging iets mis bij het ophalen van profiel." });
+	}
+});
+
+app.put("/api/users/profile", authenticateToken, refreshTokenIfNeeded, async (req, res) => {
+	const { username, email } = req.body;
+
+	if (!username && !email) {
+		return res.status(400).json({ error: "Vul minimaal één veld in om bij te werken." });
+	}
+
+	try {
+		// Check if username is already taken by another user
+		if (username) {
+			const existingUser = await db("users")
+				.where("username", username)
+				.whereNot("id", req.user.userId)
+				.first();
+
+			if (existingUser) {
+				return res.status(400).json({ error: "Deze gebruikersnaam is al in gebruik." });
+			}
+		}
+
+		// Check if email is already taken by another user
+		if (email) {
+			const existingEmail = await db("users")
+				.where("email", email)
+				.whereNot("id", req.user.userId)
+				.first();
+
+			if (existingEmail) {
+				return res.status(400).json({ error: "Dit emailadres is al in gebruik." });
+			}
+		}
+
+		// Update user profile
+		const updatedUser = await db("users")
+			.where("id", req.user.userId)
+			.update({
+				...(username && { username: username.trim() }),
+				...(email && { email: email.trim() }),
+				updated_at: new Date()
+			})
+			.returning(["id", "username", "email", "created_at", "updated_at"])
+			.first();
+
+		// Update stored user data in localStorage (frontend will handle this automatically)
+		res.json(updatedUser);
+	} catch (error) {
+		console.error("Profiel bijwerken fout:", error);
+		res.status(500).json({ error: "Er ging iets mis bij het bijwerken van profiel." });
+	}
+});
+
+app.put("/api/users/password", authenticateToken, refreshTokenIfNeeded, async (req, res) => {
+	const { currentPassword, newPassword } = req.body;
+
+	if (!currentPassword || !newPassword) {
+		return res.status(400).json({ error: "Huidig en nieuw wachtwoord zijn verplicht." });
+	}
+
+	if (newPassword.length < 8) {
+		return res.status(400).json({ error: "Wachtwoord moet minimaal 8 tekens zijn." });
+	}
+
+	try {
+		// Get current user data to verify current password
+		const user = await db("users")
+			.where("id", req.user.userId)
+			.select("password_hash")
+			.first();
+
+		if (!user) {
+			return res.status(404).json({ error: "Gebruiker niet gevonden." });
+		}
+
+		// Verify current password (SHA256 comparison since that's what we store)
+		const crypto = require('crypto-js');
+		const hashedCurrentPassword = crypto.SHA256(currentPassword).toString();
+		
+		if (hashedCurrentPassword !== user.password_hash) {
+			return res.status(400).json({ error: "Huidig wachtwoord is onjuist." });
+		}
+
+		// Hash the new password
+		const hashedNewPassword = crypto.SHA256(newPassword).toString();
+
+		// Update password
+		await db("users")
+			.where("id", req.user.userId)
+			.update({
+				password_hash: hashedNewPassword,
+				updated_at: new Date()
+			});
+
+		res.json({ message: "Wachtwoord succesvol gewijzigd." });
+	} catch (error) {
+		console.error("Wachtwoord wijzigen fout:", error);
+		res.status(500).json({ error: "Er ging iets mis bij het wijzigen van wachtwoord." });
+	}
+});
+
+// ==========================================
 // CATEGORIES ROUTES
 // ==========================================
 
