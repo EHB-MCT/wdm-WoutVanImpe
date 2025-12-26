@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getStoredUser, logout, isUserAuthenticated } from "../../utils/auth";
-import styles from "../page.module.css";
+import { getStoredUser, logout, isUserAuthenticated } from "../../lib/auth";
+import styles from "../styles/components/Validation.module.css";
 
 export default function AccountPage() {
 	const router = useRouter();
-	const [user, setUser] = useState<any>(null);
+	const [user, setUser] = useState<{ id: number; username: string; email: string } | null>(null);
 	const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 	const [activeView, setActiveView] = useState<'menu' | 'profile' | 'password'>('menu');
 	const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '' });
@@ -88,7 +88,7 @@ export default function AccountPage() {
 			} else {
 				setMessage({ type: "error", text: data.error || "Fout bij wijzigen wachtwoord" });
 			}
-		} catch (error) {
+		} catch {
 			setMessage({ type: "error", text: "Netwerkfout, probeer opnieuw" });
 		} finally {
 			setIsLoading(false);
@@ -131,7 +131,7 @@ export default function AccountPage() {
 			} else {
 				setMessage({ type: "error", text: data.error || "Fout bij bijwerken profiel" });
 			}
-		} catch (error) {
+		} catch {
 			setMessage({ type: "error", text: "Netwerkfout, probeer opnieuw" });
 		} finally {
 			setIsLoading(false);
