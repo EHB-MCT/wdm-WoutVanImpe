@@ -40,7 +40,7 @@ The architecture is designed to fulfill the "collect everything" mandate:
 ### Input (Frontend - Next.js/React)
 
 - User uploads a receipt photo.
-- **Assignment Requirement**: Assign a UID (User ID) to differentiate users and build individual profiles. Capture clicks/navigation if possible.
+- **Assignment Requirement**: Assign a UID (User ID) to differentiate users and build individual profiles.
 
 ### Processing (OCR & AI)
 
