@@ -46,15 +46,15 @@ export default function HomePage() {
 	useEffect(() => {
 		// Clean up expired tokens first
 		removeExpiredTokens();
-		
+
 		// Get stored user (only if token is valid)
 		const storedUser = getStoredUser();
-		
+
 		if (storedUser) {
 			setUser(storedUser);
 			fetchReceipts();
 		}
-		
+
 		setLoading(false);
 	}, []);
 
@@ -67,11 +67,11 @@ export default function HomePage() {
 				},
 			});
 
-if (response.ok) {
+			if (response.ok) {
 				// Handle automatic token refresh
 				const refreshSuccess = handleTokenRefresh(response);
 				if (!refreshSuccess) {
-					console.warn('Token refresh failed during receipts fetch');
+					console.warn("Token refresh failed during receipts fetch");
 				}
 				const data = await response.json();
 				setReceipts(data);
@@ -93,7 +93,7 @@ if (response.ok) {
 		setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
 	};
 
-const goToNextMonth = () => {
+	const goToNextMonth = () => {
 		const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1);
 		const now = new Date();
 		if (nextMonth <= new Date(now.getFullYear(), now.getMonth())) {
@@ -104,7 +104,7 @@ const goToNextMonth = () => {
 	const navigateToDashboard = (category: string) => {
 		const year = currentDate.getFullYear();
 		const month = currentDate.getMonth() + 1;
-		
+
 		if (category === "all") {
 			router.push(`/dashboard/${year}/${month}/all`);
 		} else {
@@ -127,14 +127,14 @@ const goToNextMonth = () => {
 			return receiptDate.getFullYear() === year && receiptDate.getMonth() === month;
 		});
 
-		const totalSpent = monthlyReceipts.reduce((sum, receipt) => sum + (typeof receipt.total_amount === 'number' ? receipt.total_amount : Number.parseFloat(receipt.total_amount || 0)), 0);
+		const totalSpent = monthlyReceipts.reduce((sum, receipt) => sum + (typeof receipt.total_amount === "number" ? receipt.total_amount : Number.parseFloat(receipt.total_amount || 0)), 0);
 
 		const categorySpending: { [key: string]: number } = {};
 		monthlyReceipts.forEach((receipt) => {
 			receipt.items.forEach((item) => {
 				const category = item.category || "Overig";
-				const itemPrice = typeof item.price === 'number' ? item.price : Number.parseFloat(item.price || 0);
-				const itemQuantity = typeof item.quantity === 'number' ? item.quantity : Number.parseFloat(item.quantity || 1);
+				const itemPrice = typeof item.price === "number" ? item.price : Number.parseFloat(item.price || 0);
+				const itemQuantity = typeof item.quantity === "number" ? item.quantity : Number.parseFloat(item.quantity || 1);
 				const itemTotal = itemPrice * itemQuantity;
 				categorySpending[category] = (categorySpending[category] || 0) + itemTotal;
 			});
@@ -161,165 +161,121 @@ const goToNextMonth = () => {
 	return (
 		<AuthGuard>
 			<main className={styles.dashboardPage}>
-			{!user ? (
-				<>
-					<h1 className={styles.pageTitle}>Welkom, Gast!</h1>
-					<div className="card" style={{ maxWidth: "500px", width: "100%", textAlign: "center" }}>
-						<p className="label-text" style={{ marginBottom: "20px" }}>
-							Je bent nog niet ingelogd.
-						</p>
-						<Link href="/account">
-							<button className="btn btn-primary" style={{ width: "100%" }}>
-								Naar Login
-							</button>
-						</Link>
-					</div>
-				</>
-			) : (
-				<div className={styles.dashboardContainer}>
-					<div className={styles.welcomeSection}>
-						<h1 className={styles.pageTitle}>Welkom, {user.username}!</h1>
-						<p className={styles.currentDate}>{formatDate(new Date())}</p>
-					</div>
-
-					<div className={styles.ctaSection}>
-						<div className="card" style={{ textAlign: "center" }}>
-							<h2 className={styles.ctaTitle}>Upload een nieuw ticket</h2>
-							<p className={styles.ctaDescription}>
-								Voeg je recente aankopen toe om je financiële overzicht up-to-date te houden
+				{!user ? (
+					<>
+						<h1 className={styles.pageTitle}>Welkom, Gast!</h1>
+						<div className="card" style={{ maxWidth: "500px", width: "100%", textAlign: "center" }}>
+							<p className="label-text" style={{ marginBottom: "20px" }}>
+								Je bent nog niet ingelogd.
 							</p>
-							<div className={styles.ctaButtonContainer}>
-								<Link href="/upload" style={{ flex: 1 }}>
-									<button className="btn btn-primary" style={{ width: "100%" }}>
-										Upload Ticket
-									</button>
-								</Link>
-								<Link 
-									href={`/dashboard/${currentDate.getFullYear()}/${currentDate.getMonth() + 1}/all`}
-									style={{ flex: 1 }}
-								>
-									<button className="btn btn-secondary" style={{ width: "100%" }}>
-										Bekijk Dashboard
-									</button>
-								</Link>
-							</div>
+							<Link href="/account">
+								<button className="btn btn-primary" style={{ width: "100%" }}>
+									Naar Login
+								</button>
+							</Link>
 						</div>
-					</div>
-
-					<div className={styles.monthlyOverview}>
-						<div className={styles.monthHeader}>
-							<button
-								className={styles.monthNavButton}
-								onClick={goToPreviousMonth}
-								aria-label="Vorige maand"
-							>
-								←
-							</button>
-							<h2 className={styles.monthTitle}>{formatMonthYear(currentDate)}</h2>
-							<button
-								className={styles.monthNavButton}
-								onClick={goToNextMonth}
-								disabled={!canGoNext}
-								aria-label="Volgende maand"
-								style={{ opacity: canGoNext ? 1 : 0.3, cursor: canGoNext ? "pointer" : "not-allowed" }}
-							>
-								→
-							</button>
+					</>
+				) : (
+					<div className={styles.dashboardContainer}>
+						<div className={styles.welcomeSection}>
+							<h1 className={styles.pageTitle}>Welkom, {user.username}!</h1>
+							<p className={styles.currentDate}>{formatDate(new Date())}</p>
 						</div>
 
-						{!getMonthlyData.hasReceipts ? (
-							<div className={styles.noDataMessage}>
-								<p>Geen uitgaven deze maand</p>
+						<div className={styles.ctaSection}>
+							<div className="card" style={{ textAlign: "center" }}>
+								<h2 className={styles.ctaTitle}>Upload een nieuw ticket</h2>
+								<p className={styles.ctaDescription}>Voeg je recente aankopen toe om je financiële overzicht up-to-date te houden</p>
+								<div className={styles.ctaButtonContainer}>
+									<Link href="/upload" style={{ flex: 1 }}>
+										<button className="btn btn-primary" style={{ width: "100%" }}>
+											Upload Ticket
+										</button>
+									</Link>
+									<Link href={`/dashboard/${currentDate.getFullYear()}/${currentDate.getMonth() + 1}/all`} style={{ flex: 1 }}>
+										<button className="btn btn-secondary" style={{ width: "100%" }}>
+											Bekijk Dashboard
+										</button>
+									</Link>
+								</div>
 							</div>
-						) : (
-							<div className={styles.statsGrid}>
-								<div className={`${styles.statCard} card`}>
-									<h3 className={styles.statTitle}>Totaal Uitgegeven</h3>
-									<p className={styles.statAmount}>€{getMonthlyData.totalSpent.toFixed(2)}</p>
-									
-									<div className={styles.combinedContent}>
-										<div className={styles.categoryList}>
-											{getMonthlyData.categoryData.map((cat, index) => {
-												const colors = [
-													"#E63946",
-													"#2A9D8F",
-													"#264653",
-													"#F4A261",
-													"#E9C46A",
-													"#F77F00",
-													"#D62828",
-													"#06A77D",
-												];
-												return (
-													<div 
-														key={cat.name} 
-														className={styles.categoryItem}
-														onClick={() => navigateToDashboard(cat.name)}
-														style={{ cursor: 'pointer' }}
-													>
-														<div className={styles.categoryInfo}>
-															<div 
-																className={styles.categoryDot} 
-																style={{ background: colors[index % 8] }}
-															/>
-															<span className={styles.categoryName}>{cat.name}</span>
+						</div>
+
+						<div className={styles.monthlyOverview}>
+							<div className={styles.monthHeader}>
+								<button className={styles.monthNavButton} onClick={goToPreviousMonth} aria-label="Vorige maand">
+									←
+								</button>
+								<h2 className={styles.monthTitle}>{formatMonthYear(currentDate)}</h2>
+								<button className={styles.monthNavButton} onClick={goToNextMonth} disabled={!canGoNext} aria-label="Volgende maand" style={{ opacity: canGoNext ? 1 : 0.3, cursor: canGoNext ? "pointer" : "not-allowed" }}>
+									→
+								</button>
+							</div>
+
+							{!getMonthlyData.hasReceipts ? (
+								<div className={styles.noDataMessage}>
+									<p>Geen uitgaven deze maand</p>
+								</div>
+							) : (
+								<div className={styles.statsGrid}>
+									<div className={`${styles.statCard} card`}>
+										<h3 className={styles.statTitle}>Totaal Uitgegeven</h3>
+										<p className={styles.statAmount}>€{getMonthlyData.totalSpent.toFixed(2)}</p>
+
+										<div className={styles.combinedContent}>
+											<div className={styles.categoryList}>
+												{getMonthlyData.categoryData.map((cat, index) => {
+													const colors = ["#E63946", "#2A9D8F", "#264653", "#F4A261", "#E9C46A", "#F77F00", "#D62828", "#06A77D"];
+													return (
+														<div key={cat.name} className={styles.categoryItem} onClick={() => navigateToDashboard(cat.name)} style={{ cursor: "pointer" }}>
+															<div className={styles.categoryInfo}>
+																<div className={styles.categoryDot} style={{ background: colors[index % 8] }} />
+																<span className={styles.categoryName}>{cat.name}</span>
+															</div>
+															<span className={styles.categoryAmount}>€{cat.value.toFixed(2)}</span>
 														</div>
-														<span className={styles.categoryAmount}>€{cat.value.toFixed(2)}</span>
-													</div>
-												);
-											})}
-										</div>
+													);
+												})}
+											</div>
 
-										<div className={styles.chartContainer}>
-											{getMonthlyData.categoryData.length > 0 ? (
-												<ResponsiveContainer width="100%" height="100%">
-													<PieChart>
-														<Pie
-															data={getMonthlyData.categoryData}
-															cx="50%"
-															cy="50%"
-															labelLine={false}
-															label={(entry) => {
-																const total = getMonthlyData.categoryData.reduce((sum, cat) => sum + cat.value, 0);
-																const percentage = total > 0 ? ((entry.value || 0) / total) * 100 : 0;
-																return `${percentage.toFixed(1)}%`;
-															}}
-															outerRadius={100}
-															fill="#8884d8"
-															dataKey="value"
-														>
-															{getMonthlyData.categoryData.map((entry, index) => (
-																<Cell 
-																	key={`cell-${index}`} 
-																	fill={[
-																		"#E63946",
-																		"#2A9D8F",
-																		"#264653",
-																		"#F4A261",
-																		"#E9C46A",
-																		"#F77F00",
-																		"#D62828",
-																		"#06A77D",
-																	][index % 8]}
-																/>
-															))}
-														</Pie>
-														<Tooltip formatter={(value: number | undefined) => `€${(value || 0).toFixed(2)}`} />
-														<Legend />
-													</PieChart>
-												</ResponsiveContainer>
-											) : (
-												<p className={styles.noDataMessage}>Geen categorie data beschikbaar</p>
-											)}
+											<div className={styles.chartContainer}>
+												{getMonthlyData.categoryData.length > 0 ? (
+													<ResponsiveContainer width="100%" height="100%">
+														<PieChart>
+															<Pie
+																data={getMonthlyData.categoryData}
+																cx="50%"
+																cy="50%"
+																labelLine={false}
+																label={(entry) => {
+																	const total = getMonthlyData.categoryData.reduce((sum, cat) => sum + cat.value, 0);
+																	const percentage = total > 0 ? ((entry.value || 0) / total) * 100 : 0;
+																	return `${percentage.toFixed(1)}%`;
+																}}
+																outerRadius={100}
+																fill="#8884d8"
+																dataKey="value"
+															>
+																{getMonthlyData.categoryData.map((entry, index) => (
+																	<Cell key={`cell-${index}`} fill={["#E63946", "#2A9D8F", "#264653", "#F4A261", "#E9C46A", "#F77F00", "#D62828", "#06A77D"][index % 8]} />
+																))}
+															</Pie>
+															<Tooltip formatter={(value: number | undefined) => `€${(value || 0).toFixed(2)}`} />
+															<Legend />
+														</PieChart>
+													</ResponsiveContainer>
+												) : (
+													<p className={styles.noDataMessage}>Geen categorie data beschikbaar</p>
+												)}
+											</div>
 										</div>
 									</div>
 								</div>
-							</div>
-						)}
+							)}
+						</div>
 					</div>
-				</div>
-			)}
-		</main>
+				)}
+			</main>
 		</AuthGuard>
 	);
 }
