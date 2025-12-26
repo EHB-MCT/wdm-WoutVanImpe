@@ -1,18 +1,18 @@
 "use client";
 import { useRef, useState, useEffect } from "react";
 import { ReceiptData, ReceiptItem } from "@/types/receipt";
-import { validateReceiptData, ValidationResult } from "./utils/receiptValidation";
-import { removeExpiredTokens, isUserAuthenticated, handleTokenRefresh } from "../../utils/auth";
-import AuthGuard from "../components/AuthGuard";
-import ImageUpload from "./components/ImageUpload";
-import ReceiptForm from "../components/ReceiptForm";
-import ReceiptItemsList from "../components/ReceiptItemsList";
-import LoadingStates from "./components/LoadingStates";
-import OCRTextDisplay from "./components/OCRTextDisplay";
-import ReceiptProcessor from "./components/ReceiptProcessor";
-import ValidationModal from "./components/ValidationModal";
-import styles from "../page.module.css";
-import componentStyles from "../components/components.module.css";
+import { validateReceiptData, ValidationResult } from "../../lib/receiptValidation";
+import { removeExpiredTokens, isUserAuthenticated, handleTokenRefresh } from "../../lib/auth";
+import { AuthGuard } from "../../components/ui/AuthGuard";
+import { ImageUpload } from "../../components/upload/ImageUpload";
+import { ReceiptForm } from "../../components/dashboard/ReceiptForm";
+import { ReceiptItemsList } from "../../components/dashboard/ReceiptItemsList";
+import { LoadingStates } from "../../components/upload/LoadingStates";
+import { OCRTextDisplay } from "../../components/upload/OCRTextDisplay";
+import { ReceiptProcessor } from "../../components/upload/ReceiptProcessor";
+import { ValidationModal } from "../../components/upload/ValidationModal";
+import styles from "../styles/pages/Upload.module.css";
+import componentStyles from "../styles/components/Receipt.module.css";
 import classNames from "classnames";
 
 export default function Home() {
@@ -74,7 +74,7 @@ export default function Home() {
 	};
 
 	const updateItem = (index: number, field: keyof ReceiptItem, value: string | number | null) => {
-		if (!editableData || !editableData.items) return;
+		if (!editableData?.items) return;
 		const updatedItems = [...editableData.items];
 		updatedItems[index] = {
 			...updatedItems[index],
@@ -120,7 +120,7 @@ export default function Home() {
 	};
 
 	const removeItem = (index: number) => {
-		if (!editableData || !editableData.items) return;
+		if (!editableData?.items) return;
 		const updatedItems = editableData.items.filter((_, i) => i !== index);
 		const newData = {
 			...editableData,
@@ -270,48 +270,53 @@ if (response.ok) {
 			<div className={styles.ocrPage}>
 			<h1 className={styles.pageTitle}>Upload your tickets here!</h1>
 
-			{imgSubmitted && (
-				<div className={classNames(componentStyles.textResultContainer, "card")}>
-					{isLoading ? (
-						<LoadingStates isLoading={isLoading} />
-					) : editableData ? (
-						<div>
-							<div className={componentStyles.editReceiptHeader}>
-								<strong>Edit Receipt Data:</strong>
-								<button onClick={handleSave} disabled={isSaving} className={`btn btn-primary ${componentStyles.saveButton}`}>
-									{isSaving ? "Saving..." : "Save Receipt"}
-								</button>
-							</div>
-
-							{showValidationModal && validation && (
-								<ValidationModal 
-									validation={validation} 
-									isOpen={showValidationModal}
-									onClose={() => setShowValidationModal(false)}
-									onContinue={proceedWithSave}
-								/>
-							)}
-
-							<div className={componentStyles.receiptFormSection}>
-								<ReceiptForm editableData={editableData} updateEditableData={updateEditableData} />
-
-								<ReceiptItemsList editableData={editableData} updateItem={updateItem} addNewItem={addNewItem} removeItem={removeItem} categories={categories} />
-							</div>
-
-							<OCRTextDisplay foundText={foundText} />
+			{imgSubmitted && (() => {
+				const loadingState = <LoadingStates isLoading={isLoading} />;
+				const editableDataState = (
+					<div>
+						<div className={styles.editReceiptHeader}>
+							<strong>Edit Receipt Data:</strong>
+							<button onClick={handleSave} disabled={isSaving} className={`btn btn-primary ${styles.saveButton}`}>
+								{isSaving ? "Saving..." : "Save Receipt"}
+							</button>
 						</div>
-					) : foundText ? (
-						<div>
-							<strong>OCR Text (AI extraction failed):</strong>
-							<pre className={componentStyles.ocrFailedText}>{foundText}</pre>
+
+						{showValidationModal && validation && (
+							<ValidationModal 
+								validation={validation} 
+								isOpen={showValidationModal}
+								onClose={() => setShowValidationModal(false)}
+								onContinue={proceedWithSave}
+							/>
+						)}
+
+						<div className={componentStyles.receiptFormSection}>
+							<ReceiptForm editableData={editableData} updateEditableData={updateEditableData} />
+
+							<ReceiptItemsList editableData={editableData} updateItem={updateItem} addNewItem={addNewItem} removeItem={removeItem} categories={categories} />
 						</div>
-					) : (
-						<div className={componentStyles.processingFailed}>
-							<strong>Processing failed</strong>
-						</div>
-					)}
-				</div>
-			)}
+
+						<OCRTextDisplay foundText={foundText} />
+					</div>
+				);
+				const foundTextState = (
+					<div>
+						<strong>OCR Text (AI extraction failed):</strong>
+						<pre className={componentStyles.ocrFailedText}>{foundText}</pre>
+					</div>
+				);
+				const failedState = (
+					<div className={componentStyles.processingFailed}>
+						<strong>Processing failed</strong>
+					</div>
+				);
+
+				return (
+					<div className={classNames(styles.textResultContainer, "card")}>
+						{isLoading ? loadingState : editableData ? editableDataState : foundText ? foundTextState : failedState}
+					</div>
+				);
+			})()}
 
 			<ImageUpload imgInputRef={imgInputRef} imgPreview={imgPreview} onChange={handleChange} isLoading={isLoading} onSubmit={handleFormSubmit} />
 			</div>
