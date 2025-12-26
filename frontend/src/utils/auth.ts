@@ -50,6 +50,11 @@ export const getTokenExpiration = (token: string): Date | null => {
 };
 
 const clearStorage = (key: string): void => {
+	// Check if we're in a browser environment
+	if (typeof window === 'undefined') {
+		return;
+	}
+	
 	try {
 		localStorage.removeItem(key);
 		sessionStorage.removeItem(key);
@@ -59,6 +64,11 @@ const clearStorage = (key: string): void => {
 };
 
 const getFromStorage = (key: string): string | null => {
+	// Check if we're in a browser environment
+	if (typeof window === 'undefined') {
+		return null;
+	}
+	
 	try {
 		return localStorage.getItem(key) || sessionStorage.getItem(key) || null;
 	} catch (error) {
@@ -109,6 +119,11 @@ export const getTokenInfo = (): { isValid: boolean; expiresIn: number | null; is
 };
 
 export const handleTokenRefresh = (response: Response): boolean => {
+	// Check if we're in a browser environment
+	if (typeof window === 'undefined') {
+		return true;
+	}
+	
 	try {
 		const newToken = response.headers.get('X-New-Token');
 		const tokenRefresh = response.headers.get('X-Token-Refresh');
