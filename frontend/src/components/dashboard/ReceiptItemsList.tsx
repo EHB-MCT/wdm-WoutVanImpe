@@ -1,8 +1,8 @@
 'use client';
 import { ReceiptData, ReceiptItem } from "@/types/receipt";
 import { ReceiptItemComponent } from "./ReceiptItem";
-import styles from "../../styles/components/Receipt.module.css";
-import listStyles from "../../styles/components/ReceiptItemsList.module.css";
+import styles from "@/styles/components/Receipt.module.css";
+import listStyles from "@/styles/components/ReceiptItemsList.module.css";
 
 interface ReceiptItemsListProps {
   editableData: ReceiptData | null;

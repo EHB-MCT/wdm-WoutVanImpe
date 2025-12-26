@@ -1,5 +1,5 @@
 import classNames from "classnames";
-import styles from "../../styles/pages/Upload.module.css";
+import styles from "@/styles/pages/Upload.module.css";
 
 interface LoadingStatesProps {
   isLoading: boolean;

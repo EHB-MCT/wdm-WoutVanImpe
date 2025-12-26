@@ -2,8 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getStoredUser, logout, isUserAuthenticated } from "../../lib/auth";
-import styles from "../styles/components/Validation.module.css";
+import { getStoredUser, logout, isUserAuthenticated } from "@/lib/auth";
+import styles from "@/styles/components/Validation.module.css";
 
 export default function AccountPage() {
 	const router = useRouter();
@@ -67,7 +67,7 @@ export default function AccountPage() {
 		setIsLoading(true);
 		try {
 			const token = localStorage.getItem("token");
-			const response = await fetch("http://localhost:5000/api/users/password", {
+			const response = await fetch("http://localhost:5001/api/users/password", {
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json",
@@ -109,7 +109,7 @@ export default function AccountPage() {
 		setIsLoading(true);
 		try {
 			const token = localStorage.getItem("token");
-			const response = await fetch("http://localhost:5000/api/users/profile", {
+			const response = await fetch("http://localhost:5001/api/users/profile", {
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json",

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Receipt } from "../types/dashboard";
-import { handleTokenRefresh } from "../lib/auth";
+import { Receipt } from "@/types/dashboard";
+import { handleTokenRefresh } from "@/lib/auth";
 
 export function useDashboardData(currentDate: Date) {
   const [receipts, setReceipts] = useState<Receipt[]>([]);
@@ -13,7 +13,7 @@ export function useDashboardData(currentDate: Date) {
   const fetchReceipts = async () => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch("http://localhost:5000/api/receipts", {
+      const response = await fetch("http://localhost:5001/api/receipts", {
         headers: {
           Authorization: `Bearer ${token}`,
         },

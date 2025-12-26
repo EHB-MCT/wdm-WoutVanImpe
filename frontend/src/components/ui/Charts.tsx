@@ -7,8 +7,8 @@
 
 import React from "react";
 import { Cell, ResponsiveContainer, Tooltip, LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
-import { CATEGORY_COLORS } from "../../lib/constants";
-import { formatCurrency } from "../../lib/receiptUtils";
+import { CATEGORY_COLORS } from "@/lib/constants";
+import { formatCurrency } from "@/lib/receiptUtils";
 
 interface DailySpendingData {
   day: number;

@@ -2,15 +2,15 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { removeExpiredTokens, getStoredUser } from "../lib/auth";
-import { AuthGuard } from "../components/ui/AuthGuard";
-import { WelcomeSection } from "../components/dashboard/WelcomeSection";
-import { CTASection } from "../components/dashboard/CTASection";
-import { MonthlyOverview } from "../components/dashboard/MonthlyOverview";
-import { GuestWelcome } from "../components/dashboard/GuestWelcome";
-import { useDashboardData } from "../hooks/useDashboardData";
-import { User } from "../types/dashboard";
-import styles from "../styles/pages/Dashboard.module.css";
+import styles from "@/styles/pages/Dashboard.module.css";
+import { CTASection } from "@/components/dashboard/CTASection";
+import { GuestWelcome } from "@/components/dashboard/GuestWelcome";
+import { MonthlyOverview } from "@/components/dashboard/MonthlyOverview";
+import { WelcomeSection } from "@/components/dashboard/WelcomeSection";
+import { AuthGuard } from "@/components/ui/AuthGuard";
+import { useDashboardData } from "@/hooks/useDashboardData";
+import { removeExpiredTokens, getStoredUser } from "@/lib/auth";
+import { User } from "@/types/dashboard";
 
 export default function HomePage() {
   const router = useRouter();

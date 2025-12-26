@@ -1,6 +1,6 @@
 'use client';
 import { ReceiptItem } from "@/types/receipt";
-import styles from "../../styles/components/Receipt.module.css";
+import styles from "@/styles/components/Receipt.module.css";
 
 interface ReceiptItemProps {
   item: ReceiptItem;

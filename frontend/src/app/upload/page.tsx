@@ -1,19 +1,19 @@
 "use client";
 import { useRef, useState, useEffect } from "react";
 import { ReceiptData, ReceiptItem } from "@/types/receipt";
-import { validateReceiptData, ValidationResult } from "../../lib/receiptValidation";
-import { removeExpiredTokens, isUserAuthenticated, handleTokenRefresh } from "../../lib/auth";
-import { AuthGuard } from "../../components/ui/AuthGuard";
-import { ImageUpload } from "../../components/upload/ImageUpload";
-import { ReceiptForm } from "../../components/dashboard/ReceiptForm";
-import { ReceiptItemsList } from "../../components/dashboard/ReceiptItemsList";
-import { LoadingStates } from "../../components/upload/LoadingStates";
-import { OCRTextDisplay } from "../../components/upload/OCRTextDisplay";
-import { ReceiptProcessor } from "../../components/upload/ReceiptProcessor";
-import { ValidationModal } from "../../components/upload/ValidationModal";
-import styles from "../styles/pages/Upload.module.css";
-import componentStyles from "../styles/components/Receipt.module.css";
+import styles from "@/styles/pages/Upload.module.css";
+import componentStyles from "@/styles/components/Receipt.module.css";
 import classNames from "classnames";
+import { ReceiptForm } from "@/components/dashboard/ReceiptForm";
+import { ReceiptItemsList } from "@/components/dashboard/ReceiptItemsList";
+import { AuthGuard } from "@/components/ui/AuthGuard";
+import { ImageUpload } from "@/components/upload/ImageUpload";
+import { LoadingStates } from "@/components/upload/LoadingStates";
+import { OCRTextDisplay } from "@/components/upload/OCRTextDisplay";
+import { ReceiptProcessor } from "@/components/upload/ReceiptProcessor";
+import { ValidationModal } from "@/components/upload/ValidationModal";
+import { removeExpiredTokens, isUserAuthenticated, handleTokenRefresh } from "@/lib/auth";
+import { ValidationResult, validateReceiptData } from "@/lib/receiptValidation";
 
 export default function Home() {
 	const imgInputRef = useRef<HTMLInputElement | null>(null);
@@ -162,7 +162,7 @@ export default function Home() {
 				items: editableData.items || []
 			};
 
-const response = await fetch("http://localhost:5000/api/receipts", {
+const response = await fetch("http://localhost:5001/api/receipts", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -228,7 +228,7 @@ const response = await fetch("http://localhost:5000/api/receipts", {
 	useEffect(() => {
 		const fetchCategories = async () => {
 			try {
-const response = await fetch("http://localhost:5000/api/categories");
+const response = await fetch("http://localhost:5001/api/categories");
 if (response.ok) {
 					// Handle automatic token refresh (though categories endpoint doesn't require auth)
 					const refreshSuccess = handleTokenRefresh(response);

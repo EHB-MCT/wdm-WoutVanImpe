@@ -1,4 +1,4 @@
-import styles from "../../styles/pages/Upload.module.css";
+import styles from "@/styles/pages/Upload.module.css";
 
 interface OCRTextDisplayProps {
   foundText: string;

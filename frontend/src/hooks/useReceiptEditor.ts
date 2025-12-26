@@ -4,9 +4,9 @@
  */
 
 import { useState, useCallback } from "react";
-import type { ReceiptData, ReceiptItem } from "../types/receipt";
-import { calculateTotalFromItems, createNewReceiptItem, formatReceiptItemForAPI } from "../lib/receiptUtils";
-import { validateReceiptData, ValidationResult } from "../lib/receiptValidation";
+import type { ReceiptData, ReceiptItem } from "@/types/receipt";
+import { calculateTotalFromItems, createNewReceiptItem, formatReceiptItemForAPI } from "@/lib/receiptUtils";
+import { validateReceiptData, ValidationResult } from "@/lib/receiptValidation";
 
 interface UseReceiptEditorOptions {
   initialData?: ReceiptData | null;

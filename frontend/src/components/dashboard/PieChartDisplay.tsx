@@ -2,7 +2,7 @@
 
 import React from "react";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
-import styles from "../../styles/pages/Dashboard.module.css";
+import styles from "@/styles/pages/Dashboard.module.css";
 
 interface CategorySpending {
   name: string;

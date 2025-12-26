@@ -3,7 +3,7 @@
 import React, { useState, FormEvent } from "react";
 import SHA256 from "crypto-js/sha256";
 import { useRouter } from "next/navigation";
-import styles from "../../styles/layout/Auth.module.css";
+import styles from "@/styles/layout/Auth.module.css";
 
 export default function LoginPage() {
 	const router = useRouter();
@@ -40,8 +40,8 @@ export default function LoginPage() {
 
 		try {
 			const url = isLogin 
-				? "http://localhost:5000/api/auth/login" 
-				: "http://localhost:5000/api/auth/register";
+				? "http://localhost:5001/api/login" 
+				: "http://localhost:5001/api/register";
 			const payload = isLogin
 				? { email: formData.email, password: hashPassword(formData.password) }
 				: { name: formData.name, email: formData.email, password: hashPassword(formData.password) };
@@ -61,6 +61,7 @@ export default function LoginPage() {
 
 			const data = await response.json();
 			localStorage.setItem("token", data.token);
+			localStorage.setItem("user", JSON.stringify(data.user));
 
 			if (stayLoggedIn) {
 				localStorage.setItem("stayLoggedIn", "true");

@@ -7,7 +7,7 @@
 
 import React from "react";
 import { Button } from "../ui/Button";
-import { formatCurrency, formatDate } from "../../lib/receiptUtils";
+import { formatCurrency, formatDate } from "@/lib/receiptUtils";
 
 interface ReceiptItem {
   id: number;

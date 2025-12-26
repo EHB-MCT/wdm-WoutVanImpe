@@ -1,6 +1,6 @@
 'use client';
 import { ReceiptData } from "@/types/receipt";
-import styles from "../../styles/components/Receipt.module.css";
+import styles from "@/styles/components/Receipt.module.css";
 
 interface ReceiptFormProps {
   editableData: ReceiptData | null;

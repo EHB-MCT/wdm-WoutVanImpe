@@ -1,6 +1,6 @@
 'use client';
-import { ValidationResult } from "../../lib/receiptValidation";
-import styles from "../../styles/components/Validation.module.css";
+import { ValidationResult } from "@/lib/receiptValidation";
+import styles from "@/styles/components/Validation.module.css";
 
 interface ValidationModalProps {
   validation: ValidationResult;

@@ -2,7 +2,7 @@
 
 import React from "react";
 import { PieChartDisplay } from "./PieChartDisplay";
-import styles from "../../styles/pages/Dashboard.module.css";
+import styles from "@/styles/pages/Dashboard.module.css";
 
 interface MonthlyOverviewProps {
   currentDate: Date;
@@ -39,17 +39,6 @@ const CategoryBreakdown: React.FC<CategoryBreakdownProps> = ({ categoryData, onC
             key={cat.name} 
             className={styles.categoryItem} 
             onClick={() => onCategoryClick(cat.name)} 
-            style={{ 
-              cursor: "pointer",
-              display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              width: "100%",
-              padding: "12px",
-              border: "none",
-              backgroundColor: "transparent",
-              textAlign: "left"
-            }}
             aria-label={`Bekijk details voor categorie ${cat.name}, bedrag €${cat.value.toFixed(2)}`}
           >
             <div className={styles.categoryInfo}>

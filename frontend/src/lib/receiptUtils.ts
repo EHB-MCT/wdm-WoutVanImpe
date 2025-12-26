@@ -3,7 +3,7 @@
  * Shared across upload, dashboard, and account pages
  */
 
-import type { ReceiptItem } from "../types/receipt";
+import type { ReceiptItem } from "@/types/receipt";
 import { VALID_CATEGORIES, DEFAULTS, VALIDATION } from "./constants";
 
 /**

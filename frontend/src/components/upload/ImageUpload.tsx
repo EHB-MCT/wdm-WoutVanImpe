@@ -1,7 +1,7 @@
 'use client';
 import Image from "next/image";
 import { Button } from "../ui/Button";
-import styles from "../../styles/pages/Upload.module.css";
+import styles from "@/styles/pages/Upload.module.css";
 
 interface ImageUploadProps {
   imgInputRef: React.RefObject<HTMLInputElement | null>;

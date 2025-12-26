@@ -1,7 +1,6 @@
-@import './styles/tokens.css';
+@import "@/styles/tokens.css";
 
 :root {
-
 	--background: #f3f4f6;
 
 	--card-bg: #ffffff;
@@ -71,14 +70,14 @@ a {
 	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
- /* 2. LEGACY BUTTONS (DEPRECATED) */
- /* 
+/* 2. LEGACY BUTTONS (DEPRECATED) */
+/* 
     Button styles are now handled by components/ui/Button.module.css
     Global .btn classes are kept for legacy compatibility only
     Use the Button component for new development
  */
 
- .btn-link {
+.btn-link {
 	background: none;
 	color: var(--brand-color);
 	padding: 0;

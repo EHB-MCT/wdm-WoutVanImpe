@@ -1,6 +1,6 @@
 'use client';
 import { ReceiptData } from "@/types/receipt";
-import { extractReceiptData, processOCR } from "../../lib/receiptExtraction";
+import { extractReceiptData, processOCR } from "@/lib/receiptExtraction";
 
 interface ReceiptProcessorProps {
   imgInputRef: React.RefObject<HTMLInputElement | null>;

@@ -7,16 +7,16 @@
 
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
-import { removeExpiredTokens, isUserAuthenticated, handleTokenRefresh } from "../../../../../lib/auth";
-import { AuthGuard } from "../../../../../components/ui/AuthGuard";
-import { DashboardHeader } from "../../../../../components/dashboard/DashboardHeader";
-import { SummaryCard } from "../../../../../components/dashboard/SummaryCard";
-import { SpendingTrendChart, CategoryChart } from "../../../../../components/ui/Charts";
-import { ReceiptsList } from "../../../../../components/dashboard/ReceiptsList";
-import { ReceiptModal } from "../../../../../components/dashboard/ReceiptModal";
-import { VALID_CATEGORIES } from "../../../../../lib/constants";
-import { safeParseNumber, safeParseInt } from "../../../../../lib/receiptUtils";
-import styles from "../../../../styles/pages/Dashboard.module.css";
+import styles from "@/styles/pages/Dashboard.module.css";
+import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
+import { ReceiptModal } from "@/components/dashboard/ReceiptModal";
+import { ReceiptsList } from "@/components/dashboard/ReceiptsList";
+import { SummaryCard } from "@/components/dashboard/SummaryCard";
+import { AuthGuard } from "@/components/ui/AuthGuard";
+import { SpendingTrendChart, CategoryChart } from "@/components/ui/Charts";
+import { removeExpiredTokens, isUserAuthenticated, handleTokenRefresh } from "@/lib/auth";
+import { VALID_CATEGORIES } from "@/lib/constants";
+import { safeParseNumber, safeParseInt } from "@/lib/receiptUtils";
 
 interface User {
   id: number;
@@ -109,7 +109,7 @@ export default function DashboardPage() {
       }
 
       // Fetch receipts
-      const receiptsResponse = await fetch("http://localhost:5000/api/receipts", {
+      const receiptsResponse = await fetch("http://localhost:5001/api/receipts", {
         headers: { Authorization: `Bearer ${token}` },
       });
 
@@ -261,7 +261,7 @@ export default function DashboardPage() {
   const saveReceipt = async (updatedReceipt: Receipt) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:5000/api/receipts/${updatedReceipt.id}`, {
+      const response = await fetch(`http://localhost:5001/api/receipts/${updatedReceipt.id}`, {
         method: "PUT",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -305,7 +305,7 @@ export default function DashboardPage() {
   const deleteReceipt = async (receiptId: number) => {
     try {
       const token = localStorage.getItem("token");
-      const response = await fetch(`http://localhost:5000/api/receipts/${receiptId}`, {
+      const response = await fetch(`http://localhost:5001/api/receipts/${receiptId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });

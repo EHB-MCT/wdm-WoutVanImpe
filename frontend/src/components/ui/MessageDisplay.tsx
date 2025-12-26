@@ -6,7 +6,7 @@
 "use client";
 
 import React, { useEffect } from "react";
-import { VALIDATION } from "../../lib/constants";
+import { VALIDATION } from "@/lib/constants";
 
 interface MessageDisplayProps {
   message: { type: "success" | "error"; text: string } | null;

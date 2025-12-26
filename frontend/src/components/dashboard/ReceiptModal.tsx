@@ -7,10 +7,10 @@
 
 import React from "react";
 import { Button } from "../ui/Button";
-import { useReceiptEditor } from "../../hooks/useReceiptEditor";
-import { VALID_CATEGORIES } from "../../lib/constants";
-import { validateReceiptItems, formatCurrency } from "../../lib/receiptUtils";
-import type { Receipt } from "../../types/dashboard";
+import { useReceiptEditor } from "@/hooks/useReceiptEditor";
+import { VALID_CATEGORIES } from "@/lib/constants";
+import { validateReceiptItems, formatCurrency } from "@/lib/receiptUtils";
+import type { Receipt } from "@/types/dashboard";
 
 interface ReceiptModalProps {
   receipt: Receipt | null;

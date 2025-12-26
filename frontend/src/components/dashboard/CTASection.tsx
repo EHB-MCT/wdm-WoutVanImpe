@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { Button } from "../ui/Button";
-import styles from "../../styles/pages/Dashboard.module.css";
+import styles from "@/styles/pages/Dashboard.module.css";
 
 interface CTASectionProps {
   currentDate: Date;

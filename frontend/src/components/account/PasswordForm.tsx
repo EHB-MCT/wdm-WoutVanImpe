@@ -7,7 +7,7 @@
 
 import React from "react";
 import { Button } from "../ui/Button";
-import { VALIDATION, ERROR_MESSAGES } from "../../lib/constants";
+import { VALIDATION, ERROR_MESSAGES } from "@/lib/constants";
 
 interface PasswordFormProps {
   passwordForm: { currentPassword: string; newPassword: string };

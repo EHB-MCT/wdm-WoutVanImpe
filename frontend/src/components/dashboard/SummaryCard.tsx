@@ -6,7 +6,7 @@
 "use client";
 
 import React from "react";
-import { formatCurrency } from "../../lib/receiptUtils";
+import { formatCurrency } from "@/lib/receiptUtils";
 
 interface SummaryCardProps {
   title: string;

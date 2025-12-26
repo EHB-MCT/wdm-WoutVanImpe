@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import { Button } from "../ui/Button";
-import styles from "../../styles/pages/Dashboard.module.css";
+import styles from "@/styles/pages/Dashboard.module.css";
 
 export function GuestWelcome() {
   return (
@@ -13,7 +13,7 @@ export function GuestWelcome() {
         <p className="label-text" style={{ marginBottom: "20px" }}>
           Je bent nog niet ingelogd.
         </p>
-        <Link href="/account">
+        <Link href="/account/login">
           <Button variant="primary" style={{ width: "100%" }}>
             Naar Login
           </Button>
