@@ -1,30 +1,73 @@
-# Project Context: Finance Tracker (School Project)
+# Project Context: Finance Tracker (Assignment: Weapon of Math Destruction)
 
-## 1. The Project Goal (The Big Picture)
-This is a school project with a dual objective. The ultimate goal is an application that appears to be a daily utility tool, but in the background, collects and presents in-depth user data.
+## 1. The Project Goal & Assignment Scope
 
-**Frontend Goal:** A financial tracker that allows users to manage their expenses.
+This project is an implementation of the school assignment "Weapon of Math Destruction".
 
-**Underlying Goal (The "Catch"):** While the user believes they are only tracking expenses, the system extracts as much metadata as possible from receipts (bank card details, locations, timestamps, payment methods) to build a detailed user profile.
+### The Core Concept
+We are building a tool that collects data on an individual user level to build a profile and influence them, disguised as a helpful utility.
 
-**Status:** The description below represents the final objective of the application. The current repository is a "work in progress" and may not yet contain all functionalities.
+- **User-Facing App (The Mask)**: A financial tracker for managing expenses.
+- **Backend & Data Collection (The "Weapon")**: While the user tracks expenses, the system extracts extensive metadata from receipts (card details, locations, timestamps, vendor info) via OCR and AI to profile the user.
+- **The Feedback Loop (Crucial Requirement)**: The gathered data must "influence" the user-facing part. (e.g., targeted insights, changing UI based on spending habits, or subtle behavioral nudges).
 
-## 2. Data Flow & Architecture
-The process follows a specific pipeline:
+### Required Components
 
-**Frontend (Next.js & React):** The user uploads a photo of a receipt.
+- **User Client**: The Finance Tracker (Next.js).
+- **Backend**: API for gathering, cleaning, and storing data (PostgreSQL).
+- **Admin Dashboard**: A separate view to visualize data, filter by UID, and analyze trends.
+- **Written Report**: Insights on data pitfalls (to be written based on findings).
 
-**OCR Layer (/tesseract folder):** The image is converted into raw text using Tesseract.
+## 2. Technical Constraints & Infrastructure
 
-**AI Extraction (/frontend - Ollama Prompt):** The raw text is sent to a local Ollama model. The prompt (found in the frontend files) forces the model to extract both the costs and the "hidden" data (card numbers, metadata) in JSON format.
+### Strict Technical Requirements
 
-**Verification:** The user is presented with the data in the UI to correct any OCR/AI errors.
+- **Local Execution**: Everything must run locally via Docker.
+- **Docker Compose**: The entire system must start with `docker compose up --build`.
+- **Configuration**: All secrets/configs must be handled via a `.env` file (provide `.env.template`).
+- **No External APIs**: The project must run completely offline/locally (Ollama is used for this reason).
 
-**Storage (/api folder):** The validated data is stored in a PostgreSQL database via the API.
+### Coding Standards
 
-## 3. Repository Structure & Agreements
-- `/docs/COMMITS.md`: Contains strict conventions for commit messages. Always adhere to these when proposing changes.
-- `/docs/PROMPTS.txt`: Our shared chat history. Update this after major decisions or changes.
-- `/tesseract`: Contains the logic for text extraction from images.
-- `/api`: Contains the backend logic and database schemas (PostgreSQL).
-- `/frontend`: Contains the UI and the specific prompts for the Ollama model.
+- **Git Flow**: Clean history, branched development.
+- **Documentation**: Self-explanatory structure, documented choices/sources.
+- **Cleanliness**: Only necessary files committed.
+
+## 3. Data Flow & Architecture
+
+The architecture is designed to fulfill the "collect everything" mandate:
+
+### Input (Frontend - Next.js/React)
+
+- User uploads a receipt photo.
+- **Assignment Requirement**: Assign a UID (User ID) to differentiate users and build individual profiles. Capture clicks/navigation if possible.
+
+### Processing (OCR & AI)
+
+- **OCR Layer (/tesseract)**: Image converted to raw text.
+- **AI Extraction (/frontend - Ollama)**: Raw text sent to local Ollama.
+- **Goal**: Extract explicit data (total cost) AND hidden metadata (card type, location, time, payment method).
+
+### Storage & Management (/api - PostgreSQL)
+
+- Data is verified by the user (UI), then cleaned and stored.
+- Database must be persistent (Volume mapping in Docker).
+
+### Admin Layer (New Requirement)
+
+- A dashboard interface for the "Administrator".
+- **Capabilities**: Visualize data, select specific users (UID), filter data, and view the "profile" built from the receipts.
+
+### Feedback Loop
+
+- The backend analyzes the stored profile data.
+- This analysis triggers changes or specific content in the User Frontend (fulfilling the "influence the user" requirement).
+
+## 4. Repository Structure & Agreements
+
+- `/docs/COMMITS.md`: Strict conventions for commit messages.
+- `/docs/PROMPTS.txt`: Shared chat history/sources (Required for submission).
+- `/tesseract`: Logic for text extraction.
+- `/api`: Backend logic, database schemas, and data cleaning.
+- `/frontend`: User UI, Admin UI, and Ollama prompts.
+- `/docker-compose.yml`: Orchestration for App, DB, and AI services.
