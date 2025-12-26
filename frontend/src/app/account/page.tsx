@@ -242,10 +242,11 @@ export default function AccountPage() {
 								border: "1px solid #e2e8f0" 
 							}}>
 								<div style={{ marginBottom: "16px" }}>
-									<label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
+									<label htmlFor="account-username" style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
 										Gebruikersnaam
 									</label>
 									<input
+										id="account-username"
 										type="text"
 										value={profileForm.username}
 										onChange={(e) => setProfileForm({ ...profileForm, username: e.target.value })}
@@ -261,10 +262,11 @@ export default function AccountPage() {
 								</div>
 								
 								<div style={{ marginBottom: "20px" }}>
-									<label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
+									<label htmlFor="account-email" style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
 										Email
 									</label>
 									<input
+										id="account-email"
 										type="email"
 										value={profileForm.email}
 										onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
@@ -312,10 +314,11 @@ export default function AccountPage() {
 								border: "1px solid #e2e8f0" 
 							}}>
 								<div style={{ marginBottom: "16px" }}>
-									<label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
+									<label htmlFor="account-current-password" style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
 										Huidig Wachtwoord
 									</label>
 									<input
+										id="account-current-password"
 										type="password"
 										value={passwordForm.currentPassword}
 										onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
@@ -326,10 +329,11 @@ export default function AccountPage() {
 								</div>
 								
 								<div style={{ marginBottom: "20px" }}>
-									<label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
+									<label htmlFor="account-new-password" style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
 										Nieuw Wachtwoord (min. 6 tekens)
 									</label>
 									<input
+										id="account-new-password"
 										type="password"
 										value={passwordForm.newPassword}
 										onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
