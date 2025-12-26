@@ -14,7 +14,7 @@ interface PieChartDisplayProps {
   categoryData: CategorySpending[];
 }
 
-export function PieChartDisplay({ categoryData }: PieChartDisplayProps) {
+export function PieChartDisplay({ categoryData }: Readonly<PieChartDisplayProps>) {
   const colors = ["#E63946", "#2A9D8F", "#264653", "#F4A261", "#E9C46A", "#F77F00", "#D62828", "#06A77D"];
 
   if (categoryData.length === 0) {
@@ -40,7 +40,7 @@ export function PieChartDisplay({ categoryData }: PieChartDisplayProps) {
             dataKey="value"
           >
             {categoryData.map((entry, index) => (
-              <Cell key={`cell-${index}`} fill={colors[index % 8]} />
+              <Cell key={`cell-${entry.name}-${entry.value}`} fill={colors[index % 8]} />
             ))}
           </Pie>
           <Tooltip formatter={(value: number | undefined) => `€${(value || 0).toFixed(2)}`} />

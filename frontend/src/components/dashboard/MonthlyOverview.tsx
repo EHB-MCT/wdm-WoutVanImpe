@@ -35,25 +35,29 @@ const CategoryBreakdown: React.FC<CategoryBreakdownProps> = ({ categoryData, onC
     <div className={styles.combinedContent}>
       <div className={styles.categoryList}>
         {categoryData.map((cat, index) => (
-          <div 
+          <button 
             key={cat.name} 
             className={styles.categoryItem} 
             onClick={() => onCategoryClick(cat.name)} 
-            style={{ cursor: "pointer" }}
-            role="button"
-            tabIndex={0}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter' || e.key === ' ') {
-                onCategoryClick(cat.name);
-              }
+            style={{ 
+              cursor: "pointer",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              width: "100%",
+              padding: "12px",
+              border: "none",
+              backgroundColor: "transparent",
+              textAlign: "left"
             }}
+            aria-label={`Bekijk details voor categorie ${cat.name}, bedrag €${cat.value.toFixed(2)}`}
           >
             <div className={styles.categoryInfo}>
               <div className={styles.categoryDot} style={{ background: colors[index % 8] }} />
               <span className={styles.categoryName}>{cat.name}</span>
             </div>
             <span className={styles.categoryAmount}>€{cat.value.toFixed(2)}</span>
-          </div>
+          </button>
         ))}
       </div>
 
