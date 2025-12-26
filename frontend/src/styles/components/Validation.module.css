@@ -109,6 +109,13 @@
   justify-content: center;
   z-index: var(--z-modal-backdrop);
   padding: var(--spacing-xl);
+  border: none;
+  margin: 0;
+  cursor: default;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-align: inherit;
 }
 
 /* --- MODAL CONTENT --- */

@@ -33,7 +33,7 @@ export const filterNonProductItems = (items: ReceiptItem[]): ReceiptItem[] => {
 
 		// Check if name is mostly numbers/codes (less than 30% letters)
 		const letterCount = (name.match(/[a-zA-Z]/g) || []).length;
-		const totalChars = name.replace(/\s/g, "").length;
+		const totalChars = name.replaceAll(/\s/g, "").length;
 		if (totalChars > 0 && letterCount / totalChars < 0.3) return false;
 
 		return true;

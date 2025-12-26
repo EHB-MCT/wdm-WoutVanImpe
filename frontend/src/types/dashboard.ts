@@ -9,12 +9,14 @@ export interface Receipt {
   total_amount: number;
   purchase_date: string;
   store_name: string;
+  payment_method: string;
+  raw_ocr_text: string;
   items: ReceiptItem[];
 }
 
 export interface ReceiptItem {
   id: number;
-  product_name: string;
+  name: string;
   category: string;
   price: number;
   quantity: number;

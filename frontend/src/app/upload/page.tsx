@@ -98,6 +98,7 @@ export default function Home() {
 	const addNewItem = () => {
 		if (!editableData) return;
 		const newItem: ReceiptItem = {
+			id: Date.now(),
 			name: null,
 			category: null,
 			quantity: 1,

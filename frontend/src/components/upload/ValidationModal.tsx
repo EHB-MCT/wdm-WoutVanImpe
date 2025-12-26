@@ -19,7 +19,12 @@ export function ValidationModal({ validation, isOpen, onClose, onContinue }: Rea
   };
 
   return (
-    <div className={styles.modalBackdrop} onClick={handleBackdropClick}>
+    <button 
+      type="button"
+      className={styles.modalBackdrop} 
+      onClick={handleBackdropClick}
+      aria-label="Close validation modal"
+    >
       <div className={styles.modalContent}>
         <div className={styles.modalHeader}>
           <h3 className={styles.modalTitle}>{validation.isValid ? "✅ Validation Complete" : "❌ Validation Issues Found"}</h3>
@@ -33,8 +38,8 @@ export function ValidationModal({ validation, isOpen, onClose, onContinue }: Rea
             <div className={`${styles.validationSection} ${styles.errorSection}`}>
               <h4 className={styles.validationTitle}>❌ Please fix these errors before saving:</h4>
               <ul className={styles.validationList}>
-                {validation.errors.map((error, index) => (
-                  <li key={index} className={styles.validationItem}>
+                {validation.errors.map((error) => (
+                  <li key={`error-${error.field}-${error.itemIndex || 'general'}-${error.message.substring(0, 20)}`} className={styles.validationItem}>
                     <strong>{error.itemIndex !== undefined ? `Item ${error.itemIndex + 1}: ${error.field}` : error.field}:</strong> {error.message}
                   </li>
                 ))}
@@ -46,8 +51,8 @@ export function ValidationModal({ validation, isOpen, onClose, onContinue }: Rea
             <div className={`${styles.validationSection} ${styles.warningSection}`}>
               <h4 className={styles.validationTitle}>⚠️ Warnings (you can still save):</h4>
               <ul className={styles.validationList}>
-                {validation.warnings.map((warning, index) => (
-                  <li key={index} className={styles.validationItem}>
+                {validation.warnings.map((warning) => (
+                  <li key={`warning-${warning.field}-${warning.itemIndex || 'general'}-${warning.message.substring(0, 20)}`} className={styles.validationItem}>
                     <strong>{warning.itemIndex !== undefined ? `Item ${warning.itemIndex + 1}: ${warning.field}` : warning.field}:</strong> {warning.message}
                   </li>
                 ))}
@@ -72,6 +77,6 @@ export function ValidationModal({ validation, isOpen, onClose, onContinue }: Rea
           </button>
         </div>
       </div>
-    </div>
+    </button>
   );
 }
