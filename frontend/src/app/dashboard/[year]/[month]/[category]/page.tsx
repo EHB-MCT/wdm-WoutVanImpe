@@ -4,9 +4,9 @@ import React, { useEffect, useState, useMemo } from "react";
 import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import { Cell, ResponsiveContainer, Tooltip, LineChart, Line, BarChart, Bar, XAxis, YAxis, CartesianGrid } from "recharts";
-import { removeExpiredTokens, isUserAuthenticated, handleTokenRefresh } from "../../../../../utils/auth";
-import AuthGuard from "../../../../components/AuthGuard";
-import styles from "./dashboard.module.css";
+import { removeExpiredTokens, isUserAuthenticated, handleTokenRefresh } from "../../../../../lib/auth";
+import { AuthGuard } from "../../../../../components/ui/AuthGuard";
+import styles from "../../../../styles/pages/Dashboard.module.css";
 
 interface User {
 	id: number;
@@ -52,7 +52,7 @@ export default function DashboardPage() {
 	// Parse URL params and validate
 	const validCategories = ["Boodschappen", "Huishouden", "Verkeer & Vervoer", "Gezondheid & Zorg", "Vrije Tijd & Uitgaan", "Winkels & Kleding", "Financieel & Diensten", "Overig"];
 
-	const { year: yearParam, month: monthParam, category: categoryParam } = params;
+	const { year: yearParam, month: monthParam } = params;
 	const searchParams = useSearchParams();
 
 	const currentDate = useMemo(() => {
@@ -93,7 +93,7 @@ export default function DashboardPage() {
 		if (user) {
 			fetchData();
 		}
-	}, [currentDate, currentCategory]);
+	}, [currentDate, currentCategory, user]);
 
 	const fetchData = async () => {
 		try {
@@ -246,10 +246,15 @@ if (receiptsResponse.ok) {
 
 	const openReceiptModal = (receipt: Receipt) => {
 		setSelectedReceipt(receipt);
-		setEditedReceipt(receipt);
 		setShowEditModal(true);
 		setIsEditing(false);
+		setEditedReceipt({
+			...receipt,
+			items: [...receipt.items]
+		});
 	};
+
+
 
 	const closeReceiptModal = () => {
 		setSelectedReceipt(null);
@@ -268,10 +273,10 @@ if (receiptsResponse.ok) {
 	};
 
 	const calculateTotalFromItems = (items: ReceiptItem[]): number => {
-		return items.reduce((total, item) => {
-			const price = typeof item.price === "number" ? item.price : Number.parseFloat(item.price || 0);
-			const quantity = typeof item.quantity === "number" ? item.quantity : Number.parseFloat(item.quantity || 1);
-			return total + price * quantity;
+		return items.reduce((sum, item) => {
+			const price = typeof item.price === "number" ? item.price : Number.parseFloat(item.price || "0");
+			const quantity = typeof item.quantity === "number" ? item.quantity : Number.parseFloat(item.quantity || "1");
+			return sum + (price * quantity);
 		}, 0);
 	};
 
@@ -345,28 +350,9 @@ if (receiptsResponse.ok) {
 	const saveReceipt = async () => {
 		if (!editedReceipt) return;
 
-		// Validation
-		if (!editedReceipt.store_name || editedReceipt.store_name.trim() === "") {
-			alert("Winkelnaam is verplicht");
-			return;
-		}
 
-		if (!editedReceipt.purchase_date) {
-			alert("Datum is verplicht");
-			return;
-		}
 
-		const totalAmount = typeof editedReceipt.total_amount === "number" ? editedReceipt.total_amount : Number.parseFloat(editedReceipt.total_amount || 0);
 
-		if (totalAmount <= 0) {
-			alert("Totaal bedrag moet groter zijn dan 0");
-			return;
-		}
-
-		if (!editedReceipt.items || editedReceipt.items.length === 0) {
-			alert("Er moet minstens één item zijn");
-			return;
-		}
 
 		// Validate items
 		for (let i = 0; i < editedReceipt.items.length; i++) {
@@ -389,6 +375,13 @@ if (receiptsResponse.ok) {
 				return;
 			}
 		}
+
+		// Calculate total amount
+		const totalAmount = editedReceipt.items.reduce((sum, item) => {
+			const price = typeof item.price === "number" ? item.price : Number.parseFloat(item.price || 0);
+			const quantity = typeof item.quantity === "number" ? item.quantity : Number.parseFloat(item.quantity || 1);
+			return sum + (price * quantity);
+		}, 0);
 
 		try {
 			const token = localStorage.getItem("token");
@@ -528,12 +521,9 @@ if (response.ok) {
 				</div>
 
 				{getFilteredData.hasReceipts === false ? (
-					<div className={styles.noDataMessage}>
-						<p>
-							Geen uitgaven gevonden voor {formatMonthYear(currentDate)}
-							{currentCategory !== "all" && ` in categorie ${currentCategory}`}
-						</p>
-					</div>
+						<div className={styles.noDataMessage}>
+							<p>Geen uitgaven voor {formatMonthYear(currentDate)}</p>
+						</div>
 				) : (
 					<>
 						{/* Summary Cards */}
@@ -574,8 +564,8 @@ if (response.ok) {
 											<YAxis />
 											<Tooltip formatter={(value: number | undefined) => `€${(value || 0).toFixed(2)}`} />
 											<Bar dataKey="value" fill="#2A9D8F">
-												{getFilteredData.categoryData.map((entry, index) => (
-													<Cell key={`cell-${index}`} fill={["#E63946", "#2A9D8F", "#264653", "#F4A261", "#E9C46A", "#F77F00", "#D62828", "#06A77D"][index % 8]} />
+												{getFilteredData.categoryData.map((entry) => (
+													<Cell key={`${entry.category}-${entry.value}`} fill={["#E63946", "#2A9D8F", "#264653", "#F4A261", "#E9C46A", "#F77F00", "#D62828", "#06A77D"][getFilteredData.categoryData.indexOf(entry) % 8]} />
 												))}
 											</Bar>
 										</BarChart>
@@ -799,7 +789,7 @@ if (response.ok) {
 													))}
 												</div>
 											) : (
-												<div className={styles.noItemsMessage}>No items found. Click "Add Item" to add items manually.</div>
+												<div className={styles.noItemsMessage}>No items found. Click &quot;Add Item&quot; to add items manually.</div>
 											)}
 										</div>
 
