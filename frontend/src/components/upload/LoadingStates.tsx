@@ -5,7 +5,7 @@ interface LoadingStatesProps {
   isLoading: boolean;
 }
 
-export function LoadingStates({ isLoading }: LoadingStatesProps) {
+export function LoadingStates({ isLoading }: Readonly<LoadingStatesProps>) {
   if (!isLoading) return null;
 
   return (

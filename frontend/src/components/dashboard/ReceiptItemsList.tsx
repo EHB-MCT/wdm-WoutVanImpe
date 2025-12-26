@@ -12,7 +12,7 @@ interface ReceiptItemsListProps {
   categories?: string[];
 }
 
-export function ReceiptItemsList({ editableData, updateItem, addNewItem, removeItem, categories = [] }: ReceiptItemsListProps) {
+export function ReceiptItemsList({ editableData, updateItem, addNewItem, removeItem, categories = [] }: Readonly<ReceiptItemsListProps>) {
   if (!editableData) return null;
 
   return (
@@ -28,7 +28,7 @@ export function ReceiptItemsList({ editableData, updateItem, addNewItem, removeI
         <div className={styles.itemsGrid}>
           {editableData.items.map((item, index) => (
             <ReceiptItemComponent 
-              key={index} 
+              key={`${item.name || 'new'}-${index}`}
               item={item} 
               index={index} 
               updateItem={updateItem} 

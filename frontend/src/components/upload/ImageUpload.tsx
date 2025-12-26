@@ -11,14 +11,15 @@ interface ImageUploadProps {
   onSubmit: (e: React.FormEvent) => void;
 }
 
-export function ImageUpload({ imgInputRef, imgPreview, onChange, isLoading, onSubmit }: ImageUploadProps) {
+export function ImageUpload({ imgInputRef, imgPreview, onChange, isLoading, onSubmit }: Readonly<ImageUploadProps>) {
   return (
     <div className="card" style={{ maxWidth: "600px", width: "100%" }}>
       <form className={styles.ocrForm} onSubmit={onSubmit}>
         <div className={styles.uploadControls}>
-          <label className="label-text">Kies een afbeelding</label>
+          <label htmlFor="image-upload" className="label-text">Kies een afbeelding</label>
 
           <input 
+            id="image-upload"
             ref={imgInputRef} 
             required 
             type="file" 
@@ -30,12 +31,17 @@ export function ImageUpload({ imgInputRef, imgPreview, onChange, isLoading, onSu
           />
         </div>
 
-        <div className={componentStyles.uploadButtonContainer}>
+        <div className={styles.uploadButtonContainer}>
           <Button 
             type="submit" 
             variant="primary"
             disabled={isLoading || !imgPreview} 
             style={isLoading ? { backgroundColor: "var(--disabled-bg)", cursor: "default" } : { width: "100%" }}
+            onKeyDown={(e) => {
+              if ((e.key === 'Enter' || e.key === ' ') && !isLoading && imgPreview) {
+                onSubmit(e);
+              }
+            }}
           >
             {isLoading ? "Processing..." : "Upload & Scan"}
           </Button>
@@ -43,9 +49,9 @@ export function ImageUpload({ imgInputRef, imgPreview, onChange, isLoading, onSu
 
         <div className={styles.imagePreviewWrapper}>
           {imgPreview ? (
-            <Image 
+             <Image 
               src={imgPreview} 
-              alt="uploaded image" 
+              alt="Afbeelding van geselecteerd bon" 
               width={250} 
               height={250} 
               style={{ objectFit: "contain", maxWidth: "100%", height: "auto" }} 

@@ -9,7 +9,7 @@ interface AuthGuardProps {
   requireAuth?: boolean;
 }
 
-export function AuthGuard({ children, requireAuth = true }: AuthGuardProps) {
+export function AuthGuard({ children, requireAuth = true }: Readonly<AuthGuardProps>) {
   const router = useRouter();
 
   useEffect(() => {

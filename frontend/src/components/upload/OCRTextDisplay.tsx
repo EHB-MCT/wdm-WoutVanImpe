@@ -4,7 +4,7 @@ interface OCRTextDisplayProps {
   foundText: string;
 }
 
-export function OCRTextDisplay({ foundText }: OCRTextDisplayProps) {
+export function OCRTextDisplay({ foundText }: Readonly<OCRTextDisplayProps>) {
   if (!foundText) return null;
 
   return (

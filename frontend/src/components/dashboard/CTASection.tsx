@@ -9,7 +9,7 @@ interface CTASectionProps {
   currentDate: Date;
 }
 
-export function CTASection({ currentDate }: CTASectionProps) {
+export function CTASection({ currentDate }: Readonly<CTASectionProps>) {
   return (
     <div className={styles.ctaSection}>
       <div className="card" style={{ textAlign: "center" }}>

@@ -7,7 +7,7 @@ interface ReceiptFormProps {
   updateEditableData: (field: keyof ReceiptData, value: string | number | null) => void;
 }
 
-export function ReceiptForm({ editableData, updateEditableData }: ReceiptFormProps) {
+export function ReceiptForm({ editableData, updateEditableData }: Readonly<ReceiptFormProps>) {
   if (!editableData) return null;
 
   const getFieldClassName = (value: string | number | null) => {
@@ -18,8 +18,9 @@ export function ReceiptForm({ editableData, updateEditableData }: ReceiptFormPro
   return (
     <div className={styles.receiptFormGrid}>
       <div>
-        <label className="label-text">Store Name</label>
+        <label htmlFor="store-name" className="label-text">Store Name</label>
         <input 
+          id="store-name"
           type="text" 
           value={editableData.store_name || ""} 
           onChange={(e) => updateEditableData("store_name", e.target.value)} 
@@ -28,8 +29,9 @@ export function ReceiptForm({ editableData, updateEditableData }: ReceiptFormPro
         />
       </div>
       <div>
-        <label className="label-text">Date (YYYY-MM-DD)</label>
+        <label htmlFor="receipt-date" className="label-text">Date (YYYY-MM-DD)</label>
         <input 
+          id="receipt-date"
           type="date" 
           value={editableData.date || ""} 
           onChange={(e) => updateEditableData("date", e.target.value)} 
@@ -37,8 +39,9 @@ export function ReceiptForm({ editableData, updateEditableData }: ReceiptFormPro
         />
       </div>
       <div>
-        <label className="label-text">Time (HH:MM)</label>
+        <label htmlFor="receipt-time" className="label-text">Time (HH:MM)</label>
         <input 
+          id="receipt-time"
           type="time" 
           value={editableData.time || ""} 
           onChange={(e) => updateEditableData("time", e.target.value)} 
@@ -46,8 +49,9 @@ export function ReceiptForm({ editableData, updateEditableData }: ReceiptFormPro
         />
       </div>
       <div>
-        <label className="label-text">Total Price (€)</label>
+        <label htmlFor="total-price" className="label-text">Total Price (€)</label>
         <input
+          id="total-price"
           type="number"
           step="0.01"
           value={editableData.total_price || ""}
@@ -60,12 +64,13 @@ export function ReceiptForm({ editableData, updateEditableData }: ReceiptFormPro
         </small>
       </div>
       <div>
-        <label className="label-text">Payment Method</label>
+        <label htmlFor="payment-method" className="label-text">Payment Method</label>
         <select 
+          id="payment-method"
           value={editableData.payment_method || ""} 
           onChange={(e) => updateEditableData("payment_method", e.target.value || null)} 
           className={getFieldClassName(editableData.payment_method)}
-        >
+          >
           <option value="">Select payment method</option>
           <option value="Cash">Cash</option>
           <option value="Visa">Visa</option>

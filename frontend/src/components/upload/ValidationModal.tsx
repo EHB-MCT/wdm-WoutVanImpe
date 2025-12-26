@@ -9,7 +9,7 @@ interface ValidationModalProps {
   onContinue?: () => void;
 }
 
-export function ValidationModal({ validation, isOpen, onClose, onContinue }: ValidationModalProps) {
+export function ValidationModal({ validation, isOpen, onClose, onContinue }: Readonly<ValidationModalProps>) {
   if (!isOpen) return null;
 
   const handleBackdropClick = (e: React.MouseEvent) => {

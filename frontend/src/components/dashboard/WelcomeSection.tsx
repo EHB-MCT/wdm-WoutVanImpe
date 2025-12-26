@@ -13,7 +13,7 @@ interface WelcomeSectionProps {
   user: User | null;
 }
 
-export function WelcomeSection({ user }: WelcomeSectionProps) {
+export function WelcomeSection({ user }: Readonly<WelcomeSectionProps>) {
   const formatDate = (date: Date): string => {
     return date.toLocaleDateString("nl-BE", { day: "numeric", month: "long", year: "numeric" });
   };
