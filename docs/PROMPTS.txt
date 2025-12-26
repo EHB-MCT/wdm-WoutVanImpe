@@ -1424,5 +1424,227 @@ fix(frontend): enhance token refresh error handling with storage fallback and va
 
 The token refresh system now handles all realistic error scenarios gracefully while maintaining simplicity and performance.
 
+---
+
+## Account Page Implementation
+
+### User Request
+User wanted to create an account page where users can see their profile info and change it if they want, with logout functionality. Also asked for additional feature ideas.
+
+### Implementation Details
+
+#### 1. Authentication Path Restructuring
+**Moved Login/Registration:**
+- Moved `frontend/src/app/page.tsx` → `frontend/src/app/account/login/page.tsx`
+- Updated import paths in login page to use relative paths
+- Maintained all existing login functionality with SHA256 password hashing
+- Preserved "stay logged in" feature with 5-day persistence
+
+#### 2. Account Page Creation
+**New File:** `frontend/src/app/account/page.tsx`
+
+**Core Features Implemented:**
+- **Profile Management**: View user information (username, email, account dates)
+- **Profile Editing**: Update username and email with validation
+- **Password Management**: Change password with current password verification
+- **Session Information**: Token status and expiration display
+- **Tabbed Interface**: Clean separation of Profile, Security, Activity sections
+- **Logout Integration**: Proper logout with redirect to login
+
+**Backend API Endpoints Added:**
+- `GET /api/users/profile` - Get current user profile
+- `PUT /api/users/profile` - Update user profile
+- `PUT /api/users/password` - Change password with verification
+
+#### 3. Enhanced UI/UX Features
+
+**Tab Navigation System:**
+- Profile tab: Display/edit user information
+- Security tab: Password change and session management
+- Activity tab: Account status and future features preview
+
+**Professional Styling:**
+- Added profile info row styles to components module
+- Clean tab navigation with active state indicators
+- Responsive card layout with proper spacing
+- Dutch localization throughout interface
+
+**Security Features:**
+- Token status validation with visual indicators (✓/✗)
+- Session expiration warnings
+- Account status display
+- Password strength requirements (8 characters minimum)
+- Current password verification for changes
+
+#### 4. Technical Implementation
+
+**Clean Architecture:**
+- Modular component structure for reusability
+- Consistent state management patterns
+- Proper error handling with user feedback
+- TypeScript interfaces for type safety
+- Responsive design considerations
+
+#### 5. Future Enhancement Areas (Documented for Reference)
+
+**Potential Future Features:**
+- User activity tracking and analytics
+- Profile picture/avatar uploads
+- Two-factor authentication
+- Data export functionality (GDPR compliance)
+- Account deletion with confirmation
+- Advanced session management
+- User preferences and settings
+
+### Files Created/Modified
+
+**Frontend:**
+- `frontend/src/app/account/login/page.tsx` (moved from main auth page)
+- `frontend/src/app/account/page.tsx` (new comprehensive account page)
+- `frontend/src/app/account/components/AccountComponents.tsx` (reusable components)
+- `frontend/src/app/components/components.module.css` (enhanced with profile styles)
+
+**Backend:**
+- `api/server.js` (added user profile and password endpoints)
+- `api/package.json` (added crypto-js dependency)
+
+### Code Quality Achievements
+
+**TypeScript Compliance:** All type issues resolved
+**Component Architecture:** Clean separation of concerns
+**User Experience:** Professional tabbed interface with Dutch localization
+**Security:** Comprehensive error handling and validation
+**Maintainability:** Reusable components and consistent patterns
+
+### User Journey Flow
+1. **Login** → `/account/login` with traditional form
+2. **Dashboard** → Click on account/user info
+3. **Account Page** → Full profile management with tabs
+4. **Logout** → Clean session termination and return to login
+
+The account page now provides a complete user management experience while maintaining the existing authentication flow's reliability and security standards.
+
+---
+
+## Account Page Structure Refinement
+
+### User Request
+User wanted to change the account page structure:
+- Start with "Hallo, <username>!" greeting
+- 3 options: view profile, change password, log out
+- View profile section with editable username/email fields
+- Save button greyed out until changes are made
+- Change password functionality with current password verification
+
+### Implementation Details
+
+#### 1. Restructured Account Page Flow
+**New Navigation Structure:**
+- **Menu View**: Personalized greeting "Hallo, [username]!" with 3 clear options
+  - 👤 Profiel bekijken → View/edit username and email
+  - 🔐 Wachtwoord wijzigen → Change password with verification
+  - 🚪 Uitloggen → Logout functionality
+- **Profile View**: Editable form with username and email inputs
+- **Password View**: Password change form with current/new fields
+
+#### 2. Dynamic Context-Aware Headers
+**H1 Title Logic:**
+- Menu: "Hallo, [username]!" (personalized greeting)
+- Profile: "Profiel" (section context)
+- Password: "Wachtwoord wijzigen" (action context)
+
+#### 3. Enhanced Profile Editing
+**Smart Edit Features:**
+- Pre-filled input fields for username and email
+- `hasChanges` state tracks modifications vs original values
+- Save button only enables when:
+  - Username or email differs from original
+  - Fields are not empty
+  - Email contains '@' (valid format)
+- Real-time validation and button state updates
+- Form resets to original values on cancel/back
+
+#### 4. Password Change Implementation
+**Secure Password Update:**
+- Current password field (required)
+- New password field with 6-character minimum
+- Server-side validation via `/api/users/password` endpoint
+- Proper error handling and success feedback
+- Auto-return to menu after successful change
+
+#### 5. Improved User Experience
+**Navigation Improvements:**
+- Back button (← Terug) in sub-views
+- Smart form state management
+- Clean message system with auto-dismiss
+- Consistent card-based layout
+- Responsive design considerations
+
+### Technical Implementation
+
+#### State Management
+```typescript
+const [activeView, setActiveView] = useState<'menu' | 'profile' | 'password'>('menu');
+const [profileForm, setProfileForm] = useState({ username: '', email: '' });
+const [hasChanges, setHasChanges] = useState(false);
+```
+
+#### Change Detection Logic
+```typescript
+useEffect(() => {
+  if (user) {
+    const changesMade = profileForm.username !== user.username || profileForm.email !== user.email;
+    setHasChanges(changesMade);
+  }
+}, [profileForm, user]);
+```
+
+#### Save Button Logic
+```typescript
+disabled={!hasChanges || isLoading || 
+  !profileForm.username.trim() || 
+  !profileForm.email.trim() || 
+  !profileForm.email.includes('@')}
+```
+
+### Key Features Implemented
+
+**Smart Form Validation:**
+- Real-time change detection
+- Empty field validation
+- Email format validation
+- Minimum password length validation
+
+**Enhanced Navigation:**
+- Context-aware H1 titles
+- Clean back navigation
+- Single logical flow between views
+
+**User Feedback:**
+- Success/error messages with auto-dismiss
+- Loading states during API calls
+- Clear visual disabled button states
+
+**Security:**
+- Password change requires current password verification
+- JWT token-based API calls
+- Proper error handling without exposing sensitive data
+
+### Files Modified
+- MODIFIED: `frontend/src/app/account/page.tsx` (complete restructuring with new navigation flow)
+- MAINTAINED: `frontend/src/utils/auth.ts` (existing authentication functions)
+- MAINTAINED: `api/server.js` (existing password endpoint)
+
+### Current Status
+**Account Page: 100% Complete**
+- Clean menu-based navigation structure
+- Editable profile with smart save detection
+- Password change functionality
+- Context-aware page titles
+- Consistent styling and user experience
+- All validation and error handling
+
+The account page now provides an intuitive, user-friendly experience with clear navigation options and intelligent form handling, making it easy for users to manage their profile information securely.
+
 --- 
 *This file will be updated as we continue working on the project*
