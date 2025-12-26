@@ -1,0 +1,223 @@
+/* ============================================================================ */
+/*                        DASHBOARD PAGE STYLES                              */
+/* ============================================================================ */
+
+/* --- PAGE LAYOUT --- */
+.dashboardPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: var(--spacing-3xl) var(--spacing-lg);
+  gap: var(--spacing-3xl);
+}
+
+.dashboardContainer {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-3xl);
+}
+
+/* --- WELCOME SECTION --- */
+.welcomeSection {
+  text-align: center;
+}
+
+.currentDate {
+  font-size: var(--font-lg);
+  color: var(--muted-color);
+  margin-top: var(--spacing-sm);
+}
+
+/* --- CTA SECTION --- */
+.ctaSection {
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.ctaButtonContainer {
+  display: flex;
+  gap: var(--spacing-sm);
+  width: 100%;
+}
+
+.ctaTitle {
+  font-size: var(--font-xl);
+  font-weight: 700;
+  margin-bottom: var(--spacing-sm);
+  color: var(--foreground);
+}
+
+.ctaDescription {
+  color: var(--muted-color);
+  margin-bottom: var(--spacing-xl);
+}
+
+/* ============================================================================ */
+/*                      MONTHLY OVERVIEW                                */
+/* ============================================================================ */
+
+.monthlyOverview {
+  width: 100%;
+}
+
+.monthHeader {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xl);
+  margin-bottom: var(--spacing-xl);
+}
+
+.monthTitle {
+  font-size: var(--font-2xl);
+  font-weight: 700;
+  color: var(--foreground);
+  text-align: center;
+}
+
+.monthNavButton {
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--foreground);
+  width: 40px;
+  height: 40px;
+  border-radius: var(--radius-md);
+  font-size: var(--font-xl);
+  cursor: pointer;
+  transition: all var(--duration-normal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.monthNavButton:hover:not(:disabled) {
+  background: var(--muted-bg);
+  border-color: var(--brand-color);
+}
+
+.statsGrid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-xl);
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.statCard {
+  padding: var(--spacing-2xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.statTitle {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--muted-color);
+  margin: 0;
+  margin-top: -10px;
+}
+
+.statAmount {
+  font-size: var(--font-3xl);
+  font-weight: 800;
+  color: var(--brand-color);
+  margin: 0;
+}
+
+.combinedContent {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-2xl);
+  width: 100%;
+  align-items: start;
+}
+
+@media (max-width: 768px) {
+  .combinedContent {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================================================ */
+/*                    CATEGORY BREAKDOWN                                */
+/* ============================================================================ */
+
+.categoryList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+  align-self: center;
+}
+
+.categoryItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px var(--spacing-md);
+  background: var(--muted-bg);
+  border-radius: var(--radius-md);
+  transition: background var(--duration-normal);
+  cursor: pointer;
+}
+
+.categoryItem:hover {
+  background: var(--border-color);
+}
+
+.categoryInfo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.categoryDot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.categoryName {
+  font-size: var(--font-base);
+  color: var(--foreground);
+  font-weight: 500;
+}
+
+.categoryAmount {
+  font-size: var(--font-base);
+  color: var(--foreground);
+  font-weight: 600;
+}
+
+/* ============================================================================ */
+/*                     CHART DISPLAY                                 */
+/* ============================================================================ */
+
+.chartContainer {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  align-items: center;
+  width: 100%;
+  height: 400px;
+  padding: var(--spacing-xl) 0;
+}
+
+.noDataMessage {
+  text-align: center;
+  color: var(--muted-color);
+  font-size: var(--font-lg);
+  padding: var(--spacing-3xl);
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  border: 1px dashed var(--border-color);
+}

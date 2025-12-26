@@ -1,5 +1,6 @@
+@import './styles/tokens.css';
+
 :root {
-	/* --- COLORS --- */
 
 	--background: #f3f4f6;
 
@@ -7,9 +8,12 @@
 
 	--foreground: #111827;
 
---brand-color: #2563eb;
+	--brand-color: #2563eb;
 	--brand-color-hover: #1d4ed8;
 	--brand-shadow: rgba(37, 99, 235, 0.15);
+
+	/* Legacy alias for Button component */
+	--accent-color: var(--brand-color);
 
 	--border-color: #e5e7eb;
 	--error-color: #dc2626;
@@ -67,35 +71,14 @@ a {
 	box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 }
 
-/* 2. BUTTONS */
-.btn {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
-	padding: 0 24px;
-	height: 48px;
-	border-radius: 8px;
-	font-size: 16px;
-	font-weight: 600;
-	cursor: pointer;
-	border: none;
-	transition: background 0.2s, transform 0.1s;
-}
+ /* 2. LEGACY BUTTONS (DEPRECATED) */
+ /* 
+    Button styles are now handled by components/ui/Button.module.css
+    Global .btn classes are kept for legacy compatibility only
+    Use the Button component for new development
+ */
 
-.btn:active {
-	transform: scale(0.98);
-}
-
-.btn-primary {
-	background: var(--brand-color);
-	color: white;
-}
-
-.btn-primary:hover {
-	background: var(--brand-color-hover);
-}
-
-.btn-link {
+ .btn-link {
 	background: none;
 	color: var(--brand-color);
 	padding: 0;

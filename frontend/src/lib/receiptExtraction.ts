@@ -13,8 +13,6 @@ const VALID_CATEGORIES = [
 	"Overig"
 ];
 
-
-
 // Determine if store type is mixed-type (allows multiple categories)
 const isMixedTypeStore = (storeType: string): boolean => {
 	return storeType === 'supermarket';
@@ -24,7 +22,7 @@ const isMixedTypeStore = (storeType: string): boolean => {
 const validateCategory = (category: string | null): string => {
 	if (!category) return "Overig";
 	
-	// Check if category is exactly one of the valid categories
+	// Check if category is exactly one of valid categories
 	if (VALID_CATEGORIES.includes(category)) {
 		return category;
 	}
@@ -36,7 +34,7 @@ const validateCategory = (category: string | null): string => {
 
 export const extractReceiptData = async (ocrText: string): Promise<ReceiptData | null | undefined> => {
 	try {
-		const prompt = `Extract receipt data from the following OCR text and return ONLY a JSON object. No explanations, no markdown formatting, no conversational text.
+		const prompt = `Extract receipt data from following OCR text and return ONLY a JSON object. No explanations, no markdown formatting, no conversational text.
 
  OCR Text:
  """
@@ -46,12 +44,12 @@ export const extractReceiptData = async (ocrText: string): Promise<ReceiptData |
  IMPORTANT LANGUAGE CONTEXT:
  - The OCR text may be in Dutch, English, or French
  - Product names and store names can appear in any of these languages
- - Extract product names exactly as they appear in the original language
- - Handle multilingual receipts - items may be in different languages on the same receipt
+ - Extract product names exactly as they appear in original language
+ - Handle multilingual receipts - items may be in different languages on same receipt
  - Common terms to recognize:
-   * Dutch: "TOTAAL", "SUBTOTAAL", "BTW", "KORTING"
-   * English: "TOTAL", "SUBTOTAL", "VAT", "TAX", "DISCOUNT"
-   * French: "TOTAL", "SOUS-TOTAL", "TVA", "REMISE"
+    * Dutch: "TOTAAL", "SUBTOTAAL", "BTW", "KORTING"
+    * English: "TOTAL", "SUBTOTAL", "VAT", "TAX", "DISCOUNT"
+    * French: "TOTAL", "SOUS-TOTAL", "TVA", "REMISE"
 
  Return JSON with this exact structure:
  {
@@ -79,7 +77,7 @@ export const extractReceiptData = async (ocrText: string): Promise<ReceiptData |
  - Include all food items, drinks, household products, clothing, electronics, services, fees, taxes, and any other line items with names and prices.
  - BUT filter out: "TOTAAL", "TOTAL", "SOUS-TOTAL", "SUBTOTAAL", "SUBTOTAL", "BTW", "VAT", "TVA", "TAX", "KORTING", "DISCOUNT", "REMISE", and any line items that are just numbers, codes, or payment method descriptions.
 
-INTERNAL STORE TYPE DETECTION (for categorization logic only):
+ INTERNAL STORE TYPE DETECTION (for categorization logic only):
 - Analyze store_name and types of items being sold to determine store type
 - "supermarket": Sells food, drinks, household items, sometimes electronics/clothing (Carrefour, Delhaize, Albert Heijn, etc.)
 - "clothing": Sells primarily clothing, shoes, accessories (H&M, Zara, C&A, Primark, etc.)
@@ -90,7 +88,7 @@ INTERNAL STORE TYPE DETECTION (for categorization logic only):
 - "hardware": Sells tools, building materials, home improvement (Brico, Gamma, IKEA, etc.)
 - "unknown": If store type cannot be determined
 
-INTERNAL PRIMARY CATEGORY ASSIGNMENT:
+ INTERNAL PRIMARY CATEGORY ASSIGNMENT:
 - "supermarket" → "Boodschappen" (mixed-type store)
 - "clothing" → "Winkels & Kleding"
 - "electronics" → "Winkels & Kleding"
@@ -100,11 +98,11 @@ INTERNAL PRIMARY CATEGORY ASSIGNMENT:
 - "hardware" → "Huishouden"
 - "unknown" → "Overig"
 
-CATEGORY ASSIGNMENT - AI-BASED STORE DETECTION:
-- CRITICAL: Most receipts are from a single store type, so items should generally share same category
-- Use the store_type and primary_category you determined above for categorization
+ CATEGORY ASSIGNMENT - AI-BASED STORE DETECTION:
+ - CRITICAL: Most receipts are from a single store type, so items should generally share same category
+ - Use store_type and primary_category you determined above for categorization
 
-STORE-BASED CATEGORIZATION RULES:
+ STORE-BASED CATEGORIZATION RULES:
 1. **Supermarkets (store_type: "supermarket")**:
    - These are MIXED-TYPE stores - items can have different categories
    - Use individual item categorization based on what item is
@@ -123,15 +121,15 @@ STORE-BASED CATEGORIZATION RULES:
 
 3. **Unknown stores (store_type: "unknown")**: Use individual item categorization or default to "Overig"
 
-AVAILABLE CATEGORIES: "Boodschappen", "Huishouden", "Verkeer & Vervoer", "Gezondheid & Zorg", "Vrije Tijd & Uitgaan", "Winkels & Kleding", "Financieel & Diensten", "Overig"
+ AVAILABLE CATEGORIES: "Boodschappen", "Huishouden", "Verkeer & Vervoer", "Gezondheid & Zorg", "Vrije Tijd & Uitgaan", "Winkels & Kleding", "Financieel & Diensten", "Overig"
 
-IMPORTANT: 
-- For single-type stores, ALL items should have SAME category (use primary_category)
-- For supermarkets, items can have different categories based on what they are
-- NEVER use any category names other than 8 listed above
-- If uncertain, use "Overig" as default
+ IMPORTANT: 
+ - For single-type stores, ALL items should have SAME category (use primary_category)
+ - For supermarkets, items can have different categories based on what they are
+ - NEVER use any category names other than 8 listed above
+ - If uncertain, use "Overig" as default
 
-IMPORTANT: Return ONLY the raw JSON object. Nothing else.`;
+ IMPORTANT: Return ONLY raw JSON object. Nothing else.`;
 
 		const response = await fetch("http://localhost:11434/api/generate", {
 			method: "POST",
@@ -160,7 +158,7 @@ IMPORTANT: Return ONLY the raw JSON object. Nothing else.`;
 			console.log(data.response);
 			const parsedData = JSON.parse(data.response);
 
-// Validate and sanitize the structure
+			// Validate and sanitize structure
 			if (parsedData && typeof parsedData === "object") {
 				const rawItems = Array.isArray(parsedData.items) ? parsedData.items : [];
 
@@ -193,7 +191,7 @@ IMPORTANT: Return ONLY the raw JSON object. Nothing else.`;
 					};
 				});
 
-return {
+				return {
 					store_name: parsedData.store_name || null,
 					date: parsedData.date || null,
 					time: parsedData.time || null,

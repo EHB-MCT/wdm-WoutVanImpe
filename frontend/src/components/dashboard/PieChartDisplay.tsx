@@ -1,0 +1,52 @@
+'use client';
+
+import React from "react";
+import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
+import styles from "../../styles/pages/Dashboard.module.css";
+
+interface CategorySpending {
+  name: string;
+  value: number;
+  [key: string]: string | number;
+}
+
+interface PieChartDisplayProps {
+  categoryData: CategorySpending[];
+}
+
+export function PieChartDisplay({ categoryData }: PieChartDisplayProps) {
+  const colors = ["#E63946", "#2A9D8F", "#264653", "#F4A261", "#E9C46A", "#F77F00", "#D62828", "#06A77D"];
+
+  if (categoryData.length === 0) {
+    return <p className={styles.noDataMessage}>Geen categorie data beschikbaar</p>;
+  }
+
+  return (
+    <div className={styles.chartContainer}>
+      <ResponsiveContainer width="100%" height="100%">
+        <PieChart>
+          <Pie
+            data={categoryData}
+            cx="50%"
+            cy="50%"
+            labelLine={false}
+            label={(entry) => {
+              const total = categoryData.reduce((sum, cat) => sum + cat.value, 0);
+              const percentage = total > 0 ? ((entry.value || 0) / total) * 100 : 0;
+              return `${percentage.toFixed(1)}%`;
+            }}
+            outerRadius={100}
+            fill="#8884d8"
+            dataKey="value"
+          >
+            {categoryData.map((entry, index) => (
+              <Cell key={`cell-${index}`} fill={colors[index % 8]} />
+            ))}
+          </Pie>
+          <Tooltip formatter={(value: number | undefined) => `€${(value || 0).toFixed(2)}`} />
+          <Legend />
+        </PieChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}

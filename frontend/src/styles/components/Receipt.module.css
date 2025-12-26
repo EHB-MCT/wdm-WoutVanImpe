@@ -1,0 +1,80 @@
+/* ============================================================================ */
+/*                        RECEIPT FORM                                 */
+/* ============================================================================ */
+
+.receiptFormGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 10px;
+}
+
+.receiptFormSection {
+  margin-top: 15px;
+  display: grid;
+  gap: 15px;
+}
+
+/* ============================================================================ */
+/*                       RECEIPT ITEMS                                */
+/* ============================================================================ */
+
+.itemsHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.itemsGrid {
+  display: grid;
+  gap: 10px;
+}
+
+.itemCard {
+  border: 1px solid var(--border-color);
+  padding: 12px;
+  border-radius: 6px;
+  background-color: var(--muted-bg);
+}
+
+.itemFieldsGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.itemField {
+  font-size: 0.9em;
+}
+
+.itemRemoveBtn {
+  padding-top: 20px;
+}
+
+.noItemsMessage {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--muted-color);
+  background-color: var(--muted-bg);
+  border-radius: 4px;
+}
+
+/* ============================================================================ */
+/*                     BUTTON STYLES                                */
+/* ============================================================================ */
+
+.saveButton {
+  font-size: 0.9em;
+  padding: 8px var(--spacing-md);
+}
+
+.addItemButton {
+  font-size: 0.8em;
+  padding: 4px var(--spacing-sm);
+}
+
+.removeItemButton {
+  font-size: 0.8em;
+  padding: 4px 8px;
+}

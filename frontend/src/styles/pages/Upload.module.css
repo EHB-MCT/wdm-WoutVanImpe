@@ -1,0 +1,130 @@
+/* ============================================================================ */
+/*                          UPLOAD PAGE STYLES                              */
+/* ============================================================================ */
+
+/* --- PAGE LAYOUT --- */
+.ocrPage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+  padding: var(--spacing-3xl) var(--spacing-lg);
+  gap: var(--spacing-3xl);
+}
+
+/* --- TYPOGRAPHY --- */
+.pageTitle {
+  font-size: var(--font-2xl);
+  font-weight: 800;
+  color: var(--foreground);
+  text-align: center;
+  letter-spacing: -0.025em;
+}
+
+/* ============================================================================ */
+/*                           FORM COMPONENTS                              */
+/* ============================================================================ */
+
+.ocrForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xl);
+  width: 100%;
+  min-width: 300px;
+}
+
+.uploadControls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+/* ============================================================================ */
+/*                        IMAGE PREVIEW                                */
+/* ============================================================================ */
+
+.imagePreviewWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: var(--muted-bg);
+  border: 2px dashed var(--border-color);
+  min-height: 250px;
+  width: 100%;
+}
+
+/* ============================================================================ */
+/*                        TEXT DISPLAY                                 */
+/* ============================================================================ */
+
+.textResult {
+  width: 100%;
+  max-width: 600px;
+  padding: var(--spacing-xl);
+  border-radius: var(--radius-lg);
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  color: var(--success-color);
+  font-family: monospace;
+  font-size: var(--font-sm);
+  white-space: pre-wrap;
+  line-height: 1.6;
+  box-shadow: var(--shadow-sm);
+}
+
+.editReceiptHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-md);
+}
+
+/* ============================================================================ */
+/*                     LOADING STATES                                */
+/* ============================================================================ */
+
+.loadingContainer {
+  margin-top: var(--spacing-sm);
+}
+
+.loadingStep {
+  margin-bottom: 5px;
+}
+
+/* ============================================================================ */
+/*                     OCR TEXT DISPLAY                                 */
+/* ============================================================================ */
+
+.ocrTextContainer {
+  margin-top: var(--spacing-xl);
+}
+
+.ocrTextSummary {
+  cursor: pointer;
+  color: var(--muted-color);
+}
+
+.ocrTextContent {
+  white-space: pre-wrap;
+  margin-top: var(--spacing-md);
+  font-size: var(--font-xs);
+  color: var(--muted-color);
+  background-color: var(--muted-bg);
+  padding: 10px;
+  border-radius: var(--radius-md);
+}
+
+/* ============================================================================ */
+/*                   PROCESSING STATES                                */
+/* ============================================================================ */
+
+.ocrFailedText {
+  white-space: pre-wrap;
+  margin-top: var(--spacing-md);
+}
+
+.processingFailed {
+  font-weight: bold;
+}

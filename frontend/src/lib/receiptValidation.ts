@@ -55,7 +55,7 @@ export const validateReceiptData = (data: ReceiptData): ValidationResult => {
       if (date > now) {
         errors.push({
           field: 'date',
-          message: 'Date cannot be in the future'
+          message: 'Date cannot be in future'
         });
       }
     }
@@ -109,7 +109,7 @@ export const validateReceiptData = (data: ReceiptData): ValidationResult => {
         });
       }
 
-if (!item.category || item.category.trim() === '') {
+      if (!item.category || item.category.trim() === '') {
         warnings.push({
           field: 'category',
           message: 'Category is recommended',
@@ -118,7 +118,7 @@ if (!item.category || item.category.trim() === '') {
       } else if (!VALID_CATEGORIES.includes(item.category)) {
         warnings.push({
           field: 'category',
-          message: 'Invalid category - should be one of the predefined categories',
+          message: 'Invalid category - should be one of predefined categories',
           itemIndex: index
         });
       }

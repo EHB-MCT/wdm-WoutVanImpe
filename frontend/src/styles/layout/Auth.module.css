@@ -1,0 +1,35 @@
+/* --- AUTHENTICATION --- */
+
+.authContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+}
+
+.authWrapper {
+  width: 100%;
+  max-width: 400px;
+}
+
+.authTitle {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--foreground);
+  text-align: center;
+}
+
+.formStack {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.footer {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e5e7eb;
+}
