@@ -1,8 +1,8 @@
 import { ReceiptData, ReceiptItem } from "@/types/receipt";
 import { filterNonProductItems } from "./itemFilter";
 
-// Predefined categories for validation
-const VALID_CATEGORIES = [
+// Predefined categories for validation (as Set for efficient existence checks)
+const VALID_CATEGORIES = new Set([
 	"Boodschappen",
 	"Huishouden", 
 	"Verkeer & Vervoer",
@@ -11,7 +11,7 @@ const VALID_CATEGORIES = [
 	"Winkels & Kleding",
 	"Financieel & Diensten",
 	"Overig"
-];
+]);
 
 // Determine if store type is mixed-type (allows multiple categories)
 const isMixedTypeStore = (storeType: string): boolean => {
@@ -23,7 +23,7 @@ const validateCategory = (category: string | null): string => {
 	if (!category) return "Overig";
 	
 	// Check if category is exactly one of valid categories
-	if (VALID_CATEGORIES.includes(category)) {
+	if (VALID_CATEGORIES.has(category)) {
 		return category;
 	}
 	
@@ -172,7 +172,7 @@ export const extractReceiptData = async (ocrText: string): Promise<ReceiptData |
 				
 				console.log(`AI detected store type: ${storeType} (primary category: ${primaryCategory}, mixed: ${isMixedType})`);
 
-				const sanitizedItems = filteredItems.map((item: ReceiptItem) => {
+				const sanitizedItems = filteredItems.map((item: ReceiptItem, index: number) => {
 					let category: string;
 					
 					if (isMixedType) {
@@ -184,6 +184,7 @@ export const extractReceiptData = async (ocrText: string): Promise<ReceiptData |
 					}
 
 					return {
+						id: index + 1,
 						name: item.name || null,
 						category: category,
 						quantity: typeof item.quantity === "number" ? item.quantity : null,
@@ -197,6 +198,7 @@ export const extractReceiptData = async (ocrText: string): Promise<ReceiptData |
 					time: parsedData.time || null,
 					total_price: typeof parsedData.total_price === "number" ? parsedData.total_price : null,
 					payment_method: parsedData.payment_method || null,
+					raw_ocr_text: null, // Raw OCR text not available from AI extraction
 					items: sanitizedItems,
 				};
 			} else {

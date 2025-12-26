@@ -1,7 +1,7 @@
 import { ReceiptData } from "@/types/receipt";
 
-// Predefined categories for validation
-const VALID_CATEGORIES = [
+// Predefined categories for validation (as Set for efficient existence checks)
+const VALID_CATEGORIES = new Set([
 	"Boodschappen",
 	"Huishouden", 
 	"Verkeer & Vervoer",
@@ -10,7 +10,7 @@ const VALID_CATEGORIES = [
 	"Winkels & Kleding",
 	"Financieel & Diensten",
 	"Overig"
-];
+]);
 
 export interface ValidationError {
   field: string;
@@ -63,7 +63,7 @@ export const validateReceiptData = (data: ReceiptData): ValidationResult => {
 
   // Validate time
   if (data.time) {
-    const timeRegex = /^([01]?[0-9]|2[0-3]):[0-5][0-9]$/;
+    const timeRegex = /^([01]?\d|2[0-3]):[0-5]\d$/;
     if (!timeRegex.test(data.time)) {
       errors.push({
         field: 'time',
@@ -115,7 +115,7 @@ export const validateReceiptData = (data: ReceiptData): ValidationResult => {
           message: 'Category is recommended',
           itemIndex: index
         });
-      } else if (!VALID_CATEGORIES.includes(item.category)) {
+      } else if (!VALID_CATEGORIES.has(item.category)) {
         warnings.push({
           field: 'category',
           message: 'Invalid category - should be one of predefined categories',
