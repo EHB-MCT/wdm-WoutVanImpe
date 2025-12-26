@@ -51,7 +51,7 @@ export const getTokenExpiration = (token: string): Date | null => {
 
 const clearStorage = (key: string): void => {
 	// Check if we're in a browser environment
-	if (typeof globalThis.window === 'undefined') {
+	if (globalThis.window === undefined) {
 		return;
 	}
 	
@@ -65,7 +65,7 @@ const clearStorage = (key: string): void => {
 
 const getFromStorage = (key: string): string | null => {
 	// Check if we're in a browser environment
-	if (typeof globalThis.window === 'undefined') {
+	if (globalThis.window === undefined) {
 		return null;
 	}
 	
@@ -120,7 +120,7 @@ export const getTokenInfo = (): { isValid: boolean; expiresIn: number | null; is
 
 export const handleTokenRefresh = (response: Response): boolean => {
 	// Check if we're in a browser environment
-	if (typeof globalThis.window === 'undefined') {
+	if (globalThis.window === undefined) {
 		return true;
 	}
 	
