@@ -1,95 +1,170 @@
 /* ============================================================================ */
-/*                        VALIDATION FEEDBACK COMPONENTS                        */
+/*                    VALIDATION FEEDBACK COMPONENT                       */
 /* ============================================================================ */
 
-/* --- VALIDATION CONTAINER --- */
-.validationContainer {
-  margin-top: var(--spacing-md);
+.validation-container {
+  margin-bottom: var(--spacing-lg);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  border: 1px solid;
+  animation: slideDown var(--duration-normal) ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 500px;
+  }
+}
+
+/* ============================================================================ */
+/*                    VALIDATION SECTIONS                                 */
+/* ============================================================================ */
+
+.validation-section {
   padding: var(--spacing-md);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-color);
-  background-color: var(--muted-bg);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 
-/* --- VALIDATION SECTIONS --- */
-.validationSection {
-  margin-bottom: var(--spacing-md);
+.validation-section:last-child {
+  border-bottom: none;
 }
 
-.validationSection:last-child {
-  margin-bottom: 0;
-}
-
-.validationTitle {
-  margin-bottom: var(--spacing-sm);
-  font-size: var(--font-base);
-  font-weight: 600;
-}
-
-.validationList {
-  margin: 0;
-  padding-left: var(--spacing-xl);
-}
-
-.validationItem {
-  margin-bottom: 5px;
-  font-size: var(--font-sm);
-  line-height: 1.4;
-}
-
-.validationItem:last-child {
-  margin-bottom: 0;
-}
-
-/* --- VALIDATION STATE STYLES --- */
-.errorSection {
-  border-left: 4px solid var(--error-color);
+.validation-section.errors {
   background-color: var(--error-bg);
-}
-
-.errorSection .validationTitle {
+  border-color: var(--error-border);
   color: var(--error-color);
 }
 
-.warningSection {
-  border-left: 4px solid var(--warning-color);
+.validation-section.warnings {
   background-color: var(--warning-bg);
-}
-
-.warningSection .validationTitle {
+  border-color: var(--warning-border);
   color: var(--warning-color);
 }
 
-.successSection {
-  border-left: 4px solid var(--success-color);
-  background-color: #f0fdf4;
+.validation-section.success {
+  background-color: var(--success-bg);
+  border-color: var(--success-border);
+  color: var(--success-color);
 }
 
-.successMessage {
-  color: var(--success-color);
+/* ============================================================================ */
+/*                    VALIDATION STATE STYLES                              */
+/* ============================================================================ */
+
+.validation-header {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-md);
   font-weight: 600;
+  font-size: var(--font-base);
+}
+
+.validation-list {
+  list-style: none;
+  padding: 0;
   margin: 0;
 }
 
-/* --- DISMISS BUTTON --- */
-.dismissButton {
-  margin-top: var(--spacing-sm);
-  padding: 6px var(--spacing-md);
-  font-size: var(--font-xs);
-  background-color: var(--muted-color);
-  color: white;
+.validation-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-sm);
+  line-height: 1.5;
+}
+
+.validation-item:last-child {
+  margin-bottom: 0;
+}
+
+.validation-item::before {
+  content: "•";
+  flex-shrink: 0;
+  font-weight: bold;
+  margin-top: 2px;
+}
+
+.validation-field {
+  font-weight: 600;
+  flex-shrink: 0;
+}
+
+.validation-message {
+  flex: 1;
+}
+
+/* ============================================================================ */
+/*                    DISMISS BUTTON                                     */
+/* ============================================================================ */
+
+.validation-dismiss {
+  display: flex;
+  justify-content: flex-end;
+  padding: var(--spacing-sm);
+  background: none;
   border: none;
-  border-radius: var(--radius-sm);
+  color: inherit;
   cursor: pointer;
-  transition: background-color var(--duration-normal);
+  font-size: var(--font-sm);
+  opacity: 0.7;
+  transition: opacity var(--duration-normal);
 }
 
-.dismissButton:hover {
-  background-color: var(--foreground);
+.validation-dismiss:hover {
+  opacity: 1;
 }
 
-/* --- BUTTON VARIANTS --- */
-.uploadButtonDisabled {
-  background-color: var(--disabled-bg) !important;
-  cursor: default !important;
+/* ============================================================================ */
+/*                    BUTTON VARIANTS                                    */
+/* ============================================================================ */
+
+.validation-button {
+  background: none;
+  border: 1px solid currentColor;
+  border-radius: var(--radius-sm);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  color: inherit;
+  cursor: pointer;
+  font-size: var(--font-xs);
+  font-weight: 500;
+  transition: all var(--duration-normal);
+}
+
+.validation-button:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ============================================================================ */
+/*                    RESPONSIVE DESIGN                                  */
+/* ============================================================================ */
+
+@media (max-width: 768px) {
+  .validation-container {
+    margin-bottom: var(--spacing-md);
+  }
+  
+  .validation-section {
+    padding: var(--spacing-sm);
+  }
+  
+  .validation-header {
+    font-size: var(--font-sm);
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--spacing-xs);
+  }
+  
+  .validation-item {
+    font-size: var(--font-xs);
+    gap: var(--spacing-xs);
+  }
 }

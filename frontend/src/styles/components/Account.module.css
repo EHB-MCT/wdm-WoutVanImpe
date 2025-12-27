@@ -1,163 +1,190 @@
 /* ============================================================================ */
-/*                        ACCOUNT PAGE COMPONENTS                              */
+/*                          ACCOUNT COMPONENT STYLES                         */
 /* ============================================================================ */
 
-/* --- PROFILE INFO --- */
-.profileInfo {
-  padding: var(--spacing-xl);
-  background-color: var(--muted-bg);
-  border-radius: var(--radius-lg);
-  border: 1px solid var(--border-color);
+.authContainer {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: var(--background);
+  padding: var(--spacing-md);
 }
 
-.infoRow {
-  padding: var(--spacing-md) 0;
+.authWrapper {
+  width: 100%;
+  max-width: 400px;
+}
+
+.accountHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-md);
   border-bottom: 1px solid var(--border-color);
 }
 
-.infoRow:last-child {
-  border-bottom: none;
-}
-
-.infoLabel {
-  color: var(--muted-color);
-  flex: 0 0 120px;
-}
-
-.infoValue {
+.authTitle {
+  font-size: var(--font-2xl);
+  font-weight: 600;
   color: var(--foreground);
+  margin: 0;
+  text-align: center;
   flex: 1;
-  font-weight: 500;
 }
 
-/* --- ACCOUNT PAGE --- */
-.accountSection {
-  margin-bottom: var(--spacing-md);
-  border: 1px solid #e5e7eb;
-  border-radius: var(--radius-lg);
-  overflow: hidden;
-  background: white;
+.backButton {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-sm);
 }
 
-.accountRow {
-  padding: var(--spacing-md) var(--spacing-lg);
-  transition: background-color var(--duration-normal);
-}
+/* ============================================================================ */
+/*                           MENU VIEW                                        */
+/* ============================================================================ */
 
-.accountInfo {
+.menuContainer {
   display: flex;
   flex-direction: column;
-  gap: 4px;
-  flex: 1;
-}
-
-.accountLabel {
-  font-weight: 600;
-  color: #374151;
-  font-size: var(--font-sm);
-}
-
-.accountValue {
-  color: #1f2937;
-  font-size: var(--font-base);
-}
-
-.accountEditSection {
-  padding: var(--spacing-xl);
-  border: 2px solid var(--brand-color);
-  border-radius: var(--radius-lg);
-  background-color: var(--muted-bg);
-  margin: var(--spacing-md) 0;
-}
-
-.accountEditHeader {
-  margin-bottom: var(--spacing-md);
-  padding-bottom: var(--spacing-sm);
-  border-bottom: 1px solid var(--border-color);
-}
-
-.accountEditActions {
-  gap: var(--spacing-sm);
-  justify-content: flex-end;
-  margin-top: var(--spacing-md);
-  padding-top: var(--spacing-sm);
-  border-top: 1px solid var(--border-color);
-}
-
-/* --- ACCOUNT BUTTON SIZES --- */
-.btnSm {
-  padding: 6px var(--spacing-sm);
-  font-size: var(--font-sm);
-}
-
-/* --- ACCOUNT HEADER --- */
-.accountHeader {
-  margin-bottom: var(--spacing-3xl);
-}
-
-/* --- MESSAGE DISPLAY --- */
-
-
-
-
-/* --- MENU VIEW --- */
-.menuContainer {
+  gap: var(--spacing-lg);
 }
 
 .menuButtons {
+  display: flex;
+  flex-direction: column;
   gap: var(--spacing-md);
 }
 
 .menuButton {
-  padding: var(--spacing-lg) var(--spacing-2xl);
-  font-size: var(--font-base);
+  width: 100%;
   justify-content: flex-start;
+  padding: var(--spacing-md);
+  font-size: var(--font-base);
   text-align: left;
 }
 
-/* --- PROFILE/PASSWORD VIEWS --- */
+/* ============================================================================ */
+/*                           PROFILE & PASSWORD VIEWS                         */
+/* ============================================================================ */
+
 .profileView,
 .passwordView {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.profileInfo {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
 }
 
 .formGroup {
-  margin-bottom: var(--spacing-lg);
-}
-
-.formGroup:last-child {
-  margin-bottom: var(--spacing-xl);
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
 }
 
 .formLabel {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--muted-color);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .formActions {
-  gap: var(--spacing-sm);
+  display: flex;
+  gap: var(--spacing-md);
   justify-content: center;
+  margin-top: var(--spacing-lg);
 }
 
 .disabled {
   opacity: 0.6;
   cursor: not-allowed;
+  pointer-events: none;
 }
 
-/* --- TAB BUTTONS --- */
-.tabButton {
-  border-radius: 0 !important;
-  border: none !important;
-  margin-right: 2px;
+/* ============================================================================ */
+/*                           INPUT STYLING                                    */
+/* ============================================================================ */
+
+.input-field {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: var(--card-bg);
+  color: var(--foreground);
+  font-size: var(--font-base);
+  transition: all var(--duration-normal);
 }
 
-.tabButton.active {
-  background-color: #3b82f6 !important;
-  color: white !important;
+.input-field:focus {
+  outline: none;
+  border-color: var(--brand-color);
+  box-shadow: 0 0 0 3px var(--brand-shadow);
 }
 
-.tabButton.inactive {
-  background-color: transparent !important;
-  color: #6b7280 !important;
+.input-field::placeholder {
+  color: var(--placeholder-color);
 }
 
+/* ============================================================================ */
+/*                           MESSAGE STYLING                                 */
+/* ============================================================================ */
+
+.message-util {
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  border: 1px solid;
+  margin-bottom: var(--spacing-lg);
+  text-align: center;
+  font-size: var(--font-sm);
+}
+
+.message-success {
+  background-color: var(--success-bg);
+  color: var(--success-color);
+  border-color: var(--success-border);
+}
+
+.message-error {
+  background-color: var(--error-bg);
+  color: var(--error-color);
+  border-color: var(--error-border);
+}
+
+/* ============================================================================ */
+/*                           RESPONSIVE DESIGN                               */
+/* ============================================================================ */
+
+@media (max-width: 480px) {
+  .authContainer {
+    padding: var(--spacing-sm);
+  }
+  
+  .authWrapper {
+    max-width: 100%;
+  }
+  
+  .accountHeader {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  
+  .authTitle {
+    font-size: var(--font-xl);
+  }
+  
+  .formActions {
+    flex-direction: column;
+  }
+  
+  .menuButton {
+    padding: var(--spacing-lg);
+    font-size: var(--font-lg);
+  }
+}

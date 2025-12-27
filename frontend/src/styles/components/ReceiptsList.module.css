@@ -1,118 +1,262 @@
-/* --- RECEIPTS LIST --- */
+/* ============================================================================ */
+/*                    RECEIPTS LIST COMPONENT                            */
+/* ============================================================================ */
+
 .receiptsList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-md);
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: stretch;
+	gap: var(--spacing-md);
 }
 
 .receiptsListTitle {
-  margin-bottom: var(--spacing-lg);
-  font-size: var(--font-xl);
-  font-weight: 600;
-  color: var(--foreground);
+	font-size: var(--font-lg);
+	font-weight: 600;
+	color: var(--foreground);
+	margin: 0 0 var(--spacing-lg) 0;
+	padding-bottom: var(--spacing-md);
+	border-bottom: 1px solid var(--border-color);
+	text-align: left;
 }
 
-.noReceipts {
-  text-align: center;
-  padding: var(--spacing-3xl);
-  color: var(--muted-color);
+.receiptsGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 20px;
+	justify-content: stretch;
+	align-items: stretch;
 }
 
-.noReceipts h3 {
-  margin-bottom: var(--spacing-md);
-  color: var(--foreground);
-}
+/* ============================================================================ */
+/*                    RECEIPT CARD COMPONENT                              */
+/* ============================================================================ */
 
-.noReceipts p {
-  color: var(--muted-color);
-  line-height: 1.6;
-}
-
-/* --- RECEIPT CARD --- */
 .receiptCard {
-  padding: var(--spacing-lg);
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-sm);
-  text-align: left;
-  min-height: auto;
-  width: 100%;
-  transition: all var(--duration-normal);
+	background-color: var(--card-bg);
+	border: 1px solid var(--border-color);
+	border-radius: var(--radius-md);
+	padding: 20px;
+	cursor: pointer;
+	transition: transform 0.2s, box-shadow 0.2s;
+	text-align: left;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: stretch;
+	gap: 10px;
+	box-sizing: border-box;
 }
 
 .receiptCard:hover {
-  box-shadow: var(--shadow-md);
-  border-color: var(--brand-color);
+	transform: translateY(-2px);
+	box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
 }
 
-/* --- RECEIPT HEADER --- */
+button.receiptCard {
+	border: none;
+	font-family: inherit;
+	text-align: left;
+	width: 100%;
+	margin: 0;
+	display: flex;
+	box-sizing: border-box;
+}
+
+button.receiptCard.card {
+	background-color: var(--card-bg);
+	border: 1px solid var(--border-color);
+	border-radius: var(--radius-md);
+	padding: 20px;
+	text-align: left;
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: stretch;
+}
+
+/* ============================================================================ */
+/*                    RECEIPT HEADER                                     */
+/* ============================================================================ */
+
 .receiptHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  margin-bottom: var(--spacing-sm);
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-start;
+	margin-bottom: 12px;
+	width: 100%;
+	box-sizing: border-box;
 }
 
-.storeName {
-  margin: 0;
-  font-size: var(--font-lg);
-  font-weight: 600;
-  color: var(--foreground);
+.receiptStore {
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: var(--foreground);
+	margin: 0;
+	text-align: left;
+	flex-shrink: 1;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .receiptDate {
-  font-size: var(--font-sm);
-  color: var(--muted-color);
+	font-size: 0.9rem;
+	color: var(--muted-color);
+	margin: 0;
+	text-align: right;
+	flex-shrink: 0;
+	white-space: nowrap;
 }
 
-/* --- RECEIPT DETAILS --- */
+/* ============================================================================ */
+/*                    RECEIPT DETAILS                                     */
+/* ============================================================================ */
+
 .receiptDetails {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
-  margin-bottom: var(--spacing-sm);
+	display: flex;
+	justify-content: space-between;
+	align-items: flex-end;
+	margin-bottom: 12px;
+	width: 100%;
+	box-sizing: border-box;
 }
 
-.totalAmount {
-  font-size: var(--font-lg);
-  font-weight: 600;
-  color: var(--foreground);
+.receiptAmount {
+	font-size: 1.5rem;
+	font-weight: 700;
+	color: var(--brand-color);
+	margin: 0;
+	text-align: left;
+	flex-shrink: 1;
 }
 
-.paymentMethod {
-  font-size: var(--font-sm);
-  color: var(--muted-color);
+.receiptPayment {
+	font-size: 0.9rem;
+	color: var(--muted-color);
+	margin: 0;
+	text-align: right;
+	flex-shrink: 0;
+	white-space: nowrap;
 }
 
-/* --- ITEMS PREVIEW --- */
-.itemsPreview {
-  width: 100%;
-  font-size: var(--font-sm);
-  line-height: 1.4;
+/* ============================================================================ */
+/*                    RECEIPT ITEMS                                       */
+/* ============================================================================ */
+
+.receiptItems {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-start;
+	align-items: stretch;
+	gap: 8px;
+	width: 100%;
+	box-sizing: border-box;
 }
 
-.item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: var(--spacing-xs) 0;
-  margin-bottom: var(--spacing-xs);
+.receiptItem {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	font-size: 0.9rem;
+	color: var(--foreground);
+	padding: 4px 0;
+	border-bottom: 1px solid var(--border-color);
+	width: 100%;
+	box-sizing: border-box;
 }
 
-.itemName {
-  font-weight: 500;
-  color: var(--foreground);
+.receiptItem span:first-child {
+	flex-shrink: 1;
+	text-align: left;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	margin-right: 8px;
 }
 
-.itemPrice {
-  font-weight: 600;
-  color: var(--foreground);
+.receiptItem span:last-child {
+	flex-shrink: 0;
+	text-align: right;
+	font-weight: 600;
 }
 
-.itemInfo {
-  font-size: var(--font-sm);
-  color: var(--muted-color);
+.receiptMore {
+	font-size: 0.85rem;
+	color: var(--muted-color);
+	font-style: italic;
+	margin: 4px 0 0 0;
+	text-align: left;
+}
+
+/* ============================================================================ */
+/*                    NO DATA MESSAGE                                   */
+/* ============================================================================ */
+
+.noDataMessage {
+	text-align: center;
+	padding: 60px 20px;
+	background: var(--card-bg);
+	border-radius: 12px;
+	border: 2px dashed var(--border-color);
+	color: var(--muted-color);
+	font-size: 1.1rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: var(--spacing-md);
+}
+
+/* ============================================================================ */
+/*                    RESPONSIVE DESIGN                                  */
+/* ============================================================================ */
+
+@media (max-width: 768px) {
+	.receiptsGrid {
+		grid-template-columns: 1fr;
+		gap: 16px;
+	}
+
+	.receiptCard {
+		padding: 16px;
+	}
+
+	.receiptHeader {
+		flex-direction: column;
+		gap: 8px;
+		align-items: stretch;
+		text-align: center;
+	}
+
+	.receiptStore {
+		text-align: center;
+	}
+
+	.receiptDetails {
+		flex-direction: column;
+		gap: 8px;
+		align-items: stretch;
+		text-align: center;
+	}
+}
+
+@media (max-width: 480px) {
+	.receiptsListTitle {
+		font-size: var(--font-base);
+		text-align: center;
+	}
+
+	.receiptCard {
+		padding: 12px;
+	}
+
+	.receiptStore {
+		font-size: 1rem;
+	}
+
+	.receiptAmount {
+		font-size: 1.3rem;
+	}
 }

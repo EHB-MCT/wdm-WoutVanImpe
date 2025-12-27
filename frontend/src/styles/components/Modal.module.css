@@ -1,8 +1,7 @@
 /* ============================================================================ */
-/*                           MODAL COMPONENTS                              */
+/*                    RECEIPT MODAL COMPONENT                             */
 /* ============================================================================ */
 
-/* --- MODAL BACKDROP --- */
 .modalBackdrop {
   position: fixed;
   top: 0;
@@ -10,133 +9,236 @@
   right: 0;
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.5);
-  z-index: var(--z-modal);
-  border: none;
-  padding: 0;
-  margin: 0;
-  cursor: default;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal-backdrop);
+  padding: var(--spacing-md);
 }
 
-/* --- MODAL CONTENT --- */
 .modalContent {
-  width: 90%;
+  background-color: var(--card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
   max-width: 800px;
+  width: 100%;
   max-height: 90vh;
-  overflow: auto;
-  position: relative;
+  overflow-y: auto;
+  z-index: var(--z-modal);
 }
 
-/* --- MODAL HEADER --- */
 .modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   padding: var(--spacing-xl);
   border-bottom: 1px solid var(--border-color);
 }
 
 .modalHeader h2 {
-  margin: 0;
   font-size: var(--font-xl);
   font-weight: 600;
   color: var(--foreground);
+  margin: 0;
 }
 
 .modalCloseButton {
-  padding: var(--spacing-sm) var(--spacing-md) !important;
-  font-size: 18px !important;
-  line-height: 1 !important;
-  min-width: auto !important;
+  background: none;
+  border: none;
+  font-size: var(--font-2xl);
+  color: var(--muted-color);
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  transition: all var(--duration-normal);
 }
 
-/* --- MODAL BODY --- */
+.modalCloseButton:hover {
+  background-color: var(--muted-bg);
+  color: var(--error-color);
+}
 
+.modalBody {
+  padding: var(--spacing-xl);
+}
 
-/* --- RECEIPT DETAILS SECTION --- */
+.modalActions {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: flex-end;
+  margin-top: var(--spacing-xl);
+  padding-top: var(--spacing-lg);
+  border-top: 1px solid var(--border-color);
+}
+
+/* ============================================================================ */
+/*                    RECEIPT DETAILS SECTION                              */
+/* ============================================================================ */
+
 .receiptDetails {
   margin-bottom: var(--spacing-xl);
 }
 
 .receiptDetails h3 {
-  margin-bottom: var(--spacing-md);
   font-size: var(--font-lg);
+  font-weight: 600;
   color: var(--foreground);
+  margin: 0 0 var(--spacing-md) 0;
 }
 
 .receiptDetailsList {
-  line-height: 1.6;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: var(--spacing-md);
+}
+
+.receiptDetailsList div {
   display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-md);
+  background-color: var(--muted-bg);
+  border-radius: var(--radius-md);
 }
 
 .receiptDetailsList strong {
-  color: var(--foreground);
-  min-width: 120px;
-  display: inline-block;
+  font-weight: 600;
+  color: var(--muted-color);
+  font-size: var(--font-sm);
 }
 
-/* --- ITEMS LIST SECTION --- */
+.receiptDetailsList span {
+  color: var(--foreground);
+  font-size: var(--font-sm);
+  font-weight: 500;
+}
+
+/* ============================================================================ */
+/*                    ITEMS LIST SECTION                                  */
+/* ============================================================================ */
+
 .itemsListSection {
-  margin-bottom: var(--spacing-xl);
+  margin-top: var(--spacing-xl);
 }
 
 .itemsListHeader {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.itemsList {
+  display: grid;
+  gap: var(--spacing-md);
+}
+
+.itemCard {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  transition: all var(--duration-normal);
+}
+
+.itemCard:hover {
+  box-shadow: var(--shadow-sm);
+  border-color: var(--brand-color);
+}
+
+.itemCardDetails {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-sm);
+}
+
+.itemCardName {
+  font-size: var(--font-base);
+  font-weight: 500;
+  color: var(--foreground);
+  flex: 1;
+  margin-right: var(--spacing-md);
+}
+
+.itemCardCategory {
+  font-size: var(--font-sm);
+  color: var(--muted-color);
+  background-color: var(--muted-bg);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+}
+
+.itemCardPricing {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--brand-color);
+}
+
+.itemCardQuantity {
+  opacity: 0.8;
+  font-weight: 400;
+}
+
+/* ============================================================================ */
+/*                    ITEMS EDIT SECTION                                  */
+/* ============================================================================ */
+
+.itemsEditSection {
+  margin-top: var(--spacing-xl);
+}
+
+.itemsEditHeader {
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--border-color);
 }
 
-.itemsListHeader h3 {
-  margin: 0;
+.itemsEditHeader h3 {
   font-size: var(--font-lg);
+  font-weight: 600;
   color: var(--foreground);
+  margin: 0;
 }
 
-.itemsList {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-  line-height: 1.6;
+.itemsEditGrid {
+  display: grid;
+  gap: var(--spacing-md);
 }
 
-.itemCard {
-  display: flex;
-  justify-content: space-between;
-  padding: var(--spacing-sm);
-  background-color: var(--muted-bg);
-  border-radius: var(--radius-sm);
+.itemEditCard {
+  background-color: var(--card-bg);
   border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-lg);
+  transition: all var(--duration-normal);
 }
 
-.itemCardDetails {
-  flex: 1;
+.itemEditCard:hover {
+  box-shadow: var(--shadow-sm);
+  border-color: var(--brand-color);
 }
 
-.itemCardName {
-  font-weight: 500;
-  color: var(--foreground);
+.itemEditGrid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr auto;
+  gap: var(--spacing-md);
+  align-items: center;
 }
 
-.itemCardCategory {
-  font-size: var(--font-xs);
-  color: var(--muted-color);
-  margin-top: 2px;
-}
+/* ============================================================================ */
+/*                    FORM SECTION                                        */
+/* ============================================================================ */
 
-.itemCardPricing {
-  text-align: right;
-}
-
-.itemCardPrice {
-  font-weight: 500;
-  color: var(--foreground);
-}
-
-.itemCardQuantity {
-  font-size: var(--font-xs);
-  color: var(--muted-color);
-}
-
-/* --- FORM SECTION --- */
 .formGrid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -147,137 +249,96 @@
 .formField {
   display: flex;
   flex-direction: column;
+  gap: var(--spacing-sm);
 }
 
 .smallLabel {
-  font-size: var(--font-xs) !important;
+  font-size: var(--font-xs);
+  font-weight: 600;
+  color: var(--muted-color);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
-.smallInput {
-  font-size: var(--font-sm) !important;
-}
-
+.smallInput,
 .smallSelect {
-  font-size: var(--font-sm) !important;
-  width: 100% !important;
-}
-
-/* --- ITEMS EDIT SECTION --- */
-.itemsEditSection {
-  margin-bottom: var(--spacing-xl);
-}
-
-.itemsEditHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: var(--spacing-md);
-}
-
-.itemsEditGrid {
-  display: flex;
-  flex-direction: column;
-  gap: var(--spacing-sm);
-}
-
-.itemEditCard {
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius-sm);
-  padding: var(--spacing-md);
-  background-color: var(--card-bg);
-}
-
-.itemEditGrid {
-  display: grid;
-  grid-template-columns: 2fr 1fr 1fr 1fr auto;
-  gap: var(--spacing-sm);
-  align-items: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-sm);
 }
 
 .itemRemoveButton {
-  padding: var(--spacing-sm) var(--spacing-md) !important;
-  font-size: 16px !important;
-  line-height: 1 !important;
-  min-width: auto !important;
-}
-
-.noItemsMessage {
-  text-align: center;
-  padding: var(--spacing-xl);
-  color: var(--muted-color);
-  font-style: italic;
-}
-
-/* --- TOTAL DISPLAY --- */
-.totalDisplay {
-  margin-bottom: var(--spacing-xl);
-  padding: var(--spacing-md);
-  background-color: var(--background);
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-lg);
   border-radius: var(--radius-sm);
-  border: 1px solid var(--border-color);
+}
+
+/* ============================================================================ */
+/*                    TOTAL DISPLAY                                        */
+/* ============================================================================ */
+
+.totalDisplay {
+  margin-top: var(--spacing-xl);
   text-align: right;
 }
 
-.totalAmount {
-  font-size: var(--font-lg);
-  font-weight: 600;
-  color: var(--foreground);
+.totalDisplay h3 {
+  font-size: var(--font-xl);
+  font-weight: 700;
+  color: var(--brand-color);
+  margin: 0;
 }
 
-/* --- ACTIONS SECTION --- */
-.modalActions {
-  display: flex;
-  gap: var(--spacing-sm);
-  justify-content: center;
-  flex-wrap: wrap;
+/* ============================================================================ */
+/*                    NO ITEMS MESSAGE                                   */
+/* ============================================================================ */
+
+.noItemsMessage {
+  text-align: center;
+  padding: var(--spacing-2xl);
+  color: var(--muted-color);
+  font-style: italic;
+  background-color: var(--muted-bg);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
 }
 
-/* --- RESPONSIVE DESIGN --- */
+/* ============================================================================ */
+/*                    RESPONSIVE DESIGN                                    */
+/* ============================================================================ */
+
 @media (max-width: 768px) {
   .modalContent {
-    width: 95%;
-    max-height: 95vh;
+    max-width: 100%;
+    margin: var(--spacing-md);
+    max-height: 90vh;
   }
-
-  .modalHeader {
-    padding: var(--spacing-lg);
-  }
-
-  .modalBody {
-    padding: var(--spacing-lg);
-  }
-
-  .formGrid {
+  
+  .receiptDetailsList {
     grid-template-columns: 1fr;
-    gap: var(--spacing-lg);
   }
-
+  
   .itemEditGrid {
     grid-template-columns: 1fr;
-    gap: var(--spacing-md);
+    gap: var(--spacing-sm);
   }
-
-  .itemCard {
-    flex-direction: column;
-    gap: var(--spacing-xs);
-  }
-
-  .itemCardPricing {
-    text-align: left;
-  }
-
+  
   .modalActions {
+    flex-direction: column-reverse;
+  }
+  
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+  
+  .itemsEditHeader {
     flex-direction: column;
-  }
-}
-
-@media (max-width: 480px) {
-  .modalContent {
-    width: 98%;
-  }
-
-  .modalHeader,
-  .modalBody {
-    padding: var(--spacing-md);
+    gap: var(--spacing-md);
+    align-items: stretch;
+    text-align: center;
   }
 }

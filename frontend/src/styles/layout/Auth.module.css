@@ -1,16 +1,14 @@
-/* --- AUTHENTICATION --- */
+/* ============================================================================ */
+/*                          AUTH LAYOUT COMPONENTS                         */
+/* ============================================================================ */
 
 .authContainer {
-  padding: var(--spacing-lg);
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  border-radius: var(--radius-xl);
-  box-shadow: var(--shadow-xl);
-  text-align: center;
-  color: white;
   min-height: 100vh;
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+  background-color: var(--background);
+  padding: var(--spacing-md);
 }
 
 .authWrapper {
@@ -18,12 +16,32 @@
   max-width: 400px;
 }
 
+.authHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--spacing-xl);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+}
+
 .authTitle {
   font-size: var(--font-2xl);
-  font-weight: 700;
-  margin-bottom: var(--spacing-xl);
-  color: white;
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0;
+  text-align: center;
+  flex: 1;
 }
+
+.backButton {
+  padding: var(--spacing-sm) var(--spacing-md);
+  font-size: var(--font-sm);
+}
+
+/* ============================================================================ */
+/*                           FORM STYLING                                    */
+/* ============================================================================ */
 
 .formStack {
   display: flex;
@@ -31,80 +49,158 @@
   gap: var(--spacing-lg);
 }
 
-.footer {
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.input-field {
+  width: 100%;
+  padding: var(--spacing-md);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: var(--card-bg);
+  color: var(--foreground);
+  font-size: var(--font-base);
+  transition: all var(--duration-normal);
+}
+
+.input-field:focus {
+  outline: none;
+  border-color: var(--brand-color);
+  box-shadow: 0 0 0 3px var(--brand-shadow);
+}
+
+.input-field::placeholder {
+  color: var(--placeholder-color);
+}
+
+.label-text {
+  font-size: var(--font-sm);
+  font-weight: 600;
+  color: var(--muted-color);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* ============================================================================ */
+/*                     STAY LOGGED IN CHECKBOX                             */
+/* ============================================================================ */
+
+.stayLoggedInContainer {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--spacing-sm);
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  transition: background-color var(--duration-normal);
+}
+
+.stayLoggedInContainer:hover {
+  background-color: var(--muted-bg);
+}
+
+.checkboxInput {
+  margin-top: var(--spacing-xs);
+  accent-color: var(--brand-color);
+}
+
+.checkboxLabel {
+  font-size: var(--font-sm);
+  color: var(--foreground);
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+  flex: 1;
+}
+
+.checkboxSubtext {
+  font-size: var(--font-xs);
+  color: var(--muted-color);
+  opacity: 0.8;
+}
+
+/* ============================================================================ */
+/*                           FORM ACTIONS                                    */
+/* ============================================================================ */
+
+.formActions {
+  display: flex;
+  gap: var(--spacing-md);
+  justify-content: center;
   margin-top: var(--spacing-lg);
+}
+
+.footer {
+  text-align: center;
+  margin-top: var(--spacing-xl);
   padding-top: var(--spacing-lg);
   border-top: 1px solid var(--border-color);
 }
 
-
-
-/* --- LOGIN PAGE SPECIFIC --- */
-
-/* --- HEADER --- */
-.authHeader {
-  display: flex;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.backButton {
-  margin-right: 15px;
-  padding: 8px 16px;
-}
-
-/* --- STAY LOGGED IN CHECKBOX --- */
-.stayLoggedInContainer {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-  padding: 8px;
-  border-radius: 6px;
-  border: 1px solid #e5e7eb;
-  transition: all 0.2s ease;
-}
-
-.stayLoggedInContainer.checked {
-  background-color: #f0f9ff;
-  border-color: #0ea5e9;
-}
-
-.checkboxInput {
-  margin-right: 8px;
-  transform: scale(1.1);
-}
-
-.checkboxLabel {
-  font-size: 14px;
-  cursor: pointer;
-  color: #374151;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-}
-
-.stayLoggedInContainer.checked .checkboxLabel {
-  color: #0369a1;
-}
-
-.checkboxSubtext {
-  display: block;
-  font-size: 12px;
-  color: #6b7280;
-  margin-top: 2px;
-}
-
-.stayLoggedInContainer.checked .checkboxSubtext {
-  color: #0891b2;
-}
-
-/* --- FORM ACTIONS --- */
-.formActions {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
+.footer p {
+  font-size: var(--font-sm);
+  color: var(--muted-color);
+  margin: 0;
 }
 
 .linkButton {
-  margin-left: 5px;
+  font-size: var(--font-sm);
+  text-decoration: none;
+  margin-left: var(--spacing-xs);
+}
+
+/* ============================================================================ */
+/*                           MESSAGE DISPLAY                                 */
+/* ============================================================================ */
+
+.success-msg {
+  color: var(--success-color);
+  background-color: var(--success-bg);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--success-border);
+  font-size: var(--font-sm);
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+.error-msg {
+  color: var(--error-color);
+  background-color: var(--error-bg);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--error-border);
+  font-size: var(--font-sm);
+  text-align: center;
+  margin-bottom: var(--spacing-lg);
+}
+
+/* ============================================================================ */
+/*                           RESPONSIVE DESIGN                               */
+/* ============================================================================ */
+
+@media (max-width: 480px) {
+  .authContainer {
+    padding: var(--spacing-sm);
+  }
+  
+  .authWrapper {
+    max-width: 100%;
+  }
+  
+  .authHeader {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  
+  .authTitle {
+    font-size: var(--font-xl);
+  }
+  
+  .formActions {
+    flex-direction: column;
+  }
 }
