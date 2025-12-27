@@ -1,10 +1,11 @@
 "use client";
 
 import React, { useState, FormEvent } from "react";
-import SHA256 from "crypto-js/sha256";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
 import { MessageDisplay } from "@/components/ui/MessageDisplay";
+import { authApi, type LoginRequest, type RegisterRequest } from "@/lib/api";
+import { ApiError } from "@/lib/api";
 import styles from "@/styles/layout/Auth.module.css";
 
 export default function LoginPage() {
@@ -14,7 +15,11 @@ export default function LoginPage() {
 	const [isSuccess, setIsSuccess] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 	const [stayLoggedIn, setStayLoggedIn] = useState(false);
-	const [formData, setFormData] = useState({
+const [formData, setFormData] = useState<{
+		name: string;
+		email: string;
+		password: string;
+	}>({
 		name: "",
 		email: "",
 		password: "",
@@ -25,9 +30,7 @@ export default function LoginPage() {
 		setFormData((prev) => ({ ...prev, [name]: value }));
 	};
 
-	const hashPassword = (password: string) => {
-		return SHA256(password).toString();
-	};
+
 
 	const switchAuthMode = () => {
 		setIsLogin(!isLogin);
@@ -35,29 +38,32 @@ export default function LoginPage() {
 		setMessage("");
 	};
 
-	const handleSubmit = async (e: FormEvent) => {
+const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 		setIsLoading(true);
 		setMessage("");
 
 		try {
-			const url = isLogin ? "http://localhost:5001/api/login" : "http://localhost:5001/api/register";
-			const payload = isLogin ? { email: formData.email, password: hashPassword(formData.password) } : { name: formData.name, email: formData.email, password: hashPassword(formData.password) };
-
-			const response = await fetch(url, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(payload),
-			});
-
-			if (!response.ok) {
-				const errorData = await response.json();
-				throw new Error(errorData.error || "Authenticatie mislukt");
+			let data;
+			
+			if (isLogin) {
+				// Login
+				const loginData: LoginRequest = {
+					email: formData.email,
+					password: formData.password,
+				};
+				data = await authApi.login(loginData);
+			} else {
+				// Register
+				const registerData: RegisterRequest = {
+					name: formData.name,
+					email: formData.email,
+					password: formData.password,
+				};
+				data = await authApi.register(registerData);
 			}
 
-			const data = await response.json();
+			// Store auth data
 			localStorage.setItem("token", data.token);
 			localStorage.setItem("user", JSON.stringify(data.user));
 
@@ -72,9 +78,14 @@ export default function LoginPage() {
 			setTimeout(() => {
 				router.push("/");
 			}, 1500);
-		} catch (error: unknown) {
+		} catch (error) {
 			console.error("API Error:", error);
-			setMessage(error instanceof Error ? error.message : "An unknown error occurred");
+			
+			if (error instanceof ApiError) {
+				setMessage(error.message);
+			} else {
+				setMessage(error instanceof Error ? error.message : "An unknown error occurred");
+			}
 			setIsSuccess(false);
 		} finally {
 			setIsLoading(false);
