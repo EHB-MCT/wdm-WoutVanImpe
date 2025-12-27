@@ -20,7 +20,7 @@ export const AccountMenu: React.FC<AccountMenuProps> = ({ onProfileClick, onPass
 			<div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
 				<Button
 					onClick={onProfileClick}
-					variant="secondary"
+					variant="primary"
 					style={{
 						padding: "16px 24px",
 						fontSize: "1em",
@@ -33,7 +33,7 @@ export const AccountMenu: React.FC<AccountMenuProps> = ({ onProfileClick, onPass
 
 				<Button
 					onClick={onPasswordClick}
-					variant="secondary"
+					variant="primary"
 					style={{
 						padding: "16px 24px",
 						fontSize: "1em",
@@ -46,7 +46,7 @@ export const AccountMenu: React.FC<AccountMenuProps> = ({ onProfileClick, onPass
 
 				<Button
 					onClick={onLogout}
-					variant="secondary"
+					variant="primary"
 					style={{
 						padding: "16px 24px",
 						fontSize: "1em",
