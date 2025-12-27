@@ -87,17 +87,16 @@ return (
 		<div className={styles.authContainer}>
 			<div className={styles.authWrapper}>
 				<div className="card">
-					<div style={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
+					<div className={styles.authHeader}>
 						<button 
 							type="button" 
 							onClick={() => router.push("/")} 
-							className="btn btn-secondary" 
-							style={{ marginRight: "15px", padding: "8px 16px" }}
+							className={`btn btn-secondary ${styles.backButton}`}
 							aria-label="Terug naar homepagina"
 						>
 							← Terug
 						</button>
-						<h1 className={styles.authTitle} style={{ margin: 0 }}>
+						<h1 className={styles.authTitle}>
 							{isLogin ? "Inloggen" : "Registreren"}
 						</h1>
 					</div>
@@ -154,42 +153,20 @@ return (
 						</div>
 
 						{isLogin && (
-							<div
-								style={{ 
-									display: "flex", 
-									alignItems: "center", 
-									marginBottom: "10px", 
-									padding: "8px", 
-									backgroundColor: stayLoggedIn ? "#f0f9ff" : "transparent", 
-									borderRadius: "6px", 
-									border: stayLoggedIn ? "1px solid #0ea5e9" : "1px solid #e5e7eb" 
-								}}
-							>
+							<div className={`${styles.stayLoggedInContainer} ${stayLoggedIn ? styles.checked : ''}`}>
 								<input 
 									type="checkbox" 
 									id="stayLoggedIn" 
 									checked={stayLoggedIn} 
 									onChange={(e) => setStayLoggedIn(e.target.checked)} 
-									style={{ marginRight: "8px", transform: "scale(1.1)" }} 
+									className={styles.checkboxInput}
 								/>
 								<label 
 									htmlFor="stayLoggedIn" 
-									style={{ 
-										fontSize: "14px", 
-										cursor: "pointer", 
-										color: stayLoggedIn ? "#0369a1" : "#374151", 
-										flex: 1 
-									}}
+									className={styles.checkboxLabel}
 								>
 									Ingelogd blijven
-									<span 
-										style={{ 
-											display: "block", 
-											fontSize: "12px", 
-											color: stayLoggedIn ? "#0891b2" : "#6b7280", 
-											marginTop: "2px" 
-										}}
-									>
+									<span className={styles.checkboxSubtext}>
 										Sessie blijft 5 dagen actief
 									</span>
 								</label>
@@ -198,7 +175,7 @@ return (
 
 						{message && <p className={isSuccess ? "success-msg" : "error-msg"}>{message}</p>}
 
-						<div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+						<div className={styles.formActions}>
 							<button type="submit" className="btn btn-primary" disabled={isLoading}>
 								{isLoading ? "Bezig..." : (isLogin ? "Inloggen" : "Registreren")}
 							</button>
@@ -213,8 +190,7 @@ return (
 							{isLogin ? "Nog geen account?" : "Heb je al een account?"}{" "}
 							<button 
 								onClick={switchAuthMode} 
-								className="btn btn-link" 
-								style={{ marginLeft: "5px" }}
+								className={`btn btn-link ${styles.linkButton}`}
 							>
 								{isLogin ? "Registreren hier" : "Log hier in"}
 							</button>

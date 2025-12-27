@@ -80,3 +80,73 @@
 .btn-danger:hover:not(:disabled) {
   background-color: #b91c1c;
 }
+
+/* --- LOGIN PAGE SPECIFIC --- */
+
+/* --- HEADER --- */
+.authHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.backButton {
+  margin-right: 15px;
+  padding: 8px 16px;
+}
+
+/* --- STAY LOGGED IN CHECKBOX --- */
+.stayLoggedInContainer {
+  display: flex;
+  align-items: center;
+  margin-bottom: 10px;
+  padding: 8px;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+  transition: all 0.2s ease;
+}
+
+.stayLoggedInContainer.checked {
+  background-color: #f0f9ff;
+  border-color: #0ea5e9;
+}
+
+.checkboxInput {
+  margin-right: 8px;
+  transform: scale(1.1);
+}
+
+.checkboxLabel {
+  font-size: 14px;
+  cursor: pointer;
+  color: #374151;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.stayLoggedInContainer.checked .checkboxLabel {
+  color: #0369a1;
+}
+
+.checkboxSubtext {
+  display: block;
+  font-size: 12px;
+  color: #6b7280;
+  margin-top: 2px;
+}
+
+.stayLoggedInContainer.checked .checkboxSubtext {
+  color: #0891b2;
+}
+
+/* --- FORM ACTIONS --- */
+.formActions {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.linkButton {
+  margin-left: 5px;
+}

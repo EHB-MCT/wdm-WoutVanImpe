@@ -13,7 +13,7 @@ interface ImageUploadProps {
 
 export function ImageUpload({ imgInputRef, imgPreview, onChange, isLoading, onSubmit }: Readonly<ImageUploadProps>) {
   return (
-    <div className="card" style={{ maxWidth: "600px", width: "100%" }}>
+    <div className={`card ${styles.uploadCard}`}>
       <form className={styles.ocrForm} onSubmit={onSubmit}>
         <div className={styles.uploadControls}>
           <label htmlFor="image-upload" className="label-text">Kies een afbeelding</label>
@@ -25,8 +25,7 @@ export function ImageUpload({ imgInputRef, imgPreview, onChange, isLoading, onSu
             type="file" 
             accept="image/*" 
             onChange={onChange} 
-            className="input-field" 
-            style={{ paddingTop: "10px" }} 
+            className={`input-field ${styles.fileInput}`}
             disabled={isLoading} 
           />
         </div>
@@ -36,7 +35,7 @@ export function ImageUpload({ imgInputRef, imgPreview, onChange, isLoading, onSu
             type="submit" 
             variant="primary"
             disabled={isLoading || !imgPreview} 
-            style={isLoading ? { backgroundColor: "var(--disabled-bg)", cursor: "default" } : { width: "100%" }}
+            className={`${isLoading ? styles.loadingButton : styles.normalButton}`}
             onKeyDown={(e) => {
               if ((e.key === 'Enter' || e.key === ' ') && !isLoading && imgPreview) {
                 onSubmit(e);
@@ -54,10 +53,10 @@ export function ImageUpload({ imgInputRef, imgPreview, onChange, isLoading, onSu
               alt="Afbeelding van geselecteerd bon" 
               width={250} 
               height={250} 
-              style={{ objectFit: "contain", maxWidth: "100%", height: "auto" }} 
+              className={styles.previewImage}
             />
           ) : (
-            <span style={{ color: "var(--placeholder-color)" }}>Geen afbeelding geselecteerd</span>
+            <span className={styles.noImageText}>Geen afbeelding geselecteerd</span>
           )}
         </div>
       </form>

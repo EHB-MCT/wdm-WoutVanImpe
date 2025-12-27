@@ -33,8 +33,8 @@ export const SpendingTrendChart: React.FC<SpendingTrendChartProps> = ({
 }) => {
   if (!data || data.length === 0) {
     return (
-      <div className={`chart-container ${className || ''}`} style={{ height }}>
-        <p style={{ textAlign: "center", color: "var(--muted-color)" }}>
+      <div className={`chart-container ${className || ''} ${'no-data-chart'}`} style={{ height }}>
+        <p className="no-data-message">
           Geen gegevens beschikbaar
         </p>
       </div>
@@ -79,8 +79,8 @@ export const CategoryChart: React.FC<CategoryChartProps> = ({
 }) => {
   if (!data || data.length === 0) {
     return (
-      <div className={`chart-container ${className || ''}`} style={{ height }}>
-        <p style={{ textAlign: "center", color: "var(--muted-color)" }}>
+      <div className={`chart-container ${className || ''} ${'no-data-chart'}`} style={{ height }}>
+        <p className="no-data-message">
           Geen categoriegegevens beschikbaar
         </p>
       </div>

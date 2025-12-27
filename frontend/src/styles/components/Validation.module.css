@@ -355,3 +355,103 @@
 .btn-danger:hover:not(:disabled) {
   background-color: #b91c1c;
 }
+
+/* ============================================================================ */
+/*                             ACCOUNT PAGE SPECIFIC                              */
+/* ============================================================================ */
+
+/* --- HEADER --- */
+.accountHeader {
+  display: flex;
+  align-items: center;
+  margin-bottom: 30px;
+  justify-content: center;
+}
+
+/* --- MESSAGE DISPLAY --- */
+.message {
+  margin-bottom: 20px;
+  padding: 12px;
+  border-radius: 6px;
+  border: 1px solid;
+}
+
+.message.success {
+  background-color: #d1fae5;
+  color: #065f46;
+  border-color: #6ee7b7;
+}
+
+.message.error {
+  background-color: #fee2e2;
+  color: #991b1b;
+  border-color: #fca5a5;
+}
+
+/* --- MENU VIEW --- */
+.menuContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.menuButtons {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.menuButton {
+  padding: 16px 24px;
+  font-size: 1em;
+  justify-content: flex-start;
+  text-align: left;
+}
+
+/* --- PROFILE/PASSWORD VIEWS --- */
+.profileView,
+.passwordView {
+  display: flex;
+  flex-direction: column;
+}
+
+.formGroup {
+  margin-bottom: 16px;
+}
+
+.formGroup:last-child {
+  margin-bottom: 20px;
+}
+
+.formLabel {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.formActions {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* --- TAB BUTTONS --- */
+.tab-button {
+  border-radius: 0 !important;
+  border: none !important;
+  margin-right: 2px;
+}
+
+.tab-button.active {
+  background-color: #3b82f6 !important;
+  color: white !important;
+}
+
+.tab-button.inactive {
+  background-color: transparent !important;
+  color: #6b7280 !important;
+}

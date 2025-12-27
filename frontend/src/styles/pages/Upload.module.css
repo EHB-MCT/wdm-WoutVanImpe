@@ -128,3 +128,37 @@
 .processingFailed {
   font-weight: bold;
 }
+
+/* --- UPLOAD COMPONENTS --- */
+.uploadCard {
+  max-width: 600px;
+  width: 100%;
+}
+
+.fileInput {
+  padding-top: 10px;
+}
+
+.uploadButtonContainer {
+  display: flex;
+  flex-direction: column;
+}
+
+.loadingButton {
+  background-color: var(--disabled-bg);
+  cursor: default;
+}
+
+.normalButton {
+  width: 100%;
+}
+
+.previewImage {
+  object-fit: contain;
+  max-width: 100%;
+  height: auto;
+}
+
+.noImageText {
+  color: var(--placeholder-color);
+}

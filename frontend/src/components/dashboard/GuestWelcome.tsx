@@ -9,12 +9,12 @@ export function GuestWelcome() {
   return (
     <>
       <h1 className={styles.pageTitle}>Welkom, Gast!</h1>
-      <div className="card" style={{ maxWidth: "500px", width: "100%", textAlign: "center" }}>
-        <p className="label-text" style={{ marginBottom: "20px" }}>
+      <div className={`card ${styles.guestCard}`}>
+        <p className={`label-text ${styles.guestDescription}`}>
           Je bent nog niet ingelogd.
         </p>
         <Link href="/account/login">
-          <Button variant="primary" style={{ width: "100%" }}>
+          <Button variant="primary" className={styles.guestButton}>
             Naar Login
           </Button>
         </Link>

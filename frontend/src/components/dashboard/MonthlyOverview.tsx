@@ -29,7 +29,6 @@ interface CategoryBreakdownProps {
 }
 
 const CategoryBreakdown: React.FC<CategoryBreakdownProps> = ({ categoryData, onCategoryClick }) => {
-  const colors = ["#E63946", "#2A9D8F", "#264653", "#F4A261", "#E9C46A", "#F77F00", "#D62828", "#06A77D"];
 
   return (
     <div className={styles.combinedContent}>
@@ -42,7 +41,7 @@ const CategoryBreakdown: React.FC<CategoryBreakdownProps> = ({ categoryData, onC
             aria-label={`Bekijk details voor categorie ${cat.name}, bedrag €${cat.value.toFixed(2)}`}
           >
             <div className={styles.categoryInfo}>
-              <div className={styles.categoryDot} style={{ background: colors[index % 8] }} />
+              <div className={`${styles.categoryDot} ${styles[`color${index % 8}`]}`} />
               <span className={styles.categoryName}>{cat.name}</span>
             </div>
             <span className={styles.categoryAmount}>€{cat.value.toFixed(2)}</span>

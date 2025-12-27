@@ -345,8 +345,8 @@ export default function DashboardPage() {
     return (
       <AuthGuard>
         <main className={styles.dashboardPage}>
-          <div className="card" style={{ textAlign: "center", maxWidth: "500px" }}>
-            <p className="label-text" style={{ marginBottom: "20px" }}>
+          <div className={`card ${styles.loginPrompt}`}>
+            <p className="label-text">
               Je moet ingelogd zijn om het dashboard te bekijken.
             </p>
             <button className="btn btn-primary" onClick={() => router.push("/account")}>

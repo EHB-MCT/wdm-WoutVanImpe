@@ -12,13 +12,7 @@ export const TabButton: React.FC<TabButtonProps> = ({ active, onClick, children 
   <Button
     onClick={onClick}
     variant={active ? 'primary' : 'secondary'}
-    style={{
-      borderRadius: '0',
-      border: 'none',
-      marginRight: '2px',
-      backgroundColor: active ? '#3b82f6' : 'transparent',
-      color: active ? 'white' : '#6b7280'
-    }}
+    className={`tab-button ${active ? 'active' : 'inactive'}`}
   >
     {children}
   </Button>

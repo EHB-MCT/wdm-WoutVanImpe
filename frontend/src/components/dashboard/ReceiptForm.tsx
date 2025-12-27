@@ -59,7 +59,7 @@ export function ReceiptForm({ editableData, updateEditableData }: Readonly<Recei
           className={`${getFieldClassName(editableData.total_price)} readonly-field`}
           placeholder="0.00"
         />
-        <small style={{ color: 'var(--muted-color)', fontSize: '0.8em', marginTop: '4px', display: 'block' }}>
+        <small className={styles.totalHelper}>
           Automatically calculated from item prices
         </small>
       </div>

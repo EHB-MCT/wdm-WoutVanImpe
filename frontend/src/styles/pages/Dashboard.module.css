@@ -101,6 +101,18 @@
   margin-bottom: var(--spacing-xl);
 }
 
+.ctaCard {
+  text-align: center;
+}
+
+.ctaLink {
+  flex: 1;
+}
+
+.ctaButton {
+  width: 100%;
+}
+
 /* ============================================================================ */
 /*                      MONTHLY OVERVIEW                                */
 /* ============================================================================ */
@@ -266,3 +278,76 @@
   border-radius: var(--radius-lg);
   border: 1px dashed var(--border-color);
 }
+
+.loginPrompt {
+  text-align: center;
+  max-width: 500px;
+}
+
+.loginPrompt .label-text {
+  margin-bottom: 20px;
+}
+
+/* ============================================================================ */
+/*                    DASHBOARD SPECIFIC                                */
+/* ============================================================================ */
+
+.summaryCards {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--spacing-xl);
+  width: 100%;
+}
+
+.chartsGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--spacing-xl);
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .chartsGrid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.chartCard {
+  padding: var(--spacing-xl);
+}
+
+.chartTitle {
+  margin: 0 0 var(--spacing-lg) 0;
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.receiptsSection {
+  margin-top: var(--spacing-xl);
+}
+
+/* --- GUEST SECTION --- */
+.guestCard {
+  max-width: 500px;
+  width: 100%;
+  text-align: center;
+}
+
+.guestDescription {
+  margin-bottom: 20px;
+}
+
+.guestButton {
+  width: 100%;
+}
+
+/* --- CATEGORY COLORS --- */
+.color0 { background-color: #E63946; }
+.color1 { background-color: #2A9D8F; }
+.color2 { background-color: #264653; }
+.color3 { background-color: #F4A261; }
+.color4 { background-color: #E9C46A; }
+.color5 { background-color: #F77F00; }
+.color6 { background-color: #D62828; }
+.color7 { background-color: #06A77D; }

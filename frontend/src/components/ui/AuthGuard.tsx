@@ -24,14 +24,7 @@ export function AuthGuard({ children, requireAuth = true }: Readonly<AuthGuardPr
 
   if (requireAuth && !isUserAuthenticated()) {
     return (
-      <div style={{ 
-        display: "flex", 
-        justifyContent: "center", 
-        alignItems: "center", 
-        height: "100vh",
-        fontSize: "18px",
-        color: "#666"
-      }}>
+      <div className="auth-redirect">
         Redirecting to login...
       </div>
     );

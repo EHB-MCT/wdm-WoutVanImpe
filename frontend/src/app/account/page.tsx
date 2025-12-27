@@ -162,8 +162,8 @@ export default function AccountPage() {
 			<div className={styles.authWrapper}>
 				<div className="card">
 					{/* Header */}
-					<div style={{ display: "flex", alignItems: "center", marginBottom: "30px", justifyContent: "center" }}>
-						<h1 className={styles.authTitle} style={{ margin: 0 }}>
+					<div className={styles.accountHeader}>
+						<h1 className={styles.authTitle}>
 							{activeView === 'menu' ? `Hallo, ${user.username}!` : 
 							 activeView === 'profile' ? 'Profiel' :
 							 activeView === 'password' ? 'Wachtwoord wijzigen' : 'Account'}
@@ -172,59 +172,32 @@ export default function AccountPage() {
 
 					{/* Message Display */}
 					{message && (
-						<div 
-							style={{ 
-								marginBottom: "20px", 
-								padding: "12px", 
-								borderRadius: "6px",
-								backgroundColor: message.type === "success" ? "#d1fae5" : "#fee2e2",
-								color: message.type === "success" ? "#065f46" : "#991b1b",
-								border: `1px solid ${message.type === "success" ? "#6ee7b7" : "#fca5a5"}`,
-							}}
-						>
+						<div className={`${styles.message} ${styles[message.type]}`}>
 							{message.text}
 						</div>
 					)}
 
 					{/* Menu View */}
 					{activeView === 'menu' && (
-						<div>
-							<div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+						<div className={styles.menuContainer}>
+							<div className={styles.menuButtons}>
 								<button 
 									onClick={() => setActiveView('profile')}
-									className="btn btn-primary"
-									style={{ 
-										padding: "16px 24px", 
-										fontSize: "1em",
-										justifyContent: "flex-start",
-										textAlign: "left"
-									}}
+									className={`btn btn-primary ${styles.menuButton}`}
 								>
 									👤 Profiel bekijken
 								</button>
 								
 								<button 
 									onClick={() => setActiveView('password')}
-									className="btn btn-secondary"
-									style={{ 
-										padding: "16px 24px", 
-										fontSize: "1em",
-										justifyContent: "flex-start",
-										textAlign: "left"
-									}}
+									className={`btn btn-secondary ${styles.menuButton}`}
 								>
 									🔐 Wachtwoord wijzigen
 								</button>
 								
 								<button 
 									onClick={handleLogout}
-									className="btn btn-danger"
-									style={{ 
-										padding: "16px 24px", 
-										fontSize: "1em",
-										justifyContent: "flex-start",
-										textAlign: "left"
-									}}
+									className={`btn btn-danger ${styles.menuButton}`}
 								>
 									🚪 Uitloggen
 								</button>
@@ -234,15 +207,10 @@ export default function AccountPage() {
 
 					{/* Profile View */}
 					{activeView === 'profile' && (
-						<div>
-							<div style={{ 
-								padding: "20px", 
-								backgroundColor: "#f8fafc", 
-								borderRadius: "8px", 
-								border: "1px solid #e2e8f0" 
-							}}>
-								<div style={{ marginBottom: "16px" }}>
-									<label htmlFor="account-username" style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
+						<div className={styles.profileView}>
+							<div className={styles.profileInfo}>
+								<div className={styles.formGroup}>
+									<label htmlFor="account-username" className={styles.formLabel}>
 										Gebruikersnaam
 									</label>
 									<input
@@ -250,19 +218,12 @@ export default function AccountPage() {
 										type="text"
 										value={profileForm.username}
 										onChange={(e) => setProfileForm({ ...profileForm, username: e.target.value })}
-										className="form-control"
-										style={{ 
-											width: "100%", 
-											padding: "10px", 
-											border: "1px solid #d1d5db", 
-											borderRadius: "4px",
-											fontSize: "1em"
-										}}
+										className="input-field"
 									/>
 								</div>
 								
-								<div style={{ marginBottom: "20px" }}>
-									<label htmlFor="account-email" style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
+								<div className={styles.formGroup}>
+									<label htmlFor="account-email" className={styles.formLabel}>
 										Email
 									</label>
 									<input
@@ -270,26 +231,15 @@ export default function AccountPage() {
 										type="email"
 										value={profileForm.email}
 										onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
-										className="form-control"
-										style={{ 
-											width: "100%", 
-											padding: "10px", 
-											border: "1px solid #d1d5db", 
-											borderRadius: "4px",
-											fontSize: "1em"
-										}}
+										className="input-field"
 									/>
 								</div>
 
-								<div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
+								<div className={styles.formActions}>
 									<button 
 										onClick={handleProfileSave}
-										className="btn btn-primary"
+										className={`btn btn-primary ${!hasChanges || isLoading || !profileForm.username.trim() || !profileForm.email.trim() || !profileForm.email.includes('@') ? styles.disabled : ''}`}
 										disabled={!hasChanges || isLoading || !profileForm.username.trim() || !profileForm.email.trim() || !profileForm.email.includes('@')}
-										style={{ 
-											opacity: (!hasChanges || isLoading || !profileForm.username.trim() || !profileForm.email.trim() || !profileForm.email.includes('@')) ? 0.6 : 1,
-											cursor: (!hasChanges || isLoading || !profileForm.username.trim() || !profileForm.email.trim() || !profileForm.email.includes('@')) ? 'not-allowed' : 'pointer'
-										}}
 									>
 										{isLoading ? "Opslaan..." : "Opslaan"}
 									</button>
@@ -306,15 +256,10 @@ export default function AccountPage() {
 
 					{/* Password Change View */}
 					{activeView === 'password' && (
-						<div>
-							<div style={{ 
-								padding: "20px", 
-								backgroundColor: "#f8fafc", 
-								borderRadius: "8px", 
-								border: "1px solid #e2e8f0" 
-							}}>
-								<div style={{ marginBottom: "16px" }}>
-									<label htmlFor="account-current-password" style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
+						<div className={styles.passwordView}>
+							<div className={styles.profileInfo}>
+								<div className={styles.formGroup}>
+									<label htmlFor="account-current-password" className={styles.formLabel}>
 										Huidig Wachtwoord
 									</label>
 									<input
@@ -322,14 +267,13 @@ export default function AccountPage() {
 										type="password"
 										value={passwordForm.currentPassword}
 										onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
-										className="form-control"
+										className="input-field"
 										placeholder="Voer je huidige wachtwoord in"
-										style={{ width: "100%", padding: "10px", border: "1px solid #d1d5db", borderRadius: "4px" }}
 									/>
 								</div>
 								
-								<div style={{ marginBottom: "20px" }}>
-									<label htmlFor="account-new-password" style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
+								<div className={styles.formGroup}>
+									<label htmlFor="account-new-password" className={styles.formLabel}>
 										Nieuw Wachtwoord (min. 6 tekens)
 									</label>
 									<input
@@ -337,13 +281,12 @@ export default function AccountPage() {
 										type="password"
 										value={passwordForm.newPassword}
 										onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
-										className="form-control"
+										className="input-field"
 										placeholder="Voer je nieuwe wachtwoord in"
-										style={{ width: "100%", padding: "10px", border: "1px solid #d1d5db", borderRadius: "4px" }}
 									/>
 								</div>
 
-								<div style={{ display: "flex", gap: "10px" }}>
+								<div className={styles.formActions}>
 									<button 
 										onClick={handlePasswordChange}
 										className="btn btn-primary"
