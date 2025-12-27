@@ -6,6 +6,7 @@ import { getStoredUser, logout, isUserAuthenticated } from "@/lib/auth";
 import { AccountMenu } from "@/components/account/AccountMenu";
 import { ProfileForm } from "@/components/account/ProfileForm";
 import { PasswordForm } from "@/components/account/PasswordForm";
+import { MessageDisplay } from "@/components/ui/MessageDisplay";
 import styles from "@/styles/components/Account.module.css";
 
 export default function AccountPage() {
@@ -160,7 +161,7 @@ export default function AccountPage() {
 		);
 	}
 
-return (
+	return (
 		<div className={styles.authContainer}>
 			<div className={styles.authWrapper}>
 				<div className="card">
@@ -170,39 +171,18 @@ return (
 					</div>
 
 					{/* Message Display */}
-					{message && <div className={`message-util ${message.type === "success" ? "message-success" : "message-error"}`}>{message.text}</div>}
+					{message && <MessageDisplay message={message} />}
 
 					{/* Menu View */}
-					{activeView === "menu" && (
-						<AccountMenu
-							onProfileClick={() => setActiveView("profile")}
-							onPasswordClick={() => setActiveView("password")}
-							onLogout={handleLogout}
-						/>
-					)}
+					{activeView === "menu" && <AccountMenu onProfileClick={() => setActiveView("profile")} onPasswordClick={() => setActiveView("password")} onLogout={handleLogout} />}
 
 					{/* Profile View */}
 					{activeView === "profile" && (
-						<ProfileForm
-							profileForm={profileForm}
-							onProfileChange={(field, value) => setProfileForm({ ...profileForm, [field]: value })}
-							onSave={handleProfileSave}
-							onCancel={goBack}
-							isLoading={isLoading}
-							hasChanges={hasChanges}
-						/>
+						<ProfileForm profileForm={profileForm} onProfileChange={(field, value) => setProfileForm({ ...profileForm, [field]: value })} onSave={handleProfileSave} onCancel={goBack} isLoading={isLoading} hasChanges={hasChanges} />
 					)}
 
 					{/* Password Change View */}
-					{activeView === "password" && (
-						<PasswordForm
-							passwordForm={passwordForm}
-							onPasswordChange={(field, value) => setPasswordForm({ ...passwordForm, [field]: value })}
-							onSave={handlePasswordChange}
-							onCancel={goBack}
-							isLoading={isLoading}
-						/>
-					)}
+					{activeView === "password" && <PasswordForm passwordForm={passwordForm} onPasswordChange={(field, value) => setPasswordForm({ ...passwordForm, [field]: value })} onSave={handlePasswordChange} onCancel={goBack} isLoading={isLoading} />}
 				</div>
 			</div>
 		</div>

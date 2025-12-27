@@ -4,6 +4,7 @@ import React, { useState, FormEvent } from "react";
 import SHA256 from "crypto-js/sha256";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/Button";
+import { MessageDisplay } from "@/components/ui/MessageDisplay";
 import styles from "@/styles/layout/Auth.module.css";
 
 export default function LoginPage() {
@@ -125,7 +126,7 @@ export default function LoginPage() {
 							</div>
 						)}
 
-						{message && <p className={isSuccess ? "success-msg" : "error-msg"}>{message}</p>}
+						{message && <MessageDisplay message={{ type: isSuccess ? "success" : "error", text: message }} />}
 
 						<div className={styles.formActions}>
 							<Button type="submit" variant="primary" disabled={isLoading}>
