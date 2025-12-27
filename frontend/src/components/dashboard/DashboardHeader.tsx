@@ -26,7 +26,6 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ currentDate, c
 			{/* Header */}
 			<div className={styles.dashboardHeader}>
 				<h1 className={styles.title}>Dashboard: {formatMonthYear(currentDate)}</h1>
-				<p className={styles.categoryInfo}>Categorie: {currentCategory}</p>
 			</div>
 
 			{/* Controls */}
