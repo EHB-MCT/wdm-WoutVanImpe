@@ -9,7 +9,7 @@ import React from "react";
 import { Button } from "../ui/Button";
 import { useReceiptEditor } from "@/hooks/useReceiptEditor";
 import { VALID_CATEGORIES } from "@/lib/constants";
-import { validateReceiptItems, formatCurrency } from "@/lib/receiptUtils";
+import { validateReceiptItems, formatCurrency, safeParseNumber, safeParseInt } from "@/lib/receiptUtils";
 import type { Receipt } from "@/types/dashboard";
 import styles from "@/styles/components/Modal.module.css";
 
@@ -222,8 +222,8 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ receipt, isOpen, onC
 								</div>
 								<div className={styles.itemsList}>
 									{receipt.items.map((item, index) => {
-										const price = typeof item.price === "number" ? item.price : 0;
-										const quantity = typeof item.quantity === "number" ? item.quantity : 1;
+const price = safeParseNumber(item.price);
+										const quantity = safeParseInt(item.quantity, 1);
 
 										return (
 											<div key={`${receipt.id}-item-${index}`} className={styles.itemCard}>
@@ -350,7 +350,7 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ receipt, isOpen, onC
 															min="0"
 															step="1"
 															value={item.quantity || ""}
-															onChange={(e) => updateItem(index, "quantity", e.target.value ? Number.parseInt(e.target.value) : null)}
+															onChange={(e) => updateItem(index, "quantity", e.target.value ? safeParseInt(e.target.value) : null)}
 															className={`${getFieldClassName(item.quantity, true)} ${styles.smallInput}`}
 															placeholder="1"
 														/>
@@ -365,7 +365,7 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ receipt, isOpen, onC
 															min="0"
 															step="0.01"
 															value={item.price || ""}
-															onChange={(e) => updateItem(index, "price", e.target.value ? Number.parseFloat(e.target.value) : null)}
+															onChange={(e) => updateItem(index, "price", e.target.value ? safeParseNumber(e.target.value) : null)}
 															className={`${getFieldClassName(item.price, false, true)} ${styles.smallInput}`}
 															placeholder="0.00"
 														/>
