@@ -1,6 +1,6 @@
 import React from 'react';
 import { Button } from './Button';
-import componentStyles from '@/styles/components/Validation.module.css';
+import componentStyles from '@/styles/components/Account.module.css';
 
 interface TabButtonProps {
   active: boolean;

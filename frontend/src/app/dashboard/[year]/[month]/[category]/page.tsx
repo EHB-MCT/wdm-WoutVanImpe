@@ -8,6 +8,7 @@
 import React, { useEffect, useState, useMemo } from "react";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import styles from "@/styles/pages/Dashboard.module.css";
+import { Button } from "@/components/ui/Button";
 import { DashboardHeader } from "@/components/dashboard/DashboardHeader";
 import { ReceiptModal } from "@/components/dashboard/ReceiptModal";
 import { ReceiptsList } from "@/components/dashboard/ReceiptsList";
@@ -140,14 +141,7 @@ export default function DashboardPage() {
     }
   };
 
-  const goToCurrentDate = () => {
-    const now = new Date();
-    navigateToMonth(now, "all");
-  };
-
-  const resetCategories = () => {
-    navigateToMonth(currentDate, "all");
-  };
+  
 
   const navigateToMonth = (date: Date, category: string) => {
     const year = date.getFullYear();
@@ -349,9 +343,9 @@ export default function DashboardPage() {
             <p className="label-text">
               Je moet ingelogd zijn om het dashboard te bekijken.
             </p>
-            <button className="btn btn-primary" onClick={() => router.push("/account")}>
+            <Button variant="primary" onClick={() => router.push("/account")}>
               Naar Login
-            </button>
+            </Button>
           </div>
         </main>
       </AuthGuard>
@@ -362,15 +356,13 @@ export default function DashboardPage() {
     <AuthGuard>
       <main className={styles.dashboardPage}>
         <div className={styles.dashboardContainer}>
-          <DashboardHeader
+<DashboardHeader
             currentDate={currentDate}
             currentCategory={currentCategory}
             validCategories={VALID_CATEGORIES}
             canGoNext={canGoNext}
             onPreviousMonth={goToPreviousMonth}
             onNextMonth={goToNextMonth}
-            onCurrentDate={goToCurrentDate}
-            onResetCategories={resetCategories}
             onCategoryChange={handleCategoryChange}
             formatMonthYear={formatMonthYear}
           />

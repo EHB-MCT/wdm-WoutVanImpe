@@ -33,14 +33,6 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
     return !hasChanges || isLoading || !isFormValid;
   };
 
-  const getButtonOpacity = () => {
-    return getButtonDisabledState() ? 0.6 : 1;
-  };
-
-  const getButtonCursor = () => {
-    return getButtonDisabledState() ? 'not-allowed' : 'pointer';
-  };
-
   return (
     <div>
       <div style={{ 
@@ -58,14 +50,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
             type="text"
             value={profileForm.username}
             onChange={(e) => onProfileChange('username', e.target.value)}
-            className="form-control"
-            style={{ 
-              width: "100%", 
-              padding: "10px", 
-              border: "1px solid #d1d5db", 
-              borderRadius: "4px",
-              fontSize: "1em"
-            }}
+            className="input-field"
           />
         </div>
         
@@ -78,7 +63,7 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
             type="email"
             value={profileForm.email}
             onChange={(e) => onProfileChange('email', e.target.value)}
-            className="form-control"
+            className="input-field"
             style={{ 
               width: "100%", 
               padding: "10px", 
@@ -89,15 +74,11 @@ export const ProfileForm: React.FC<ProfileFormProps> = ({
           />
         </div>
 
-        <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
+        <div className="form-actions">
           <Button 
             onClick={onSave}
             variant="primary"
             disabled={getButtonDisabledState()}
-            style={{ 
-              opacity: getButtonOpacity(),
-              cursor: getButtonCursor()
-            }}
           >
             {isLoading ? "Opslaan..." : "Opslaan"}
           </Button>

@@ -11,6 +11,7 @@ import { useReceiptEditor } from "@/hooks/useReceiptEditor";
 import { VALID_CATEGORIES } from "@/lib/constants";
 import { validateReceiptItems, formatCurrency } from "@/lib/receiptUtils";
 import type { Receipt } from "@/types/dashboard";
+import styles from "@/styles/components/Modal.module.css";
 
 interface ReceiptModalProps {
   receipt: Receipt | null;
@@ -175,71 +176,36 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
   return (
     <button 
       type="button"
-      style={{
-        position: "fixed",
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: "rgba(0, 0, 0, 0.5)",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        zIndex: 1000,
-        border: "none",
-        padding: 0,
-        margin: 0,
-        cursor: "default"
-      }}
+      className={styles.modalBackdrop}
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
       aria-label="Close modal"
     >
-      <div 
-        style={{
-          backgroundColor: "white",
-          borderRadius: "8px",
-          width: "90%",
-          maxWidth: "800px",
-          maxHeight: "90vh",
-          overflow: "auto",
-          position: "relative"
-        }}
-      >
+      <div className={`${styles.modalContent} card`}>
         {/* Header */}
-        <div style={{ 
-          padding: "20px", 
-          borderBottom: "1px solid #e5e7eb",
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center"
-        }}>
-          <h2 style={{ margin: 0 }}>
+        <div className={`${styles.modalHeader} flex-between`}>
+          <h2>
             {editableData?.store_name || receipt.store_name}
           </h2>
           <Button 
             onClick={onClose}
             variant="secondary"
-            style={{ 
-              padding: "8px 12px",
-              fontSize: "18px",
-              lineHeight: "1"
-            }}
+            className={styles.modalCloseButton}
           >
             ×
           </Button>
         </div>
 
         {/* Content */}
-        <div style={{ padding: "20px" }}>
+        <div className={`${styles.modalBody} p-xl`}>
           {!isEditing ? (
             /* View Mode */
             <div>
               {/* Receipt Details */}
-              <div style={{ marginBottom: "20px" }}>
+              <div className={styles.receiptDetails}>
                 <h3>Ticket Details</h3>
-                <div style={{ lineHeight: "1.6" }}>
+                <div className={styles.receiptDetailsList}>
                   <div><strong>Datum:</strong> {receipt.purchase_date.split("T")[0]}</div>
                   <div><strong>Tijd:</strong> {receipt.purchase_date.split("T")[1]?.substring(0, 5) || "12:00"}</div>
                   <div><strong>Winkel:</strong> {receipt.store_name}</div>
@@ -249,14 +215,11 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
               </div>
 
               {/* Items List */}
-              <div style={{ marginBottom: "20px" }}>
-                <h3>Items ({receipt.items.length})</h3>
-                <div style={{ 
-                  display: "flex", 
-                  flexDirection: "column", 
-                  gap: "8px",
-                  lineHeight: "1.6"
-                }}>
+              <div className={styles.itemsListSection}>
+                <div className={styles.itemsListHeader}>
+                  <h3>Items ({receipt.items.length})</h3>
+                </div>
+                <div className={styles.itemsList}>
                   {receipt.items.map((item, index) => {
                     const price = typeof item.price === "number" ? item.price : 0;
                     const quantity = typeof item.quantity === "number" ? item.quantity : 1;
@@ -264,23 +227,17 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
                     return (
                       <div 
                         key={`${receipt.id}-item-${index}`}
-                        style={{
-                          display: "flex",
-                          justifyContent: "space-between",
-                          padding: "8px",
-                          backgroundColor: "#f9fafb",
-                          borderRadius: "4px"
-                        }}
+                        className={styles.itemCard}
                       >
-                        <div style={{ flex: 1 }}>
-                          <div>{item.name}</div>
-                          <div style={{ fontSize: "0.8em", color: "var(--muted-color)" }}>
+                        <div className={styles.itemCardDetails}>
+                          <div className={styles.itemCardName}>{item.name}</div>
+                          <div className={styles.itemCardCategory}>
                             {item.category}
                           </div>
                         </div>
-                        <div style={{ textAlign: "right" }}>
-                          <div>{formatCurrency(price)}</div>
-                          <div style={{ fontSize: "0.8em", color: "var(--muted-color)" }}>
+                        <div className={styles.itemCardPricing}>
+                          <div className={styles.itemCardPrice}>{formatCurrency(price)}</div>
+                          <div className={styles.itemCardQuantity}>
                             ×{quantity}
                           </div>
                         </div>
@@ -291,7 +248,7 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
               </div>
 
               {/* Actions */}
-              <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
+              <div className={`${styles.modalActions} gap-sm`}>
                 <Button onClick={startEditing} variant="primary">
                   Bewerken
                 </Button>
@@ -307,13 +264,8 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
             /* Edit Mode */
             <div>
               {/* Receipt Form */}
-              <div style={{ 
-                display: "grid", 
-                gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", 
-                gap: "16px",
-                marginBottom: "20px"
-              }}>
-                <div>
+              <div className={styles.formGrid}>
+                <div className={styles.formField}>
                   <label htmlFor="store-name" className="label-text">
                     Winkelnaam
                   </label>
@@ -325,7 +277,7 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
                     className={getFieldClassName(editableData?.store_name || null)} 
                   />
                 </div>
-                <div>
+                <div className={styles.formField}>
                   <label htmlFor="purchase-date" className="label-text">
                     Datum (YYYY-MM-DD)
                   </label>
@@ -337,19 +289,19 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
                     className={getFieldClassName(editableData?.date || null)}
                   />
                 </div>
-                <div>
+                <div className={styles.formField}>
                   <label htmlFor="purchase-time" className="label-text">
                     Tijd (HH:MM)
                   </label>
                   <input
                     id="purchase-time"
                     type="time"
-                value={editableData?.time || ""}
-                onChange={(e) => updateEditableData("time", e.target.value || null)}
-                className={getFieldClassName(editableData?.time || null)}
+                    value={editableData?.time || ""}
+                    onChange={(e) => updateEditableData("time", e.target.value || null)}
+                    className={getFieldClassName(editableData?.time || null)}
                   />
                 </div>
-                <div>
+                <div className={styles.formField}>
                   <label htmlFor="payment-method" className="label-text">
                     Betaalmethode
                   </label>
@@ -373,13 +325,8 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
               </div>
 
               {/* Items Section */}
-              <div style={{ marginBottom: "20px" }}>
-                <div style={{ 
-                  display: "flex", 
-                  justifyContent: "space-between", 
-                  alignItems: "center",
-                  marginBottom: "16px"
-                }}>
+              <div className={styles.itemsEditSection}>
+                <div className={styles.itemsEditHeader}>
                   <h3>Items ({editableData?.items?.length || 0}):</h3>
                   <Button onClick={addNewItem} variant="secondary">
                     + Add Item
@@ -387,21 +334,12 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
                 </div>
 
                 {editableData?.items && editableData.items.length > 0 ? (
-                  <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                  <div className={styles.itemsEditGrid}>
                     {editableData.items.map((item, index) => (
-                      <div key={`editable-${receipt.id}-${item.id || index}`} style={{ 
-                        border: "1px solid #e5e7eb", 
-                        borderRadius: "4px", 
-                        padding: "12px" 
-                      }}>
-                        <div style={{ 
-                          display: "grid", 
-                          gridTemplateColumns: "2fr 1fr 1fr 1fr auto", 
-                          gap: "8px",
-                          alignItems: "center"
-                        }}>
+                      <div key={`editable-${receipt.id}-${item.id || index}`} className={styles.itemEditCard}>
+                        <div className={styles.itemEditGrid}>
                           <div>
-                            <label htmlFor={`item-name-${index}`} className="label-text" style={{ fontSize: "0.8em" }}>
+                            <label htmlFor={`item-name-${index}`} className={`label-text ${styles.smallLabel}`}>
                               Item Name
                             </label>
                             <input
@@ -409,21 +347,19 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
                               type="text"
                               value={item.name || ""}
                               onChange={(e) => updateItem(index, "name", e.target.value || null)}
-                              className={getFieldClassName(item.name)}
+                              className={`${getFieldClassName(item.name)} ${styles.smallInput}`}
                               placeholder="Item name"
-                              style={{ fontSize: "0.9em" }}
                             />
                           </div>
                           <div>
-                            <label htmlFor={`item-category-${index}`} className="label-text" style={{ fontSize: "0.8em" }}>
+                            <label htmlFor={`item-category-${index}`} className={`label-text ${styles.smallLabel}`}>
                               Category
                             </label>
                             <select
                               id={`item-category-${index}`}
                               value={item.category || ""}
                               onChange={(e) => updateItem(index, "category", e.target.value)}
-                              className={getFieldClassName(item.category)}
-                              style={{ fontSize: "0.9em", width: "100%" }}
+                              className={`${getFieldClassName(item.category)} ${styles.smallSelect}`}
                             >
                               <option value="">Selecteer categorie</option>
                               {VALID_CATEGORIES.map((category) => (
@@ -434,7 +370,7 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
                             </select>
                           </div>
                           <div>
-                            <label htmlFor={`item-quantity-${index}`} className="label-text" style={{ fontSize: "0.8em" }}>
+                            <label htmlFor={`item-quantity-${index}`} className={`label-text ${styles.smallLabel}`}>
                               Quantity
                             </label>
                             <input
@@ -444,13 +380,12 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
                               step="1"
                               value={item.quantity || ""}
                               onChange={(e) => updateItem(index, "quantity", e.target.value ? Number.parseInt(e.target.value) : null)}
-                              className={getFieldClassName(item.quantity, true)}
+                              className={`${getFieldClassName(item.quantity, true)} ${styles.smallInput}`}
                               placeholder="1"
-                              style={{ fontSize: "0.9em" }}
                             />
                           </div>
                           <div>
-                            <label htmlFor={`item-price-${index}`} className="label-text" style={{ fontSize: "0.8em" }}>
+                            <label htmlFor={`item-price-${index}`} className={`label-text ${styles.smallLabel}`}>
                               Price (€)
                             </label>
                             <input
@@ -460,20 +395,15 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
                               step="0.01"
                               value={item.price || ""}
                               onChange={(e) => updateItem(index, "price", e.target.value ? Number.parseFloat(e.target.value) : null)}
-                              className={getFieldClassName(item.price, false, true)}
+                              className={`${getFieldClassName(item.price, false, true)} ${styles.smallInput}`}
                               placeholder="0.00"
-                              style={{ fontSize: "0.9em" }}
                             />
                           </div>
                           <div>
                             <Button
                               onClick={() => removeItem(index)}
                               variant="danger"
-                              style={{ 
-                                padding: "8px 12px",
-                                fontSize: "16px",
-                                lineHeight: "1"
-                              }}
+                              className={styles.itemRemoveButton}
                             >
                               ×
                             </Button>
@@ -483,27 +413,21 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({
                     ))}
                   </div>
                 ) : (
-                  <div style={{ textAlign: "center", padding: "20px", color: "var(--muted-color)" }}>
+                  <div className={styles.noItemsMessage}>
                     Geen items gevonden. Klik op &quot;Add Item&quot; om items handmatig toe te voegen.
                   </div>
                 )}
               </div>
 
               {/* Total Display */}
-              <div style={{ 
-                marginBottom: "20px",
-                padding: "12px",
-                backgroundColor: "#f3f4f6",
-                borderRadius: "4px",
-                textAlign: "right"
-              }}>
-                <div style={{ fontSize: "1.2em", fontWeight: "bold" }}>
+              <div className={styles.totalDisplay}>
+                <div className={styles.totalAmount}>
                   Totaal: {formatCurrency(editableData?.total_price || 0)}
                 </div>
               </div>
 
               {/* Actions */}
-              <div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
+              <div className={`${styles.modalActions} gap-sm`}>
                 <Button 
                   onClick={cancelEditing} 
                   variant="secondary"

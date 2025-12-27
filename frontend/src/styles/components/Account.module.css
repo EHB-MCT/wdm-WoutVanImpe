@@ -1,0 +1,163 @@
+/* ============================================================================ */
+/*                        ACCOUNT PAGE COMPONENTS                              */
+/* ============================================================================ */
+
+/* --- PROFILE INFO --- */
+.profileInfo {
+  padding: var(--spacing-xl);
+  background-color: var(--muted-bg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+}
+
+.infoRow {
+  padding: var(--spacing-md) 0;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.infoRow:last-child {
+  border-bottom: none;
+}
+
+.infoLabel {
+  color: var(--muted-color);
+  flex: 0 0 120px;
+}
+
+.infoValue {
+  color: var(--foreground);
+  flex: 1;
+  font-weight: 500;
+}
+
+/* --- ACCOUNT PAGE --- */
+.accountSection {
+  margin-bottom: var(--spacing-md);
+  border: 1px solid #e5e7eb;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  background: white;
+}
+
+.accountRow {
+  padding: var(--spacing-md) var(--spacing-lg);
+  transition: background-color var(--duration-normal);
+}
+
+.accountInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+}
+
+.accountLabel {
+  font-weight: 600;
+  color: #374151;
+  font-size: var(--font-sm);
+}
+
+.accountValue {
+  color: #1f2937;
+  font-size: var(--font-base);
+}
+
+.accountEditSection {
+  padding: var(--spacing-xl);
+  border: 2px solid var(--brand-color);
+  border-radius: var(--radius-lg);
+  background-color: var(--muted-bg);
+  margin: var(--spacing-md) 0;
+}
+
+.accountEditHeader {
+  margin-bottom: var(--spacing-md);
+  padding-bottom: var(--spacing-sm);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.accountEditActions {
+  gap: var(--spacing-sm);
+  justify-content: flex-end;
+  margin-top: var(--spacing-md);
+  padding-top: var(--spacing-sm);
+  border-top: 1px solid var(--border-color);
+}
+
+/* --- ACCOUNT BUTTON SIZES --- */
+.btnSm {
+  padding: 6px var(--spacing-sm);
+  font-size: var(--font-sm);
+}
+
+/* --- ACCOUNT HEADER --- */
+.accountHeader {
+  margin-bottom: var(--spacing-3xl);
+}
+
+/* --- MESSAGE DISPLAY --- */
+
+
+
+
+/* --- MENU VIEW --- */
+.menuContainer {
+}
+
+.menuButtons {
+  gap: var(--spacing-md);
+}
+
+.menuButton {
+  padding: var(--spacing-lg) var(--spacing-2xl);
+  font-size: var(--font-base);
+  justify-content: flex-start;
+  text-align: left;
+}
+
+/* --- PROFILE/PASSWORD VIEWS --- */
+.profileView,
+.passwordView {
+}
+
+.formGroup {
+  margin-bottom: var(--spacing-lg);
+}
+
+.formGroup:last-child {
+  margin-bottom: var(--spacing-xl);
+}
+
+.formLabel {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+}
+
+.formActions {
+  gap: var(--spacing-sm);
+  justify-content: center;
+}
+
+.disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* --- TAB BUTTONS --- */
+.tabButton {
+  border-radius: 0 !important;
+  border: none !important;
+  margin-right: 2px;
+}
+
+.tabButton.active {
+  background-color: #3b82f6 !important;
+  color: white !important;
+}
+
+.tabButton.inactive {
+  background-color: transparent !important;
+  color: #6b7280 !important;
+}
+

@@ -71,7 +71,7 @@ export const PasswordForm: React.FC<PasswordFormProps> = ({
             type="password"
             value={passwordForm.currentPassword}
             onChange={(e) => onPasswordChange('currentPassword', e.target.value)}
-            className="form-control"
+            className="input-field"
             placeholder="Voer je huidige wachtwoord in"
             style={{ width: "100%", padding: "10px", border: "1px solid #d1d5db", borderRadius: "4px" }}
           />
@@ -86,13 +86,12 @@ export const PasswordForm: React.FC<PasswordFormProps> = ({
             type="password"
             value={passwordForm.newPassword}
             onChange={(e) => onPasswordChange('newPassword', e.target.value)}
-            className="form-control"
+            className="input-field"
             placeholder="Voer je nieuwe wachtwoord in"
-            style={{ width: "100%", padding: "10px", border: "1px solid #d1d5db", borderRadius: "4px" }}
           />
         </div>
 
-        <div style={{ display: "flex", gap: "10px" }}>
+        <div className="form-actions">
           <Button 
             onClick={onSave}
             variant="primary"

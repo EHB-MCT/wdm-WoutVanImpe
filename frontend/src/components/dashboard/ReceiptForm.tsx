@@ -16,7 +16,7 @@ export function ReceiptForm({ editableData, updateEditableData }: Readonly<Recei
   };
 
   return (
-    <div className={styles.receiptFormGrid}>
+    <div className={`${styles.receiptFormGrid} grid-auto`}>
       <div>
         <label htmlFor="store-name" className="label-text">Store Name</label>
         <input 

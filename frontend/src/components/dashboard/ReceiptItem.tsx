@@ -1,5 +1,6 @@
 'use client';
 import { ReceiptItem } from "@/types/receipt";
+import { Button } from "@/components/ui/Button";
 import styles from "@/styles/components/Receipt.module.css";
 
 interface ReceiptItemProps {
@@ -21,7 +22,7 @@ export function ReceiptItemComponent({ item, index, updateItem, removeItem, cate
     <div className={styles.itemCard}>
       <div className={styles.itemFieldsGrid}>
         <div>
-          <label htmlFor={`item-name-${index}`} className="label-text" style={{ fontSize: "0.8em" }}>
+          <label htmlFor={`item-name-${index}`} className={`label-text ${styles.itemField}`}>
             Item Name
           </label>
           <input 
@@ -31,11 +32,11 @@ export function ReceiptItemComponent({ item, index, updateItem, removeItem, cate
             onChange={(e) => updateItem(index, "name", e.target.value)} 
             className={getFieldClassName(item.name)} 
             placeholder="Item name" 
-            style={{ fontSize: "0.9em" }} 
+
           />
         </div>
         <div>
-          <label htmlFor={`item-category-${index}`} className="label-text" style={{ fontSize: "0.8em" }}>
+          <label htmlFor={`item-category-${index}`} className={`label-text ${styles.itemField}`}>
             Category
           </label>
           <select 
@@ -43,7 +44,7 @@ export function ReceiptItemComponent({ item, index, updateItem, removeItem, cate
             value={item.category || ""} 
             onChange={(e) => updateItem(index, "category", e.target.value)} 
             className={getFieldClassName(item.category)} 
-            style={{ fontSize: "0.9em", width: "100%" }}
+            
           >
             <option value="">Selecteer categorie</option>
             {categories.map((category) => (
@@ -54,7 +55,7 @@ export function ReceiptItemComponent({ item, index, updateItem, removeItem, cate
           </select>
         </div>
         <div>
-          <label htmlFor={`item-quantity-${index}`} className="label-text" style={{ fontSize: "0.8em" }}>
+          <label htmlFor={`item-quantity-${index}`} className={`label-text ${styles.itemField}`}>
             Quantity
           </label>
           <input
@@ -66,11 +67,10 @@ export function ReceiptItemComponent({ item, index, updateItem, removeItem, cate
             onChange={(e) => updateItem(index, "quantity", e.target.value ? Number.parseInt(e.target.value) : null)}
             className={getFieldClassName(item.quantity, true)}
             placeholder="x"
-            style={{ fontSize: "0.9em" }}
           />
         </div>
         <div>
-          <label htmlFor={`item-price-${index}`} className="label-text" style={{ fontSize: "0.8em" }}>
+          <label htmlFor={`item-price-${index}`} className={`label-text ${styles.itemField}`}>
             Price (€)
           </label>
           <input
@@ -82,13 +82,13 @@ export function ReceiptItemComponent({ item, index, updateItem, removeItem, cate
             onChange={(e) => updateItem(index, "price", e.target.value ? Number.parseFloat(e.target.value) : null)}
             className={getFieldClassName(item.price, false, true)}
             placeholder="0.00"
-            style={{ fontSize: "0.9em" }}
+            
           />
         </div>
         <div className={styles.itemRemoveBtn}>
-          <button onClick={() => removeItem(index)} className={`btn btn-danger ${styles.removeItemButton}`}>
+          <Button onClick={() => removeItem(index)} variant="danger" className={styles.removeItemButton}>
             ×
-          </button>
+          </Button>
         </div>
       </div>
     </div>

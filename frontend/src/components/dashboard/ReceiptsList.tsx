@@ -8,6 +8,7 @@
 import React from "react";
 import { Button } from "../ui/Button";
 import { formatCurrency, formatDate } from "@/lib/receiptUtils";
+import styles from "@/styles/components/ReceiptsList.module.css";
 
 interface ReceiptItem {
   id: number;
@@ -41,48 +42,33 @@ export const ReceiptsList: React.FC<ReceiptsListProps> = ({
   if (!receipts || receipts.length === 0) {
     return (
       <div className={className}>
-        <h3>Geen tickets gevonden</h3>
-        <p style={{ color: "var(--muted-color)" }}>
-          Er zijn geen bonnen beschikbaar voor de geselecteerde periode en categorie.
-        </p>
+        <div className="card p-xl">
+          <h3 className="text-center">Geen tickets gevonden</h3>
+          <p className="text-muted">
+            Er zijn geen bonnen beschikbaar voor de geselecteerde periode en categorie.
+          </p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className={className}>
-      <h2>Tickets ({receipts.length})</h2>
-      <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+    <div className={`${className} ${styles.receiptsList}`}>
+      <h2 className={styles.receiptsListTitle}>Tickets ({receipts.length})</h2>
+      <div className={styles.receiptsList}>
         {receipts.map((receipt) => (
           <Button
             key={receipt.id}
             onClick={() => onReceiptClick(receipt)}
             variant="secondary"
-            style={{
-              padding: "16px",
-              justifyContent: "flex-start",
-              textAlign: "left",
-              flexDirection: "column",
-              alignItems: "flex-start",
-              minHeight: "auto",
-              width: "100%"
-            }}
+            className={styles.receiptCard}
           >
             {/* Header */}
-            <div style={{ 
-              display: "flex", 
-              justifyContent: "space-between", 
-              alignItems: "center",
-              width: "100%",
-              marginBottom: "8px"
-            }}>
-              <h4 style={{ margin: 0, fontSize: "1.1em" }}>
+            <div className={styles.receiptHeader}>
+              <h4 className={styles.storeName}>
                 {receipt.store_name}
               </h4>
-              <span style={{ 
-                fontSize: "0.9em", 
-                color: "var(--muted-color)" 
-              }}>
+              <span className={styles.receiptDate}>
                 {formatDate(receipt.purchase_date)}
               </span>
             </div>
@@ -95,41 +81,24 @@ export const ReceiptsList: React.FC<ReceiptsListProps> = ({
               width: "100%",
               marginBottom: "8px"
             }}>
-              <span style={{ 
-                fontSize: "1.1em", 
-                fontWeight: "bold" 
-              }}>
+              <span className={styles.totalAmount}>
                 {formatCurrency(receipt.total_amount)}
               </span>
-              <span style={{ 
-                fontSize: "0.9em", 
-                color: "var(--muted-color)" 
-              }}>
+              <span className={styles.paymentMethod}>
                 {receipt.payment_method}
               </span>
             </div>
 
             {/* Items Preview */}
-            <div style={{ 
-              width: "100%",
-              fontSize: "0.9em"
-            }}>
+            <div className={styles.itemsPreview}>
               {receipt.items.slice(0, 3).map((item, index) => {
                 const price = typeof item.price === "number" ? item.price : 0;
                 const quantity = typeof item.quantity === "number" ? item.quantity : 1;
                 
                 return (
-                  <div 
-                    key={`${receipt.id}-item-${index}`} 
-                    style={{ 
-                      display: "flex", 
-                      justifyContent: "space-between", 
-                      padding: "2px 0",
-                      fontSize: "0.8em"
-                    }}
-                  >
-                    <span>{item.name}</span>
-                    <span style={{ color: "var(--muted-color)" }}>
+                  <div key={`${receipt.id}-item-${index}`} className={styles.item}>
+                    <span className={styles.itemName}>{item.name}</span>
+                    <span className={styles.itemInfo}>
                       {formatCurrency(price * quantity)}
                     </span>
                   </div>

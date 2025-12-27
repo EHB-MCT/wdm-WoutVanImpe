@@ -3,6 +3,7 @@
 import React, { useState, FormEvent } from "react";
 import SHA256 from "crypto-js/sha256";
 import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/Button";
 import styles from "@/styles/layout/Auth.module.css";
 
 export default function LoginPage() {
@@ -88,14 +89,14 @@ return (
 			<div className={styles.authWrapper}>
 				<div className="card">
 					<div className={styles.authHeader}>
-						<button 
-							type="button" 
+						<Button 
 							onClick={() => router.push("/")} 
-							className={`btn btn-secondary ${styles.backButton}`}
+							variant="secondary"
+							className={styles.backButton}
 							aria-label="Terug naar homepagina"
 						>
 							← Terug
-						</button>
+						</Button>
 						<h1 className={styles.authTitle}>
 							{isLogin ? "Inloggen" : "Registreren"}
 						</h1>
@@ -176,24 +177,25 @@ return (
 						{message && <p className={isSuccess ? "success-msg" : "error-msg"}>{message}</p>}
 
 						<div className={styles.formActions}>
-							<button type="submit" className="btn btn-primary" disabled={isLoading}>
+							<Button type="submit" variant="primary" disabled={isLoading}>
 								{isLoading ? "Bezig..." : (isLogin ? "Inloggen" : "Registreren")}
-							</button>
-							<button type="button" onClick={switchAuthMode} className="btn btn-secondary">
+							</Button>
+							<Button type="button" onClick={switchAuthMode} variant="secondary">
 								{isLogin ? "Registreren" : "Inloggen"}
-							</button>
+							</Button>
 						</div>
 					</form>
 
 					<div className={styles.footer}>
 						<p>
 							{isLogin ? "Nog geen account?" : "Heb je al een account?"}{" "}
-							<button 
+							<Button 
 								onClick={switchAuthMode} 
-								className={`btn btn-link ${styles.linkButton}`}
+								variant="link"
+								className={styles.linkButton}
 							>
 								{isLogin ? "Registreren hier" : "Log hier in"}
-							</button>
+							</Button>
 						</p>
 					</div>
 				</div>

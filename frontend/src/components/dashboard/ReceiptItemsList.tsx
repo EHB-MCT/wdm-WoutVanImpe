@@ -1,6 +1,7 @@
 'use client';
 import { ReceiptData, ReceiptItem } from "@/types/receipt";
 import { ReceiptItemComponent } from "./ReceiptItem";
+import { Button } from "@/components/ui/Button";
 import styles from "@/styles/components/Receipt.module.css";
 import listStyles from "@/styles/components/ReceiptItemsList.module.css";
 
@@ -16,12 +17,12 @@ export function ReceiptItemsList({ editableData, updateItem, addNewItem, removeI
   if (!editableData) return null;
 
   return (
-    <div style={{ marginTop: "20px" }}>
-      <div className={styles.itemsHeader}>
+    <div className="mb-xl">
+      <div className={`${styles.itemsHeader} flex-between`}>
         <strong>Items ({editableData.items?.length || 0}):</strong>
-        <button onClick={addNewItem} className={`btn btn-secondary ${listStyles.addItemButton}`}>
+        <Button onClick={addNewItem} variant="secondary" className={listStyles.addItemButton}>
           + Add Item
-        </button>
+        </Button>
       </div>
 
       {editableData.items && editableData.items.length > 0 ? (

@@ -1,6 +1,7 @@
 'use client';
 import { ValidationResult } from "@/lib/receiptValidation";
-import styles from "@/styles/components/Validation.module.css";
+import { Button } from "@/components/ui/Button";
+import styles from "@/styles/components/ValidationModal.module.css";
 
 interface ValidationModalProps {
   validation: ValidationResult;
@@ -68,13 +69,13 @@ export function ValidationModal({ validation, isOpen, onClose, onContinue }: Rea
         </div>
 
         <div className={styles.modalFooter}>
-          <button 
+          <Button 
             onClick={validation.isValid && onContinue ? onContinue : onClose} 
-            className={`btn ${validation.isValid ? "btn-primary" : ""}`} 
+            variant={validation.isValid ? "primary" : "secondary"}
             disabled={!validation.isValid}
           >
             {validation.isValid ? "Continue" : "Fix Issues"}
-          </button>
+          </Button>
         </div>
       </div>
     </button>

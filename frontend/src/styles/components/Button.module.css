@@ -51,6 +51,27 @@
   background-color: #b91c1c;
 }
 
+.link {
+  background: none;
+  color: var(--brand-color);
+  padding: 0;
+  height: auto;
+  font-size: inherit;
+  cursor: pointer;
+  border: none;
+  text-decoration: underline;
+}
+
+.link:hover {
+  text-decoration: underline;
+  color: var(--brand-color-hover);
+}
+
+.link:focus {
+  outline: 2px solid var(--brand-color);
+  outline-offset: 2px;
+}
+
 /* ============================================================================ */
 /*                         BUTTON SIZES                                */
 /* ============================================================================ */

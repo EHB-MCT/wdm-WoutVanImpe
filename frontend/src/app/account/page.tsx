@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getStoredUser, logout, isUserAuthenticated } from "@/lib/auth";
-import styles from "@/styles/components/Validation.module.css";
+import { Button } from "@/components/ui/Button";
+import styles from "@/styles/components/Account.module.css";
 
 export default function AccountPage() {
 	const router = useRouter();
@@ -162,7 +163,7 @@ export default function AccountPage() {
 			<div className={styles.authWrapper}>
 				<div className="card">
 					{/* Header */}
-					<div className={styles.accountHeader}>
+					<div className={`${styles.accountHeader} flex-center`}>
 						<h1 className={styles.authTitle}>
 							{activeView === 'menu' ? `Hallo, ${user.username}!` : 
 							 activeView === 'profile' ? 'Profiel' :
@@ -172,7 +173,7 @@ export default function AccountPage() {
 
 					{/* Message Display */}
 					{message && (
-						<div className={`${styles.message} ${styles[message.type]}`}>
+						<div className={`message-util ${message.type === 'success' ? 'message-success' : 'message-error'}`}>
 							{message.text}
 						</div>
 					)}
@@ -181,26 +182,29 @@ export default function AccountPage() {
 					{activeView === 'menu' && (
 						<div className={styles.menuContainer}>
 							<div className={styles.menuButtons}>
-								<button 
+								<Button 
 									onClick={() => setActiveView('profile')}
-									className={`btn btn-primary ${styles.menuButton}`}
+									variant="primary"
+									className={styles.menuButton}
 								>
 									👤 Profiel bekijken
-								</button>
+								</Button>
 								
-								<button 
+								<Button 
 									onClick={() => setActiveView('password')}
-									className={`btn btn-secondary ${styles.menuButton}`}
+									variant="secondary"
+									className={styles.menuButton}
 								>
 									🔐 Wachtwoord wijzigen
-								</button>
+								</Button>
 								
-								<button 
+								<Button 
 									onClick={handleLogout}
-									className={`btn btn-danger ${styles.menuButton}`}
+									variant="danger"
+									className={styles.menuButton}
 								>
 									🚪 Uitloggen
-								</button>
+								</Button>
 							</div>
 						</div>
 					)}
@@ -236,19 +240,20 @@ export default function AccountPage() {
 								</div>
 
 								<div className={styles.formActions}>
-									<button 
+									<Button 
 										onClick={handleProfileSave}
-										className={`btn btn-primary ${!hasChanges || isLoading || !profileForm.username.trim() || !profileForm.email.trim() || !profileForm.email.includes('@') ? styles.disabled : ''}`}
+										variant="primary"
+										className={!hasChanges || isLoading || !profileForm.username.trim() || !profileForm.email.trim() || !profileForm.email.includes('@') ? styles.disabled : ''}
 										disabled={!hasChanges || isLoading || !profileForm.username.trim() || !profileForm.email.trim() || !profileForm.email.includes('@')}
 									>
 										{isLoading ? "Opslaan..." : "Opslaan"}
-									</button>
-									<button 
+									</Button>
+									<Button 
 										onClick={goBack}
-										className="btn btn-secondary"
+										variant="secondary"
 									>
 										Annuleren
-									</button>
+									</Button>
 								</div>
 							</div>
 						</div>
@@ -287,19 +292,19 @@ export default function AccountPage() {
 								</div>
 
 								<div className={styles.formActions}>
-									<button 
+									<Button 
 										onClick={handlePasswordChange}
-										className="btn btn-primary"
+										variant="primary"
 										disabled={isLoading || !passwordForm.currentPassword || !passwordForm.newPassword}
 									>
 										{isLoading ? "Opslaan..." : "Wachtwoord wijzigen"}
-									</button>
-									<button 
+									</Button>
+									<Button 
 										onClick={goBack}
-										className="btn btn-secondary"
+										variant="secondary"
 									>
 										Annuleren
-									</button>
+									</Button>
 								</div>
 							</div>
 						</div>

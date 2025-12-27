@@ -162,3 +162,18 @@
 .noImageText {
   color: var(--placeholder-color);
 }
+
+/* ============================================================================ */
+/*                    TEXT RESULT CONTAINER                               */
+/* ============================================================================ */
+
+.textResultContainer {
+  width: 100%;
+  max-width: 600px;
+  border-radius: var(--radius-lg);
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: var(--shadow-sm);
+  padding: var(--spacing-xl);
+  margin-top: var(--spacing-lg);
+}

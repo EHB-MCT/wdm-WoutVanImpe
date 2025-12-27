@@ -1,0 +1,95 @@
+/* ============================================================================ */
+/*                        VALIDATION FEEDBACK COMPONENTS                        */
+/* ============================================================================ */
+
+/* --- VALIDATION CONTAINER --- */
+.validationContainer {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-md);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--border-color);
+  background-color: var(--muted-bg);
+}
+
+/* --- VALIDATION SECTIONS --- */
+.validationSection {
+  margin-bottom: var(--spacing-md);
+}
+
+.validationSection:last-child {
+  margin-bottom: 0;
+}
+
+.validationTitle {
+  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-base);
+  font-weight: 600;
+}
+
+.validationList {
+  margin: 0;
+  padding-left: var(--spacing-xl);
+}
+
+.validationItem {
+  margin-bottom: 5px;
+  font-size: var(--font-sm);
+  line-height: 1.4;
+}
+
+.validationItem:last-child {
+  margin-bottom: 0;
+}
+
+/* --- VALIDATION STATE STYLES --- */
+.errorSection {
+  border-left: 4px solid var(--error-color);
+  background-color: var(--error-bg);
+}
+
+.errorSection .validationTitle {
+  color: var(--error-color);
+}
+
+.warningSection {
+  border-left: 4px solid var(--warning-color);
+  background-color: var(--warning-bg);
+}
+
+.warningSection .validationTitle {
+  color: var(--warning-color);
+}
+
+.successSection {
+  border-left: 4px solid var(--success-color);
+  background-color: #f0fdf4;
+}
+
+.successMessage {
+  color: var(--success-color);
+  font-weight: 600;
+  margin: 0;
+}
+
+/* --- DISMISS BUTTON --- */
+.dismissButton {
+  margin-top: var(--spacing-sm);
+  padding: 6px var(--spacing-md);
+  font-size: var(--font-xs);
+  background-color: var(--muted-color);
+  color: white;
+  border: none;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: background-color var(--duration-normal);
+}
+
+.dismissButton:hover {
+  background-color: var(--foreground);
+}
+
+/* --- BUTTON VARIANTS --- */
+.uploadButtonDisabled {
+  background-color: var(--disabled-bg) !important;
+  cursor: default !important;
+}

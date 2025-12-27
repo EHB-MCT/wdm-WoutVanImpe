@@ -1,0 +1,167 @@
+/* ============================================================================ */
+/*                              VALIDATION MODAL                               */
+/* ============================================================================ */
+
+/* --- MODAL BACKDROP --- */
+.modalBackdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal-backdrop);
+  padding: var(--spacing-xl);
+  border: none;
+  margin: 0;
+  cursor: default;
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  text-align: inherit;
+}
+
+/* --- MODAL CONTENT --- */
+.modalContent {
+  background: var(--card-bg);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  max-width: 500px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  animation: modalSlideIn var(--duration-normal) ease-out;
+}
+
+/* --- MODAL ANIMATION --- */
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* --- MODAL HEADER --- */
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-xl) var(--spacing-xl) 0 var(--spacing-xl);
+  border-bottom: 1px solid var(--border-color);
+  margin-bottom: var(--spacing-md);
+}
+
+.modalTitle {
+  margin: 0;
+  font-size: var(--font-xl);
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.modalCloseButton {
+  background: none;
+  border: none;
+  font-size: var(--font-xl);
+  color: var(--muted-color);
+  cursor: pointer;
+  padding: 0;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-sm);
+  transition: all var(--duration-normal);
+}
+
+.modalCloseButton:hover {
+  background-color: var(--muted-bg);
+  color: var(--foreground);
+}
+
+/* --- MODAL BODY --- */
+.modalBody {
+  padding: 0 var(--spacing-xl) var(--spacing-xl);
+  overflow-y: auto;
+}
+
+/* --- MODAL FOOTER --- */
+.modalFooter {
+  padding: var(--spacing-xl);
+  border-top: 1px solid var(--border-color);
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-sm);
+}
+
+.modalFooter .btn:disabled {
+  background-color: var(--disabled-bg);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* --- VALIDATION STYLES --- */
+.validationSection {
+  margin-bottom: var(--spacing-md);
+}
+
+.validationSection:last-child {
+  margin-bottom: 0;
+}
+
+.validationTitle {
+  margin-bottom: var(--spacing-sm);
+  font-size: var(--font-base);
+  font-weight: 600;
+}
+
+.validationList {
+  margin: 0;
+  padding-left: var(--spacing-xl);
+}
+
+.validationItem {
+  margin-bottom: 5px;
+  font-size: var(--font-sm);
+  line-height: 1.4;
+}
+
+.validationItem:last-child {
+  margin-bottom: 0;
+}
+
+.errorSection {
+  border-left: 4px solid var(--error-color);
+  background-color: var(--error-bg);
+}
+
+.errorSection .validationTitle {
+  color: var(--error-color);
+}
+
+.warningSection {
+  border-left: 4px solid var(--warning-color);
+  background-color: var(--warning-bg);
+}
+
+.warningSection .validationTitle {
+  color: var(--warning-color);
+}
+
+.successSection {
+  border-left: 4px solid var(--success-color);
+  background-color: #f0fdf4;
+}
+
+.successMessage {
+  color: var(--success-color);
+  font-weight: 600;
+  margin: 0;
+}

@@ -10,8 +10,9 @@ import { AuthGuard } from "@/components/ui/AuthGuard";
 import { ImageUpload } from "@/components/upload/ImageUpload";
 import { LoadingStates } from "@/components/upload/LoadingStates";
 import { OCRTextDisplay } from "@/components/upload/OCRTextDisplay";
-import { ReceiptProcessor } from "@/components/upload/ReceiptProcessor";
 import { ValidationModal } from "@/components/upload/ValidationModal";
+import { Button } from "@/components/ui/Button";
+import { ReceiptProcessor } from "@/components/upload/ReceiptProcessor";
 import { removeExpiredTokens, isUserAuthenticated, handleTokenRefresh } from "@/lib/auth";
 import { ValidationResult, validateReceiptData } from "@/lib/receiptValidation";
 
@@ -277,9 +278,9 @@ if (response.ok) {
 					<div>
 						<div className={styles.editReceiptHeader}>
 							<strong>Edit Receipt Data:</strong>
-							<button onClick={handleSave} disabled={isSaving} className={`btn btn-primary ${styles.saveButton}`}>
+<Button onClick={handleSave} disabled={isSaving} variant="primary" className={styles.saveButton}>
 								{isSaving ? "Saving..." : "Save Receipt"}
-							</button>
+							</Button>
 						</div>
 
 						{showValidationModal && validation && (

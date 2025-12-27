@@ -1,0 +1,118 @@
+/* --- RECEIPTS LIST --- */
+.receiptsList {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+}
+
+.receiptsListTitle {
+  margin-bottom: var(--spacing-lg);
+  font-size: var(--font-xl);
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.noReceipts {
+  text-align: center;
+  padding: var(--spacing-3xl);
+  color: var(--muted-color);
+}
+
+.noReceipts h3 {
+  margin-bottom: var(--spacing-md);
+  color: var(--foreground);
+}
+
+.noReceipts p {
+  color: var(--muted-color);
+  line-height: 1.6;
+}
+
+/* --- RECEIPT CARD --- */
+.receiptCard {
+  padding: var(--spacing-lg);
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  text-align: left;
+  min-height: auto;
+  width: 100%;
+  transition: all var(--duration-normal);
+}
+
+.receiptCard:hover {
+  box-shadow: var(--shadow-md);
+  border-color: var(--brand-color);
+}
+
+/* --- RECEIPT HEADER --- */
+.receiptHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: var(--spacing-sm);
+}
+
+.storeName {
+  margin: 0;
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.receiptDate {
+  font-size: var(--font-sm);
+  color: var(--muted-color);
+}
+
+/* --- RECEIPT DETAILS --- */
+.receiptDetails {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  margin-bottom: var(--spacing-sm);
+}
+
+.totalAmount {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.paymentMethod {
+  font-size: var(--font-sm);
+  color: var(--muted-color);
+}
+
+/* --- ITEMS PREVIEW --- */
+.itemsPreview {
+  width: 100%;
+  font-size: var(--font-sm);
+  line-height: 1.4;
+}
+
+.item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-xs) 0;
+  margin-bottom: var(--spacing-xs);
+}
+
+.itemName {
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.itemPrice {
+  font-weight: 600;
+  color: var(--foreground);
+}
+
+.itemInfo {
+  font-size: var(--font-sm);
+  color: var(--muted-color);
+}
