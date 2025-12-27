@@ -8,7 +8,7 @@ import { ReceiptForm } from "@/components/dashboard/ReceiptForm";
 import { ReceiptItemsList } from "@/components/dashboard/ReceiptItemsList";
 import { AuthGuard } from "@/components/ui/AuthGuard";
 import { ImageUpload } from "@/components/upload/ImageUpload";
-import { LoadingStates } from "@/components/upload/LoadingStates";
+import { EnhancedLoadingStates, ProcessingStep } from "@/components/upload/EnhancedLoadingStates";
 import { OCRTextDisplay } from "@/components/upload/OCRTextDisplay";
 import { ValidationModal } from "@/components/upload/ValidationModal";
 import { Button } from "@/components/ui/Button";
@@ -23,7 +23,10 @@ export default function Home() {
 	const [foundText, setFoundText] = useState<string>("");
 	const [editableData, setEditableData] = useState<ReceiptData | null>(null);
 	const [imgSubmitted, setImgSubmitted] = useState<boolean>(false);
-	const [isLoading, setIsLoading] = useState<boolean>(false);
+
+	const [processingStep, setProcessingStep] = useState<ProcessingStep>("idle");
+	const [processingProgress, setProcessingProgress] = useState<number>(0);
+	const [processingError, setProcessingError] = useState<string>("");
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [validation, setValidation] = useState<ValidationResult | null>(null);
 	const [showValidationModal, setShowValidationModal] = useState<boolean>(false);
@@ -35,6 +38,10 @@ export default function Home() {
 		if (file) {
 			const objectUrl = URL.createObjectURL(file);
 			setImgPreview(objectUrl);
+			// Reset processing state when new file is selected
+			setProcessingStep("idle");
+			setProcessingProgress(0);
+			setProcessingError("");
 		}
 	};
 
@@ -42,7 +49,9 @@ export default function Home() {
 		imgInputRef,
 		setFoundText,
 		setEditableData,
-		setIsLoading,
+		setProcessingStep,
+		setProcessingProgress,
+		setErrorMessage: setProcessingError,
 	});
 
 	const calculateTotalFromItems = (items: ReceiptItem[]): number => {
@@ -221,6 +230,10 @@ export default function Home() {
 		e.preventDefault();
 		setImgSubmitted(true);
 		setShowValidationModal(false); // Reset validation when new image is submitted
+		// Reset processing state when starting new processing
+		setProcessingStep("idle");
+		setProcessingProgress(0);
+		setProcessingError("");
 		handleSubmit(e);
 	};
 
@@ -273,7 +286,11 @@ export default function Home() {
 
 				{imgSubmitted &&
 					(() => {
-						const loadingState = <LoadingStates isLoading={isLoading} />;
+						const enhancedLoadingState = <EnhancedLoadingStates 
+							currentStep={processingStep} 
+							progress={processingProgress}
+							errorMessage={processingError}
+						/>;
 						const editableDataState = (
 							<div>
 								<div className={styles.editReceiptHeader}>
@@ -306,10 +323,10 @@ export default function Home() {
 							</div>
 						);
 
-						return <div className={classNames(styles.textResultContainer, "card")}>{isLoading ? loadingState : editableData ? editableDataState : foundText ? foundTextState : failedState}</div>;
+						return <div className={classNames(styles.textResultContainer, "card")}>{processingStep !== "idle" && processingStep !== "success" ? enhancedLoadingState : editableData ? editableDataState : foundText ? foundTextState : failedState}</div>;
 					})()}
 
-				<ImageUpload imgInputRef={imgInputRef} imgPreview={imgPreview} onChange={handleChange} isLoading={isLoading} onSubmit={handleFormSubmit} />
+				<ImageUpload imgInputRef={imgInputRef} imgPreview={imgPreview} onChange={handleChange} isLoading={processingStep !== "idle" && processingStep !== "success"} onSubmit={handleFormSubmit} />
 			</div>
 		</AuthGuard>
 	);
