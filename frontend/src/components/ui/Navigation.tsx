@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import styles from "./Navigation.module.css";
+import styles from "@/styles/components/Navigation.module.css";
 
 export interface NavLinkProps {
   href: string;
@@ -94,7 +94,7 @@ export function Navigation({
         <ul className={styles.navMenu}>
           <NavLink href="/" label="Home" icon="🏠" />
           <NavLink href="/upload" label="Upload" icon="📤" />
-          <NavLink href="/dashboard" label="Dashboard" icon="📊" />
+          <NavLink href={`/dashboard/${new Date().getFullYear()}/${new Date().getMonth() + 1}/all`} label="Dashboard" icon="📊" />
           <NavLink href="/account" label="Account" icon="👤" />
         </ul>
 
@@ -120,10 +120,10 @@ export function Navigation({
             />
             <div className={`${styles.navMobileMenu} ${styles.isOpen}`}>
               <ul className={styles.navMenu}>
-                <NavLink href="/" label="Home" icon="🏠" onCloseMobile={closeMobileMenu} />
-                <NavLink href="/upload" label="Upload" icon="📤" onCloseMobile={closeMobileMenu} />
-                <NavLink href="/dashboard" label="Dashboard" icon="📊" onCloseMobile={closeMobileMenu} />
-                <NavLink href="/account" label="Account" icon="👤" onCloseMobile={closeMobileMenu} />
+                <NavLink href="/" label="Home" icon="🏠" />
+                <NavLink href="/upload" label="Upload" icon="📤" />
+                <NavLink href={`/dashboard/${new Date().getFullYear()}/${new Date().getMonth() + 1}/all`} label="Dashboard" icon="📊" />
+                <NavLink href="/account" label="Account" icon="👤" />
               </ul>
             </div>
           </>

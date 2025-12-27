@@ -6,7 +6,6 @@
 "use client";
 
 import React from "react";
-import Link from "next/link";
 import { Button } from "../ui/Button";
 import styles from "@/styles/components/DashboardHeader.module.css";
 
@@ -26,9 +25,6 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ currentDate, c
 		<>
 			{/* Header */}
 			<div className={styles.dashboardHeader}>
-				<Link href="/" className={styles.homeLink}>
-					<Button variant="secondary">← Terug naar homepage</Button>
-				</Link>
 				<h1 className={styles.title}>Dashboard: {formatMonthYear(currentDate)}</h1>
 				<p className={styles.categoryInfo}>Categorie: {currentCategory}</p>
 			</div>
