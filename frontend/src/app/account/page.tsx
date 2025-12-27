@@ -7,6 +7,8 @@ import { AccountMenu } from "@/components/account/AccountMenu";
 import { ProfileForm } from "@/components/account/ProfileForm";
 import { PasswordForm } from "@/components/account/PasswordForm";
 import { MessageDisplay } from "@/components/ui/MessageDisplay";
+import { authApi, type ProfileUpdateRequest, type PasswordChangeRequest } from "@/lib/api";
+import { ApiError } from "@/lib/api";
 import styles from "@/styles/components/Account.module.css";
 
 export default function AccountPage() {
@@ -57,7 +59,7 @@ export default function AccountPage() {
 		}, 1500);
 	};
 
-	const handlePasswordChange = async () => {
+const handlePasswordChange = async () => {
 		if (!passwordForm.currentPassword || !passwordForm.newPassword) {
 			setMessage({ type: "error", text: "Vul beide velden in" });
 			return;
@@ -70,36 +72,30 @@ export default function AccountPage() {
 
 		setIsLoading(true);
 		try {
-			const token = localStorage.getItem("token");
-			const response = await fetch("http://localhost:5001/api/users/password", {
-				method: "PUT",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${token}`,
-				},
-				body: JSON.stringify({
-					currentPassword: passwordForm.currentPassword,
-					newPassword: passwordForm.newPassword,
-				}),
-			});
+			const passwordData: PasswordChangeRequest = {
+				currentPassword: passwordForm.currentPassword,
+				newPassword: passwordForm.newPassword,
+			};
 
-			const data = await response.json();
+			await authApi.changePassword(passwordData);
 
-			if (response.ok) {
-				setMessage({ type: "success", text: "Wachtwoord succesvol gewijzigd!" });
-				setPasswordForm({ currentPassword: "", newPassword: "" });
-				setActiveView("menu");
+			setMessage({ type: "success", text: "Wachtwoord succesvol gewijzigd!" });
+			setPasswordForm({ currentPassword: "", newPassword: "" });
+			setActiveView("menu");
+		} catch (error) {
+			console.error("Password change error:", error);
+			
+			if (error instanceof ApiError) {
+				setMessage({ type: "error", text: error.message });
 			} else {
-				setMessage({ type: "error", text: data.error || "Fout bij wijzigen wachtwoord" });
+				setMessage({ type: "error", text: "Netwerkfout, probeer opnieuw" });
 			}
-		} catch {
-			setMessage({ type: "error", text: "Netwerkfout, probeer opnieuw" });
 		} finally {
 			setIsLoading(false);
 		}
 	};
 
-	const handleProfileSave = async () => {
+const handleProfileSave = async () => {
 		if (!profileForm.username.trim() || !profileForm.email.trim()) {
 			setMessage({ type: "error", text: "Vul beide velden in" });
 			return;
@@ -112,31 +108,25 @@ export default function AccountPage() {
 
 		setIsLoading(true);
 		try {
-			const token = localStorage.getItem("token");
-			const response = await fetch("http://localhost:5001/api/users/profile", {
-				method: "PUT",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${token}`,
-				},
-				body: JSON.stringify({
-					username: profileForm.username,
-					email: profileForm.email,
-				}),
-			});
+			const profileData: ProfileUpdateRequest = {
+				username: profileForm.username,
+				email: profileForm.email,
+			};
 
-			const data = await response.json();
+			const response = await authApi.updateProfile(profileData);
 
-			if (response.ok) {
-				setMessage({ type: "success", text: "Profiel succesvol bijgewerkt!" });
-				setUser(data.user);
-				setProfileForm({ username: data.user.username, email: data.user.email });
-				setHasChanges(false);
+			setMessage({ type: "success", text: "Profiel succesvol bijgewerkt!" });
+			setUser(response.user);
+			setProfileForm({ username: response.user.username, email: response.user.email });
+			setHasChanges(false);
+		} catch (error) {
+			console.error("Profile update error:", error);
+			
+			if (error instanceof ApiError) {
+				setMessage({ type: "error", text: error.message });
 			} else {
-				setMessage({ type: "error", text: data.error || "Fout bij bijwerken profiel" });
+				setMessage({ type: "error", text: "Netwerkfout, probeer opnieuw" });
 			}
-		} catch {
-			setMessage({ type: "error", text: "Netwerkfout, probeer opnieuw" });
 		} finally {
 			setIsLoading(false);
 		}
