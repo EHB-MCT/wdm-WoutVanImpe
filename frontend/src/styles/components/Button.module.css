@@ -3,20 +3,20 @@
 /* ============================================================================ */
 
 .button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-  border-radius: var(--radius-md);
-  font-weight: 500;
-  cursor: pointer;
-  transition: all var(--duration-normal);
-  text-decoration: none;
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border: none;
+	border-radius: var(--radius-md);
+	font-weight: 500;
+	cursor: pointer;
+	transition: all var(--duration-normal);
+	text-decoration: none;
 }
 
 .button:focus {
-  outline: 2px solid var(--brand-color);
-  outline-offset: 2px;
+	outline: 2px solid var(--brand-color);
+	outline-offset: 2px;
 }
 
 /* ============================================================================ */
@@ -24,52 +24,48 @@
 /* ============================================================================ */
 
 .primary {
-  background-color: var(--brand-color);
-  color: white;
+	background-color: var(--brand-color);
+	color: white;
 }
 
 .primary:hover:not(.disabled) {
-  background-color: var(--brand-color-hover);
+	background-color: var(--brand-color-hover);
 }
 
 .secondary {
-  background-color: var(--muted-bg);
-  color: var(--foreground);
-  border: 1px solid var(--border-color);
-}
-
-.secondary:hover:not(.disabled) {
-  background-color: var(--border-color);
+	background-color: var(--muted-bg);
+	color: var(--foreground);
+	border: 1px solid var(--border-color);
 }
 
 .danger {
-  background-color: var(--error-color);
-  color: white;
+	background-color: var(--error-color);
+	color: white;
 }
 
 .danger:hover:not(.disabled) {
-  background-color: #b91c1c;
+	background-color: #b91c1c;
 }
 
 .link {
-  background: none;
-  color: var(--brand-color);
-  padding: 0;
-  height: auto;
-  font-size: inherit;
-  cursor: pointer;
-  border: none;
-  text-decoration: underline;
+	background: none;
+	color: var(--brand-color);
+	padding: 0;
+	height: auto;
+	font-size: inherit;
+	cursor: pointer;
+	border: none;
+	text-decoration: underline;
 }
 
 .link:hover {
-  text-decoration: underline;
-  color: var(--brand-color-hover);
+	text-decoration: underline;
+	color: var(--brand-color-hover);
 }
 
 .link:focus {
-  outline: 2px solid var(--brand-color);
-  outline-offset: 2px;
+	outline: 2px solid var(--brand-color);
+	outline-offset: 2px;
 }
 
 /* ============================================================================ */
@@ -77,18 +73,18 @@
 /* ============================================================================ */
 
 .sm {
-  padding: var(--spacing-sm) var(--spacing-md);
-  font-size: var(--font-sm);
+	padding: var(--spacing-sm) var(--spacing-md);
+	font-size: var(--font-sm);
 }
 
 .md {
-  padding: var(--spacing-md) var(--spacing-lg);
-  font-size: var(--font-base);
+	padding: var(--spacing-md) var(--spacing-lg);
+	font-size: var(--font-base);
 }
 
 .lg {
-  padding: var(--spacing-lg) var(--spacing-xl);
-  font-size: var(--font-lg);
+	padding: var(--spacing-lg) var(--spacing-xl);
+	font-size: var(--font-lg);
 }
 
 /* ============================================================================ */
@@ -96,7 +92,7 @@
 /* ============================================================================ */
 
 .disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-  pointer-events: none;
+	opacity: 0.6;
+	cursor: not-allowed;
+	pointer-events: none;
 }
