@@ -65,7 +65,6 @@ The architecture is designed to fulfill the "collect everything" mandate:
 
 ## 4. Repository Structure & Agreements
 
-- `/docs/COMMITS.md`: Strict conventions for commit messages.
 - `/docs/PROMPTS.txt`: Shared chat history/sources (Required for submission).
 - `/docs/CONVENTIONS.md`: Conventions for all code (structure, naming, ...).
 - `/tesseract`: Logic for text extraction.
