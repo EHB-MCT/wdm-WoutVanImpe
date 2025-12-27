@@ -9,7 +9,7 @@ import React from "react";
 import { Button } from "../ui/Button";
 import { useReceiptEditor } from "@/hooks/useReceiptEditor";
 import { VALID_CATEGORIES } from "@/lib/constants";
-import { validateReceiptItems, formatCurrency, safeParseNumber, safeParseInt } from "@/lib/receiptUtils";
+import { validateReceiptItems, formatCurrency, formatDate, safeParseNumber, safeParseInt } from "@/lib/receiptUtils";
 import type { Receipt } from "@/types/dashboard";
 import styles from "@/styles/components/Modal.module.css";
 
@@ -31,8 +31,8 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ receipt, isOpen, onC
 		
 		return {
 			store_name: receipt.store_name,
-			date: receipt.purchase_date.split("T")[0],
-			time: receipt.purchase_date.split("T")[1]?.substring(0, 5) || "12:00",
+			date: receipt.purchase_date,
+			time: receipt.purchase_time?.substring(0, 5) || "12:00",
 			total_price: receipt.total_amount,
 			payment_method: receipt.payment_method,
 			raw_ocr_text: receipt.raw_ocr_text,
@@ -56,13 +56,13 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ receipt, isOpen, onC
 		...editorOptions,
 	});
 
-	// Initialize when receipt changes
+// Initialize when receipt changes
 	React.useEffect(() => {
 		if (receipt && isOpen) {
 			const receiptData = {
 				store_name: receipt.store_name,
-				date: receipt.purchase_date.split("T")[0],
-				time: receipt.purchase_date.split("T")[1]?.substring(0, 5) || "12:00",
+				date: receipt.purchase_date,
+				time: receipt.purchase_time?.substring(0, 5) || "12:00",
 				total_price: receipt.total_amount,
 				payment_method: receipt.payment_method,
 				raw_ocr_text: receipt.raw_ocr_text,
@@ -145,12 +145,12 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ receipt, isOpen, onC
 		setIsEditing(true);
 	};
 
-	const cancelEditing = () => {
+const cancelEditing = () => {
 		if (receipt) {
 			const receiptData = {
 				store_name: receipt.store_name,
-				date: receipt.purchase_date.split("T")[0],
-				time: receipt.purchase_date.split("T")[1]?.substring(0, 5) || "12:00",
+				date: receipt.purchase_date,
+				time: receipt.purchase_time?.substring(0, 5) || "12:00",
 				total_price: receipt.total_amount,
 				payment_method: receipt.payment_method,
 				raw_ocr_text: receipt.raw_ocr_text,
@@ -193,15 +193,15 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ receipt, isOpen, onC
 					{!isEditing ? (
 						/* View Mode */
 						<div>
-							{/* Receipt Details */}
+{/* Receipt Details */}
 							<div className={styles.receiptDetails}>
 								<h3>Ticket Details</h3>
 								<div className={styles.receiptDetailsList}>
 									<div>
-										<strong>Datum:</strong> {receipt.purchase_date.split("T")[0]}
+										<strong>Datum:</strong> {formatDate(receipt.purchase_date)}
 									</div>
 									<div>
-										<strong>Tijd:</strong> {receipt.purchase_date.split("T")[1]?.substring(0, 5) || "12:00"}
+										<strong>Tijd:</strong> {receipt.purchase_time?.substring(0, 5) || "12:00"}
 									</div>
 									<div>
 										<strong>Winkel:</strong> {receipt.store_name}
