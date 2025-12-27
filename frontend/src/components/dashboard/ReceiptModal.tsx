@@ -163,19 +163,20 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ receipt, isOpen, onC
 	if (!isOpen || !receipt) return null;
 
 	return (
-		<button
-			type="button"
+		<div
 			className={styles.modalBackdrop}
 			onClick={(e) => {
 				if (e.target === e.currentTarget) onClose();
 			}}
-			aria-label="Close modal"
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby={`modal-title-${receipt.id}`}
 		>
 			<div className={`${styles.modalContent} card`}>
 				{/* Header */}
 				<div className={`${styles.modalHeader} flex-between`}>
-					<h2>{editableData?.store_name || receipt.store_name}</h2>
-					<Button onClick={onClose} variant="secondary" className={styles.modalCloseButton}>
+					<h2 id={`modal-title-${receipt.id}`}>{editableData?.store_name || receipt.store_name}</h2>
+					<Button onClick={onClose} variant="secondary" className={styles.modalCloseButton} aria-label="Close modal">
 						×
 					</Button>
 				</div>
@@ -394,6 +395,6 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ receipt, isOpen, onC
 					)}
 				</div>
 			</div>
-		</button>
+		</div>
 	);
 };
