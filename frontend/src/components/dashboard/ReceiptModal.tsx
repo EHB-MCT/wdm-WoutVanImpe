@@ -9,7 +9,7 @@ import React from "react";
 import { Button } from "../ui/Button";
 import { useReceiptEditor } from "@/hooks/useReceiptEditor";
 import { VALID_CATEGORIES } from "@/lib/constants";
-import { validateReceiptItems, formatCurrency } from "@/lib/receiptUtils";
+import { validateReceiptItems, formatCurrency, formatDate, safeParseNumber, safeParseInt } from "@/lib/receiptUtils";
 import type { Receipt } from "@/types/dashboard";
 import styles from "@/styles/components/Modal.module.css";
 
@@ -25,37 +25,44 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ receipt, isOpen, onC
 	const [isEditing, setIsEditing] = React.useState(false);
 	const [isLoading, setIsLoading] = React.useState(false);
 
-	// Convert receipt to ReceiptData format for editor hook
-	const receiptData = receipt
-		? {
-				store_name: receipt.store_name,
-				date: receipt.purchase_date.split("T")[0],
-				time: receipt.purchase_date.split("T")[1]?.substring(0, 5) || "12:00",
-				total_price: receipt.total_amount,
-				payment_method: receipt.payment_method,
-				raw_ocr_text: receipt.raw_ocr_text,
-				items: receipt.items.map((item) => ({
-					id: item.id,
-					name: item.name,
-					category: item.category,
-					quantity: item.quantity,
-					price: item.price,
-				})),
-		  }
-		: null;
+	// Memoize receipt data to prevent infinite re-renders
+	const receiptData = React.useMemo(() => {
+		if (!receipt) return null;
+		
+		return {
+			store_name: receipt.store_name,
+			date: receipt.purchase_date,
+			time: receipt.purchase_time?.substring(0, 5) || "12:00",
+			total_price: receipt.total_amount,
+			payment_method: receipt.payment_method,
+			raw_ocr_text: receipt.raw_ocr_text,
+			items: receipt.items.map((item) => ({
+				id: item.id,
+				name: item.name,
+				category: item.category,
+				quantity: item.quantity,
+				price: item.price,
+			})),
+		};
+	}, [receipt]);
+
+	// Memoize options to prevent infinite re-renders
+	const editorOptions = React.useMemo(() => ({
+		onValidationChange: () => {},
+	}), []);
 
 	const { editableData, validation, updateEditableData, updateItem, addNewItem, removeItem, initializeData, prepareForAPI } = useReceiptEditor({
 		initialData: receiptData,
-		onValidationChange: () => {},
+		...editorOptions,
 	});
 
-	// Initialize when receipt changes
+// Initialize when receipt changes
 	React.useEffect(() => {
 		if (receipt && isOpen) {
 			const receiptData = {
 				store_name: receipt.store_name,
-				date: receipt.purchase_date.split("T")[0],
-				time: receipt.purchase_date.split("T")[1]?.substring(0, 5) || "12:00",
+				date: receipt.purchase_date,
+				time: receipt.purchase_time?.substring(0, 5) || "12:00",
 				total_price: receipt.total_amount,
 				payment_method: receipt.payment_method,
 				raw_ocr_text: receipt.raw_ocr_text,
@@ -138,12 +145,12 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ receipt, isOpen, onC
 		setIsEditing(true);
 	};
 
-	const cancelEditing = () => {
+const cancelEditing = () => {
 		if (receipt) {
 			const receiptData = {
 				store_name: receipt.store_name,
-				date: receipt.purchase_date.split("T")[0],
-				time: receipt.purchase_date.split("T")[1]?.substring(0, 5) || "12:00",
+				date: receipt.purchase_date,
+				time: receipt.purchase_time?.substring(0, 5) || "12:00",
 				total_price: receipt.total_amount,
 				payment_method: receipt.payment_method,
 				raw_ocr_text: receipt.raw_ocr_text,
@@ -163,19 +170,20 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ receipt, isOpen, onC
 	if (!isOpen || !receipt) return null;
 
 	return (
-		<button
-			type="button"
+		<div
 			className={styles.modalBackdrop}
 			onClick={(e) => {
 				if (e.target === e.currentTarget) onClose();
 			}}
-			aria-label="Close modal"
+			role="dialog"
+			aria-modal="true"
+			aria-labelledby={`modal-title-${receipt.id}`}
 		>
 			<div className={`${styles.modalContent} card`}>
 				{/* Header */}
 				<div className={`${styles.modalHeader} flex-between`}>
-					<h2>{editableData?.store_name || receipt.store_name}</h2>
-					<Button onClick={onClose} variant="secondary" className={styles.modalCloseButton}>
+					<h2 id={`modal-title-${receipt.id}`}>{editableData?.store_name || receipt.store_name}</h2>
+					<Button onClick={onClose} variant="secondary" className={styles.modalCloseButton} aria-label="Close modal">
 						×
 					</Button>
 				</div>
@@ -185,15 +193,15 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ receipt, isOpen, onC
 					{!isEditing ? (
 						/* View Mode */
 						<div>
-							{/* Receipt Details */}
+{/* Receipt Details */}
 							<div className={styles.receiptDetails}>
 								<h3>Ticket Details</h3>
 								<div className={styles.receiptDetailsList}>
 									<div>
-										<strong>Datum:</strong> {receipt.purchase_date.split("T")[0]}
+										<strong>Datum:</strong> {formatDate(receipt.purchase_date)}
 									</div>
 									<div>
-										<strong>Tijd:</strong> {receipt.purchase_date.split("T")[1]?.substring(0, 5) || "12:00"}
+										<strong>Tijd:</strong> {receipt.purchase_time?.substring(0, 5) || "12:00"}
 									</div>
 									<div>
 										<strong>Winkel:</strong> {receipt.store_name}
@@ -214,8 +222,8 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ receipt, isOpen, onC
 								</div>
 								<div className={styles.itemsList}>
 									{receipt.items.map((item, index) => {
-										const price = typeof item.price === "number" ? item.price : 0;
-										const quantity = typeof item.quantity === "number" ? item.quantity : 1;
+const price = safeParseNumber(item.price);
+										const quantity = safeParseInt(item.quantity, 1);
 
 										return (
 											<div key={`${receipt.id}-item-${index}`} className={styles.itemCard}>
@@ -342,7 +350,7 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ receipt, isOpen, onC
 															min="0"
 															step="1"
 															value={item.quantity || ""}
-															onChange={(e) => updateItem(index, "quantity", e.target.value ? Number.parseInt(e.target.value) : null)}
+															onChange={(e) => updateItem(index, "quantity", e.target.value ? safeParseInt(e.target.value) : null)}
 															className={`${getFieldClassName(item.quantity, true)} ${styles.smallInput}`}
 															placeholder="1"
 														/>
@@ -357,7 +365,7 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ receipt, isOpen, onC
 															min="0"
 															step="0.01"
 															value={item.price || ""}
-															onChange={(e) => updateItem(index, "price", e.target.value ? Number.parseFloat(e.target.value) : null)}
+															onChange={(e) => updateItem(index, "price", e.target.value ? safeParseNumber(e.target.value) : null)}
 															className={`${getFieldClassName(item.price, false, true)} ${styles.smallInput}`}
 															placeholder="0.00"
 														/>
@@ -394,6 +402,6 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ receipt, isOpen, onC
 					)}
 				</div>
 			</div>
-		</button>
+		</div>
 	);
 };

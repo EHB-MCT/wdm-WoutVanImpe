@@ -3,7 +3,10 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { getStoredUser, logout, isUserAuthenticated } from "@/lib/auth";
-import { Button } from "@/components/ui/Button";
+import { AccountMenu } from "@/components/account/AccountMenu";
+import { ProfileForm } from "@/components/account/ProfileForm";
+import { PasswordForm } from "@/components/account/PasswordForm";
+import { MessageDisplay } from "@/components/ui/MessageDisplay";
 import styles from "@/styles/components/Account.module.css";
 
 export default function AccountPage() {
@@ -168,105 +171,18 @@ export default function AccountPage() {
 					</div>
 
 					{/* Message Display */}
-					{message && <div className={`message-util ${message.type === "success" ? "message-success" : "message-error"}`}>{message.text}</div>}
+					{message && <MessageDisplay message={message} />}
 
 					{/* Menu View */}
-					{activeView === "menu" && (
-						<div className={styles.menuContainer}>
-							<div className={styles.menuButtons}>
-								<Button onClick={() => setActiveView("profile")} variant="secondary" className={styles.menuButton}>
-									👤 Profiel bekijken
-								</Button>
-								
-								<Button onClick={() => setActiveView("password")} variant="secondary" className={styles.menuButton}>
-									🔐 Wachtwoord wijzigen
-								</Button>
-								
-								<Button onClick={handleLogout} variant="secondary" className={styles.menuButton}>
-									🚪 Uitloggen
-								</Button>
-							</div>
-						</div>
-					)}
+					{activeView === "menu" && <AccountMenu onProfileClick={() => setActiveView("profile")} onPasswordClick={() => setActiveView("password")} onLogout={handleLogout} />}
 
 					{/* Profile View */}
 					{activeView === "profile" && (
-						<div className={styles.profileView}>
-							<div className={styles.profileInfo}>
-								<div className={styles.formGroup}>
-									<label htmlFor="account-username" className={styles.formLabel}>
-										Gebruikersnaam
-									</label>
-									<input id="account-username" type="text" value={profileForm.username} onChange={(e) => setProfileForm({ ...profileForm, username: e.target.value })} className="input-field" />
-								</div>
-
-								<div className={styles.formGroup}>
-									<label htmlFor="account-email" className={styles.formLabel}>
-										Email
-									</label>
-									<input id="account-email" type="email" value={profileForm.email} onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })} className="input-field" />
-								</div>
-
-								<div className={styles.formActions}>
-									<Button
-										onClick={handleProfileSave}
-										variant="primary"
-										className={!hasChanges || isLoading || !profileForm.username.trim() || !profileForm.email.trim() || !profileForm.email.includes("@") ? styles.disabled : ""}
-										disabled={!hasChanges || isLoading || !profileForm.username.trim() || !profileForm.email.trim() || !profileForm.email.includes("@")}
-									>
-										{isLoading ? "Opslaan..." : "Opslaan"}
-									</Button>
-									<Button onClick={goBack} variant="secondary">
-										Annuleren
-									</Button>
-								</div>
-							</div>
-						</div>
+						<ProfileForm profileForm={profileForm} onProfileChange={(field, value) => setProfileForm({ ...profileForm, [field]: value })} onSave={handleProfileSave} onCancel={goBack} isLoading={isLoading} hasChanges={hasChanges} />
 					)}
 
 					{/* Password Change View */}
-					{activeView === "password" && (
-						<div className={styles.passwordView}>
-							<div className={styles.profileInfo}>
-								<div className={styles.formGroup}>
-									<label htmlFor="account-current-password" className={styles.formLabel}>
-										Huidig Wachtwoord
-									</label>
-									<input
-										id="account-current-password"
-										type="password"
-										value={passwordForm.currentPassword}
-										onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
-										className="input-field"
-										placeholder="Voer je huidige wachtwoord in"
-									/>
-								</div>
-
-								<div className={styles.formGroup}>
-									<label htmlFor="account-new-password" className={styles.formLabel}>
-										Nieuw Wachtwoord (min. 6 tekens)
-									</label>
-									<input
-										id="account-new-password"
-										type="password"
-										value={passwordForm.newPassword}
-										onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
-										className="input-field"
-										placeholder="Voer je nieuwe wachtwoord in"
-									/>
-								</div>
-
-								<div className={styles.formActions}>
-									<Button onClick={handlePasswordChange} variant="primary" disabled={isLoading || !passwordForm.currentPassword || !passwordForm.newPassword}>
-										{isLoading ? "Opslaan..." : "Wachtwoord wijzigen"}
-									</Button>
-									<Button onClick={goBack} variant="secondary">
-										Annuleren
-									</Button>
-								</div>
-							</div>
-						</div>
-					)}
+					{activeView === "password" && <PasswordForm passwordForm={passwordForm} onPasswordChange={(field, value) => setPasswordForm({ ...passwordForm, [field]: value })} onSave={handlePasswordChange} onCancel={goBack} isLoading={isLoading} />}
 				</div>
 			</div>
 		</div>

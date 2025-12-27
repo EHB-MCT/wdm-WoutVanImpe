@@ -19,8 +19,8 @@ export function ValidationModal({ validation, isOpen, onClose, onContinue }: Rea
 		}
 	};
 
-	return (
-		<button type="button" className={styles.modalBackdrop} onClick={handleBackdropClick} aria-label="Close validation modal">
+return (
+		<div className={styles.modalBackdrop} onClick={handleBackdropClick} role="dialog" aria-modal="true" aria-label="Close validation modal">
 			<div className={styles.modalContent}>
 				<div className={styles.modalHeader}>
 					<h3 className={styles.modalTitle}>{validation.isValid ? "✅ Validation Complete" : "❌ Validation Issues Found"}</h3>
@@ -69,6 +69,6 @@ export function ValidationModal({ validation, isOpen, onClose, onContinue }: Rea
 					</Button>
 				</div>
 			</div>
-		</button>
+		</div>
 	);
 }

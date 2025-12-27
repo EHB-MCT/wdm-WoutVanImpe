@@ -11,7 +11,7 @@ export const CATEGORY_COLORS = ["var(--chart-1)", "var(--chart-2)", "var(--chart
 
 // API endpoints
 export const API_ENDPOINTS = {
-	BASE_URL: "http://localhost:5000",
+	BASE_URL: "http://localhost:5001",
 	RECEIPTS: "/api/receipts",
 	CATEGORIES: "/api/categories",
 	USERS_PROFILE: "/api/users/profile",

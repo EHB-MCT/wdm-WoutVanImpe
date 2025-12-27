@@ -15,6 +15,7 @@ import { Button } from "@/components/ui/Button";
 import { ReceiptProcessor } from "@/components/upload/ReceiptProcessor";
 import { removeExpiredTokens, isUserAuthenticated, handleTokenRefresh } from "@/lib/auth";
 import { ValidationResult, validateReceiptData } from "@/lib/receiptValidation";
+import { safeParseNumber, safeParseInt } from "@/lib/receiptUtils";
 
 export default function Home() {
 	const imgInputRef = useRef<HTMLInputElement | null>(null);
@@ -46,11 +47,9 @@ export default function Home() {
 
 	const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 		return items.reduce((total, item) => {
-			if (item.price !== null && item.price !== undefined) {
-				const quantity = item.quantity || 1;
-				return total + item.price * quantity;
-			}
-			return total;
+			const price = safeParseNumber(item.price);
+			const quantity = safeParseInt(item.quantity, 1);
+			return total + price * quantity;
 		}, 0);
 	};
 

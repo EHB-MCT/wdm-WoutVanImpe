@@ -61,6 +61,7 @@ button.receiptCard {
 	width: 100%;
 	margin: 0;
 	display: flex;
+	justify-content: flex-start;
 	box-sizing: border-box;
 }
 

@@ -7,7 +7,7 @@
 
 import React from "react";
 import { Button } from "../ui/Button";
-import { formatCurrency, formatDate } from "@/lib/receiptUtils";
+import { formatCurrency, formatDate, safeParseNumber, safeParseInt } from "@/lib/receiptUtils";
 import styles from "@/styles/components/ReceiptsList.module.css";
 
 interface ReceiptItem {
@@ -67,8 +67,8 @@ export const ReceiptsList: React.FC<ReceiptsListProps> = ({ receipts, onReceiptC
 						{/* Items Preview */}
 						<div className={styles.receiptItems}>
 							{receipt.items.slice(0, 3).map((item, index) => {
-								const price = typeof item.price === "number" ? item.price : 0;
-								const quantity = typeof item.quantity === "number" ? item.quantity : 1;
+								const price = safeParseNumber(item.price);
+								const quantity = safeParseInt(item.quantity, 1);
 
 								return (
 									<div key={`${receipt.id}-item-${index}`} className={styles.receiptItem}>

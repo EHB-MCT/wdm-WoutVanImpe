@@ -50,10 +50,7 @@ export default function HomePage() {
 
 	const goToNextMonth = () => {
 		const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1);
-		const now = new Date();
-		if (nextMonth <= new Date(now.getFullYear(), now.getMonth())) {
-			setCurrentDate(nextMonth);
-		}
+		setCurrentDate(nextMonth);
 	};
 
 	const monthlyData = getMonthlyData(currentDate);

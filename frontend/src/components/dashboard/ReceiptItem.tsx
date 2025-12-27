@@ -2,6 +2,7 @@
 import { ReceiptItem } from "@/types/receipt";
 import { Button } from "@/components/ui/Button";
 import styles from "@/styles/components/Receipt.module.css";
+import { safeParseNumber, safeParseInt } from "@/lib/receiptUtils";
 
 interface ReceiptItemProps {
 	item: ReceiptItem;
@@ -50,7 +51,7 @@ export function ReceiptItemComponent({ item, index, updateItem, removeItem, cate
 						min="0"
 						step="1"
 						value={item.quantity || ""}
-						onChange={(e) => updateItem(index, "quantity", e.target.value ? Number.parseInt(e.target.value) : null)}
+						onChange={(e) => updateItem(index, "quantity", e.target.value ? safeParseInt(e.target.value) : null)}
 						className={getFieldClassName(item.quantity, true)}
 						placeholder="x"
 					/>
@@ -65,7 +66,7 @@ export function ReceiptItemComponent({ item, index, updateItem, removeItem, cate
 						min="0"
 						step="0.01"
 						value={item.price || ""}
-						onChange={(e) => updateItem(index, "price", e.target.value ? Number.parseFloat(e.target.value) : null)}
+						onChange={(e) => updateItem(index, "price", e.target.value ? safeParseNumber(e.target.value) : null)}
 						className={getFieldClassName(item.price, false, true)}
 						placeholder="0.00"
 					/>
