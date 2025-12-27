@@ -10,9 +10,9 @@ export default function AccountPage() {
 	const router = useRouter();
 	const [user, setUser] = useState<{ id: number; username: string; email: string } | null>(null);
 	const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
-	const [activeView, setActiveView] = useState<'menu' | 'profile' | 'password'>('menu');
-	const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '' });
-	const [profileForm, setProfileForm] = useState({ username: '', email: '' });
+	const [activeView, setActiveView] = useState<"menu" | "profile" | "password">("menu");
+	const [passwordForm, setPasswordForm] = useState({ currentPassword: "", newPassword: "" });
+	const [profileForm, setProfileForm] = useState({ username: "", email: "" });
 	const [hasChanges, setHasChanges] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -84,8 +84,8 @@ export default function AccountPage() {
 
 			if (response.ok) {
 				setMessage({ type: "success", text: "Wachtwoord succesvol gewijzigd!" });
-				setPasswordForm({ currentPassword: '', newPassword: '' });
-				setActiveView('menu');
+				setPasswordForm({ currentPassword: "", newPassword: "" });
+				setActiveView("menu");
 			} else {
 				setMessage({ type: "error", text: data.error || "Fout bij wijzigen wachtwoord" });
 			}
@@ -102,7 +102,7 @@ export default function AccountPage() {
 			return;
 		}
 
-		if (!profileForm.email.includes('@')) {
+		if (!profileForm.email.includes("@")) {
 			setMessage({ type: "error", text: "Voer een geldig emailadres in" });
 			return;
 		}
@@ -140,8 +140,8 @@ export default function AccountPage() {
 	};
 
 	const goBack = () => {
-		setActiveView('menu');
-		setPasswordForm({ currentPassword: '', newPassword: '' });
+		setActiveView("menu");
+		setPasswordForm({ currentPassword: "", newPassword: "" });
 		if (user) {
 			setProfileForm({ username: user.username, email: user.email });
 			setHasChanges(false);
@@ -164,45 +164,25 @@ export default function AccountPage() {
 				<div className="card">
 					{/* Header */}
 					<div className={`${styles.accountHeader} flex-center`}>
-						<h1 className={styles.authTitle}>
-							{activeView === 'menu' ? `Hallo, ${user.username}!` : 
-							 activeView === 'profile' ? 'Profiel' :
-							 activeView === 'password' ? 'Wachtwoord wijzigen' : 'Account'}
-						</h1>
+						<h1 className={styles.authTitle}>{activeView === "menu" ? `Hallo, ${user.username}!` : activeView === "profile" ? "Profiel" : activeView === "password" ? "Wachtwoord wijzigen" : "Account"}</h1>
 					</div>
 
 					{/* Message Display */}
-					{message && (
-						<div className={`message-util ${message.type === 'success' ? 'message-success' : 'message-error'}`}>
-							{message.text}
-						</div>
-					)}
+					{message && <div className={`message-util ${message.type === "success" ? "message-success" : "message-error"}`}>{message.text}</div>}
 
 					{/* Menu View */}
-					{activeView === 'menu' && (
+					{activeView === "menu" && (
 						<div className={styles.menuContainer}>
 							<div className={styles.menuButtons}>
-								<Button 
-									onClick={() => setActiveView('profile')}
-									variant="primary"
-									className={styles.menuButton}
-								>
+								<Button onClick={() => setActiveView("profile")} variant="secondary" className={styles.menuButton}>
 									👤 Profiel bekijken
 								</Button>
 								
-								<Button 
-									onClick={() => setActiveView('password')}
-									variant="secondary"
-									className={styles.menuButton}
-								>
+								<Button onClick={() => setActiveView("password")} variant="secondary" className={styles.menuButton}>
 									🔐 Wachtwoord wijzigen
 								</Button>
 								
-								<Button 
-									onClick={handleLogout}
-									variant="danger"
-									className={styles.menuButton}
-								>
+								<Button onClick={handleLogout} variant="secondary" className={styles.menuButton}>
 									🚪 Uitloggen
 								</Button>
 							</div>
@@ -210,48 +190,33 @@ export default function AccountPage() {
 					)}
 
 					{/* Profile View */}
-					{activeView === 'profile' && (
+					{activeView === "profile" && (
 						<div className={styles.profileView}>
 							<div className={styles.profileInfo}>
 								<div className={styles.formGroup}>
 									<label htmlFor="account-username" className={styles.formLabel}>
 										Gebruikersnaam
 									</label>
-									<input
-										id="account-username"
-										type="text"
-										value={profileForm.username}
-										onChange={(e) => setProfileForm({ ...profileForm, username: e.target.value })}
-										className="input-field"
-									/>
+									<input id="account-username" type="text" value={profileForm.username} onChange={(e) => setProfileForm({ ...profileForm, username: e.target.value })} className="input-field" />
 								</div>
-								
+
 								<div className={styles.formGroup}>
 									<label htmlFor="account-email" className={styles.formLabel}>
 										Email
 									</label>
-									<input
-										id="account-email"
-										type="email"
-										value={profileForm.email}
-										onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
-										className="input-field"
-									/>
+									<input id="account-email" type="email" value={profileForm.email} onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })} className="input-field" />
 								</div>
 
 								<div className={styles.formActions}>
-									<Button 
+									<Button
 										onClick={handleProfileSave}
 										variant="primary"
-										className={!hasChanges || isLoading || !profileForm.username.trim() || !profileForm.email.trim() || !profileForm.email.includes('@') ? styles.disabled : ''}
-										disabled={!hasChanges || isLoading || !profileForm.username.trim() || !profileForm.email.trim() || !profileForm.email.includes('@')}
+										className={!hasChanges || isLoading || !profileForm.username.trim() || !profileForm.email.trim() || !profileForm.email.includes("@") ? styles.disabled : ""}
+										disabled={!hasChanges || isLoading || !profileForm.username.trim() || !profileForm.email.trim() || !profileForm.email.includes("@")}
 									>
 										{isLoading ? "Opslaan..." : "Opslaan"}
 									</Button>
-									<Button 
-										onClick={goBack}
-										variant="secondary"
-									>
+									<Button onClick={goBack} variant="secondary">
 										Annuleren
 									</Button>
 								</div>
@@ -260,7 +225,7 @@ export default function AccountPage() {
 					)}
 
 					{/* Password Change View */}
-					{activeView === 'password' && (
+					{activeView === "password" && (
 						<div className={styles.passwordView}>
 							<div className={styles.profileInfo}>
 								<div className={styles.formGroup}>
@@ -276,7 +241,7 @@ export default function AccountPage() {
 										placeholder="Voer je huidige wachtwoord in"
 									/>
 								</div>
-								
+
 								<div className={styles.formGroup}>
 									<label htmlFor="account-new-password" className={styles.formLabel}>
 										Nieuw Wachtwoord (min. 6 tekens)
@@ -292,17 +257,10 @@ export default function AccountPage() {
 								</div>
 
 								<div className={styles.formActions}>
-									<Button 
-										onClick={handlePasswordChange}
-										variant="primary"
-										disabled={isLoading || !passwordForm.currentPassword || !passwordForm.newPassword}
-									>
+									<Button onClick={handlePasswordChange} variant="primary" disabled={isLoading || !passwordForm.currentPassword || !passwordForm.newPassword}>
 										{isLoading ? "Opslaan..." : "Wachtwoord wijzigen"}
 									</Button>
-									<Button 
-										onClick={goBack}
-										variant="secondary"
-									>
+									<Button onClick={goBack} variant="secondary">
 										Annuleren
 									</Button>
 								</div>

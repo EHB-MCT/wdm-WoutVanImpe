@@ -2,31 +2,22 @@ import { ReceiptData, ReceiptItem } from "@/types/receipt";
 import { filterNonProductItems } from "./itemFilter";
 
 // Predefined categories for validation (as Set for efficient existence checks)
-const VALID_CATEGORIES = new Set([
-	"Boodschappen",
-	"Huishouden", 
-	"Verkeer & Vervoer",
-	"Gezondheid & Zorg",
-	"Vrije Tijd & Uitgaan",
-	"Winkels & Kleding",
-	"Financieel & Diensten",
-	"Overig"
-]);
+const VALID_CATEGORIES = new Set(["Boodschappen", "Huishouden", "Verkeer & Vervoer", "Gezondheid & Zorg", "Vrije Tijd & Uitgaan", "Winkels & Kleding", "Financieel & Diensten", "Overig"]);
 
 // Determine if store type is mixed-type (allows multiple categories)
 const isMixedTypeStore = (storeType: string): boolean => {
-	return storeType === 'supermarket';
+	return storeType === "supermarket";
 };
 
 // Validate and sanitize category
 const validateCategory = (category: string | null): string => {
 	if (!category) return "Overig";
-	
+
 	// Check if category is exactly one of valid categories
 	if (VALID_CATEGORIES.has(category)) {
 		return category;
 	}
-	
+
 	// If not valid, default to "Overig"
 	console.warn(`Invalid category "${category}" detected, defaulting to "Overig"`);
 	return "Overig";
@@ -166,15 +157,15 @@ export const extractReceiptData = async (ocrText: string): Promise<ReceiptData |
 				const filteredItems = filterNonProductItems(rawItems);
 
 				// Use AI's store type determination
-				const storeType = parsedData.store_type || 'unknown';
-				const primaryCategory = parsedData.primary_category || 'Overig';
+				const storeType = parsedData.store_type || "unknown";
+				const primaryCategory = parsedData.primary_category || "Overig";
 				const isMixedType = isMixedTypeStore(storeType);
-				
+
 				console.log(`AI detected store type: ${storeType} (primary category: ${primaryCategory}, mixed: ${isMixedType})`);
 
 				const sanitizedItems = filteredItems.map((item: ReceiptItem, index: number) => {
 					let category: string;
-					
+
 					if (isMixedType) {
 						// For mixed-type stores (supermarkets), use AI's individual categorization
 						category = validateCategory(item.category);

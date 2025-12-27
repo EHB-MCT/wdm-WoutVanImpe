@@ -48,7 +48,7 @@ export default function Home() {
 		return items.reduce((total, item) => {
 			if (item.price !== null && item.price !== undefined) {
 				const quantity = item.quantity || 1;
-				return total + (item.price * quantity);
+				return total + item.price * quantity;
 			}
 			return total;
 		}, 0);
@@ -56,19 +56,19 @@ export default function Home() {
 
 	const updateEditableData = (field: keyof ReceiptData, value: string | number | null) => {
 		if (!editableData) return;
-		
+
 		const newData = {
 			...editableData,
 			[field]: value,
 		};
-		
+
 		// Recalculate total if items change
-		if (field === 'items' && newData.items) {
+		if (field === "items" && newData.items) {
 			newData.total_price = calculateTotalFromItems(newData.items);
 		}
-		
+
 		setEditableData(newData);
-		
+
 		// Re-validate on data change
 		const newValidation = validateReceiptData(newData);
 		setValidation(newValidation);
@@ -85,12 +85,12 @@ export default function Home() {
 			...editableData,
 			items: updatedItems,
 		};
-		
+
 		// Recalculate total from items
 		newData.total_price = calculateTotalFromItems(updatedItems);
-		
+
 		setEditableData(newData);
-		
+
 		// Re-validate on item change
 		const newValidation = validateReceiptData(newData);
 		setValidation(newValidation);
@@ -110,12 +110,12 @@ export default function Home() {
 			...editableData,
 			items: updatedItems,
 		};
-		
+
 		// Recalculate total from items
 		newData.total_price = calculateTotalFromItems(updatedItems);
-		
+
 		setEditableData(newData);
-		
+
 		// Re-validate after adding item
 		const newValidation = validateReceiptData(newData);
 		setValidation(newValidation);
@@ -128,12 +128,12 @@ export default function Home() {
 			...editableData,
 			items: updatedItems,
 		};
-		
+
 		// Recalculate total from items
 		newData.total_price = calculateTotalFromItems(updatedItems);
-		
+
 		setEditableData(newData);
-		
+
 		// Re-validate after removing item
 		const newValidation = validateReceiptData(newData);
 		setValidation(newValidation);
@@ -150,7 +150,7 @@ export default function Home() {
 			if (!isUserAuthenticated()) {
 				throw new Error("Je moet ingelogd zijn om bonnen op te slaan.");
 			}
-			
+
 			const token = localStorage.getItem("token");
 
 			const receiptPayload = {
@@ -160,24 +160,24 @@ export default function Home() {
 				payment_method: editableData.payment_method,
 				total_amount: editableData.total_price,
 				raw_ocr_text: foundText || null,
-				items: editableData.items || []
+				items: editableData.items || [],
 			};
 
-const response = await fetch("http://localhost:5001/api/receipts", {
+			const response = await fetch("http://localhost:5001/api/receipts", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
-					"Authorization": `Bearer ${token}`,
+					Authorization: `Bearer ${token}`,
 				},
 				body: JSON.stringify(receiptPayload),
 			});
-			
-// Handle automatic token refresh
+
+			// Handle automatic token refresh
 			const refreshSuccess = handleTokenRefresh(response);
 			if (!refreshSuccess) {
-				console.warn('Token refresh failed, continuing with current session');
+				console.warn("Token refresh failed, continuing with current session");
 			}
-			
+
 			if (!response.ok) {
 				const errorData = await response.json();
 				throw new Error(errorData.error || `Opslaan mislukt: ${response.status} ${response.statusText}`);
@@ -185,14 +185,14 @@ const response = await fetch("http://localhost:5001/api/receipts", {
 
 			const savedReceipt = await response.json();
 			console.log("Receipt saved successfully:", savedReceipt);
-			
+
 			// Reset form after successful save
 			setImgPreview("");
 			setFoundText("");
 			setEditableData(null);
 			setImgSubmitted(false);
 			setValidation(null);
-			
+
 			alert("Bon succesvol opgeslagen!");
 		} catch (error) {
 			console.error("Save error:", error);
@@ -229,12 +229,12 @@ const response = await fetch("http://localhost:5001/api/receipts", {
 	useEffect(() => {
 		const fetchCategories = async () => {
 			try {
-const response = await fetch("http://localhost:5001/api/categories");
-if (response.ok) {
+				const response = await fetch("http://localhost:5001/api/categories");
+				if (response.ok) {
 					// Handle automatic token refresh (though categories endpoint doesn't require auth)
 					const refreshSuccess = handleTokenRefresh(response);
 					if (!refreshSuccess) {
-						console.warn('Token refresh failed during categories fetch');
+						console.warn("Token refresh failed during categories fetch");
 					}
 					const categoriesData: { id: number; name: string }[] = await response.json();
 					setCategories(categoriesData.map((cat) => cat.name));
@@ -254,14 +254,14 @@ if (response.ok) {
 			const calculatedTotal = editableData.items ? calculateTotalFromItems(editableData.items) : 0;
 			const dataWithCorrectTotal = {
 				...editableData,
-				total_price: calculatedTotal
+				total_price: calculatedTotal,
 			};
-			
+
 			// Update the data if total was different
 			if (editableData.total_price !== calculatedTotal) {
 				setEditableData(dataWithCorrectTotal);
 			}
-			
+
 			const initialValidation = validateReceiptData(dataWithCorrectTotal);
 			setValidation(initialValidation);
 		}
@@ -270,57 +270,47 @@ if (response.ok) {
 	return (
 		<AuthGuard>
 			<div className={styles.ocrPage}>
-			<h1 className={styles.pageTitle}>Upload your tickets here!</h1>
+				<h1 className={styles.pageTitle}>Upload your tickets here!</h1>
 
-			{imgSubmitted && (() => {
-				const loadingState = <LoadingStates isLoading={isLoading} />;
-				const editableDataState = (
-					<div>
-						<div className={styles.editReceiptHeader}>
-							<strong>Edit Receipt Data:</strong>
-<Button onClick={handleSave} disabled={isSaving} variant="primary" className={styles.saveButton}>
-								{isSaving ? "Saving..." : "Save Receipt"}
-							</Button>
-						</div>
+				{imgSubmitted &&
+					(() => {
+						const loadingState = <LoadingStates isLoading={isLoading} />;
+						const editableDataState = (
+							<div>
+								<div className={styles.editReceiptHeader}>
+									<strong>Edit Receipt Data:</strong>
+									<Button onClick={handleSave} disabled={isSaving} variant="primary" className={styles.saveButton}>
+										{isSaving ? "Saving..." : "Save Receipt"}
+									</Button>
+								</div>
 
-						{showValidationModal && validation && (
-							<ValidationModal 
-								validation={validation} 
-								isOpen={showValidationModal}
-								onClose={() => setShowValidationModal(false)}
-								onContinue={proceedWithSave}
-							/>
-						)}
+								{showValidationModal && validation && <ValidationModal validation={validation} isOpen={showValidationModal} onClose={() => setShowValidationModal(false)} onContinue={proceedWithSave} />}
 
-						<div className={componentStyles.receiptFormSection}>
-							<ReceiptForm editableData={editableData} updateEditableData={updateEditableData} />
+								<div className={componentStyles.receiptFormSection}>
+									<ReceiptForm editableData={editableData} updateEditableData={updateEditableData} />
 
-							<ReceiptItemsList editableData={editableData} updateItem={updateItem} addNewItem={addNewItem} removeItem={removeItem} categories={categories} />
-						</div>
+									<ReceiptItemsList editableData={editableData} updateItem={updateItem} addNewItem={addNewItem} removeItem={removeItem} categories={categories} />
+								</div>
 
-						<OCRTextDisplay foundText={foundText} />
-					</div>
-				);
-				const foundTextState = (
-					<div>
-						<strong>OCR Text (AI extraction failed):</strong>
-						<pre className={componentStyles.ocrFailedText}>{foundText}</pre>
-					</div>
-				);
-				const failedState = (
-					<div className={componentStyles.processingFailed}>
-						<strong>Processing failed</strong>
-					</div>
-				);
+								<OCRTextDisplay foundText={foundText} />
+							</div>
+						);
+						const foundTextState = (
+							<div>
+								<strong>OCR Text (AI extraction failed):</strong>
+								<pre className={componentStyles.ocrFailedText}>{foundText}</pre>
+							</div>
+						);
+						const failedState = (
+							<div className={componentStyles.processingFailed}>
+								<strong>Processing failed</strong>
+							</div>
+						);
 
-				return (
-					<div className={classNames(styles.textResultContainer, "card")}>
-						{isLoading ? loadingState : editableData ? editableDataState : foundText ? foundTextState : failedState}
-					</div>
-				);
-			})()}
+						return <div className={classNames(styles.textResultContainer, "card")}>{isLoading ? loadingState : editableData ? editableDataState : foundText ? foundTextState : failedState}</div>;
+					})()}
 
-			<ImageUpload imgInputRef={imgInputRef} imgPreview={imgPreview} onChange={handleChange} isLoading={isLoading} onSubmit={handleFormSubmit} />
+				<ImageUpload imgInputRef={imgInputRef} imgPreview={imgPreview} onChange={handleChange} isLoading={isLoading} onSubmit={handleFormSubmit} />
 			</div>
 		</AuthGuard>
 	);

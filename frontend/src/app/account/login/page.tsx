@@ -40,12 +40,8 @@ export default function LoginPage() {
 		setMessage("");
 
 		try {
-			const url = isLogin 
-				? "http://localhost:5001/api/login" 
-				: "http://localhost:5001/api/register";
-			const payload = isLogin
-				? { email: formData.email, password: hashPassword(formData.password) }
-				: { name: formData.name, email: formData.email, password: hashPassword(formData.password) };
+			const url = isLogin ? "http://localhost:5001/api/login" : "http://localhost:5001/api/register";
+			const payload = isLogin ? { email: formData.email, password: hashPassword(formData.password) } : { name: formData.name, email: formData.email, password: hashPassword(formData.password) };
 
 			const response = await fetch(url, {
 				method: "POST",
@@ -84,22 +80,15 @@ export default function LoginPage() {
 		}
 	};
 
-return (
+	return (
 		<div className={styles.authContainer}>
 			<div className={styles.authWrapper}>
 				<div className="card">
 					<div className={styles.authHeader}>
-						<Button 
-							onClick={() => router.push("/")} 
-							variant="secondary"
-							className={styles.backButton}
-							aria-label="Terug naar homepagina"
-						>
+						<Button onClick={() => router.push("/")} variant="secondary" className={styles.backButton} aria-label="Terug naar homepagina">
 							← Terug
 						</Button>
-						<h1 className={styles.authTitle}>
-							{isLogin ? "Inloggen" : "Registreren"}
-						</h1>
+						<h1 className={styles.authTitle}>{isLogin ? "Inloggen" : "Registreren"}</h1>
 					</div>
 
 					<form onSubmit={handleSubmit} className={styles.formStack}>
@@ -108,16 +97,7 @@ return (
 								<label className="label-text" htmlFor="name">
 									Naam
 								</label>
-								<input 
-									type="text" 
-									id="name" 
-									name="name" 
-									value={formData.name} 
-									onChange={handleChange} 
-									className="input-field" 
-									required 
-									placeholder="•••••" 
-								/>
+								<input type="text" id="name" name="name" value={formData.name} onChange={handleChange} className="input-field" required placeholder="•••••" />
 							</div>
 						)}
 
@@ -125,51 +105,22 @@ return (
 							<label className="label-text" htmlFor="email">
 								Email
 							</label>
-							<input 
-								type="email" 
-								id="email" 
-								name="email" 
-								value={formData.email} 
-								onChange={handleChange} 
-								className="input-field" 
-								required 
-								placeholder="naam@voorbeeld.com" 
-							/>
+							<input type="email" id="email" name="email" value={formData.email} onChange={handleChange} className="input-field" required placeholder="naam@voorbeeld.com" />
 						</div>
 
 						<div>
 							<label className="label-text" htmlFor="password">
 								Wachtwoord
 							</label>
-							<input 
-								type="password" 
-								id="password" 
-								name="password" 
-								value={formData.password} 
-								onChange={handleChange} 
-								className="input-field" 
-								required 
-								placeholder="••••" 
-							/>
+							<input type="password" id="password" name="password" value={formData.password} onChange={handleChange} className="input-field" required placeholder="••••" />
 						</div>
 
 						{isLogin && (
-							<div className={`${styles.stayLoggedInContainer} ${stayLoggedIn ? styles.checked : ''}`}>
-								<input 
-									type="checkbox" 
-									id="stayLoggedIn" 
-									checked={stayLoggedIn} 
-									onChange={(e) => setStayLoggedIn(e.target.checked)} 
-									className={styles.checkboxInput}
-								/>
-								<label 
-									htmlFor="stayLoggedIn" 
-									className={styles.checkboxLabel}
-								>
+							<div className={`${styles.stayLoggedInContainer} ${stayLoggedIn ? styles.checked : ""}`}>
+								<input type="checkbox" id="stayLoggedIn" checked={stayLoggedIn} onChange={(e) => setStayLoggedIn(e.target.checked)} className={styles.checkboxInput} />
+								<label htmlFor="stayLoggedIn" className={styles.checkboxLabel}>
 									Ingelogd blijven
-									<span className={styles.checkboxSubtext}>
-										Sessie blijft 5 dagen actief
-									</span>
+									<span className={styles.checkboxSubtext}>Sessie blijft 5 dagen actief</span>
 								</label>
 							</div>
 						)}
@@ -178,7 +129,7 @@ return (
 
 						<div className={styles.formActions}>
 							<Button type="submit" variant="primary" disabled={isLoading}>
-								{isLoading ? "Bezig..." : (isLogin ? "Inloggen" : "Registreren")}
+								{isLoading ? "Bezig..." : isLogin ? "Inloggen" : "Registreren"}
 							</Button>
 							<Button type="button" onClick={switchAuthMode} variant="secondary">
 								{isLogin ? "Registreren" : "Inloggen"}
@@ -189,11 +140,7 @@ return (
 					<div className={styles.footer}>
 						<p>
 							{isLogin ? "Nog geen account?" : "Heb je al een account?"}{" "}
-							<Button 
-								onClick={switchAuthMode} 
-								variant="link"
-								className={styles.linkButton}
-							>
+							<Button onClick={switchAuthMode} variant="link" className={styles.linkButton}>
 								{isLogin ? "Registreren hier" : "Log hier in"}
 							</Button>
 						</p>
