@@ -25,28 +25,35 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ receipt, isOpen, onC
 	const [isEditing, setIsEditing] = React.useState(false);
 	const [isLoading, setIsLoading] = React.useState(false);
 
-	// Convert receipt to ReceiptData format for editor hook
-	const receiptData = receipt
-		? {
-				store_name: receipt.store_name,
-				date: receipt.purchase_date.split("T")[0],
-				time: receipt.purchase_date.split("T")[1]?.substring(0, 5) || "12:00",
-				total_price: receipt.total_amount,
-				payment_method: receipt.payment_method,
-				raw_ocr_text: receipt.raw_ocr_text,
-				items: receipt.items.map((item) => ({
-					id: item.id,
-					name: item.name,
-					category: item.category,
-					quantity: item.quantity,
-					price: item.price,
-				})),
-		  }
-		: null;
+	// Memoize receipt data to prevent infinite re-renders
+	const receiptData = React.useMemo(() => {
+		if (!receipt) return null;
+		
+		return {
+			store_name: receipt.store_name,
+			date: receipt.purchase_date.split("T")[0],
+			time: receipt.purchase_date.split("T")[1]?.substring(0, 5) || "12:00",
+			total_price: receipt.total_amount,
+			payment_method: receipt.payment_method,
+			raw_ocr_text: receipt.raw_ocr_text,
+			items: receipt.items.map((item) => ({
+				id: item.id,
+				name: item.name,
+				category: item.category,
+				quantity: item.quantity,
+				price: item.price,
+			})),
+		};
+	}, [receipt]);
+
+	// Memoize options to prevent infinite re-renders
+	const editorOptions = React.useMemo(() => ({
+		onValidationChange: () => {},
+	}), []);
 
 	const { editableData, validation, updateEditableData, updateItem, addNewItem, removeItem, initializeData, prepareForAPI } = useReceiptEditor({
 		initialData: receiptData,
-		onValidationChange: () => {},
+		...editorOptions,
 	});
 
 	// Initialize when receipt changes

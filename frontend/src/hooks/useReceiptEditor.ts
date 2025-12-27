@@ -14,7 +14,8 @@ interface UseReceiptEditorOptions {
 }
 
 export function useReceiptEditor(options: UseReceiptEditorOptions = {}) {
-	const [editableData, setEditableData] = useState<ReceiptData | null>(options.initialData || null);
+	const { initialData, onValidationChange } = options;
+	const [editableData, setEditableData] = useState<ReceiptData | null>(initialData || null);
 	const [validation, setValidation] = useState<ValidationResult | null>(null);
 
 	// Update receipt data field
@@ -44,9 +45,9 @@ export function useReceiptEditor(options: UseReceiptEditorOptions = {}) {
 			// Validate and optionally notify parent
 			const newValidation = validateReceiptData(newData);
 			setValidation(newValidation);
-			options.onValidationChange?.(newValidation);
+			onValidationChange?.(newValidation);
 		},
-		[editableData, options]
+		[editableData, onValidationChange]
 	);
 
 	// Update individual item
@@ -96,9 +97,9 @@ export function useReceiptEditor(options: UseReceiptEditorOptions = {}) {
 			setEditableData(dataWithCorrectTotal);
 			const initialValidation = validateReceiptData(dataWithCorrectTotal);
 			setValidation(initialValidation);
-			options.onValidationChange?.(initialValidation);
+			onValidationChange?.(initialValidation);
 		},
-		[options]
+		[onValidationChange]
 	);
 
 	// Reset all data
