@@ -1,0 +1,245 @@
+/* ============================================================================ */
+/*                          UPLOAD PAGE STYLES                              */
+/* ============================================================================ */
+
+.ocrPage {
+  min-height: 100vh;
+  padding: var(--spacing-xl);
+  background-color: var(--background);
+}
+
+.pageTitle {
+  font-size: var(--font-3xl);
+  font-weight: 600;
+  color: var(--foreground);
+  text-align: center;
+  margin-bottom: var(--spacing-2xl);
+}
+
+/* ============================================================================ */
+/*                        TEXT RESULT CONTAINER                              */
+/* ============================================================================ */
+
+.textResultContainer {
+  margin-bottom: var(--spacing-2xl);
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.editReceiptHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-lg);
+  padding-bottom: var(--spacing-md);
+  border-bottom: 1px solid var(--border-color);
+}
+
+.saveButton {
+  min-width: 120px;
+}
+
+/* ============================================================================ */
+/*                           FORM COMPONENTS                                 */
+/* ============================================================================ */
+
+.ocrForm {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-lg);
+}
+
+.uploadControls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-sm);
+}
+
+.fileInput {
+  cursor: pointer;
+}
+
+.uploadButtonContainer {
+  display: flex;
+  justify-content: center;
+  margin-top: var(--spacing-lg);
+}
+
+.loadingButton {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.normalButton {
+  cursor: pointer;
+}
+
+/* ============================================================================ */
+/*                        IMAGE PREVIEW                                     */
+/* ============================================================================ */
+
+.uploadCard {
+  max-width: 600px;
+  margin: 0 auto var(--spacing-2xl);
+}
+
+.imagePreviewWrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 250px;
+  margin-top: var(--spacing-lg);
+  padding: var(--spacing-lg);
+  background-color: var(--muted-bg);
+  border-radius: var(--radius-md);
+  border: 2px dashed var(--border-color);
+}
+
+.previewImage {
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  object-fit: cover;
+}
+
+.noImageText {
+  color: var(--muted-color);
+  font-size: var(--font-sm);
+  text-align: center;
+}
+
+/* ============================================================================ */
+/*                        TEXT DISPLAY                                       */
+/* ============================================================================ */
+
+.ocrFailedText {
+  background-color: var(--muted-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  font-family: monospace;
+  font-size: var(--font-sm);
+  color: var(--foreground);
+  max-height: 300px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* ============================================================================ */
+/*                     LOADING STATES                                        */
+/* ============================================================================ */
+
+.loadingContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-2xl);
+  text-align: center;
+}
+
+.loadingSpinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid var(--border-color);
+  border-top: 4px solid var(--brand-color);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: var(--spacing-md);
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.loadingText {
+  font-size: var(--font-lg);
+  color: var(--muted-color);
+  margin-bottom: var(--spacing-sm);
+}
+
+.loadingSubtext {
+  font-size: var(--font-sm);
+  color: var(--muted-color);
+  opacity: 0.8;
+}
+
+/* ============================================================================ */
+/*                   PROCESSING STATES                                       */
+/* ============================================================================ */
+
+.processingFailed {
+  text-align: center;
+  padding: var(--spacing-xl);
+  color: var(--error-color);
+  background-color: var(--error-bg);
+  border: 1px solid var(--error-border);
+  border-radius: var(--radius-md);
+}
+
+/* ============================================================================ */
+/*                     OCR TEXT DISPLAY                                      */
+/* ============================================================================ */
+
+.ocrTextDisplay {
+  margin-top: var(--spacing-xl);
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ocrTextHeader {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--foreground);
+  margin-bottom: var(--spacing-md);
+}
+
+.ocrTextContent {
+  background-color: var(--muted-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  font-family: monospace;
+  font-size: var(--font-sm);
+  color: var(--foreground);
+  max-height: 200px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-break: break-all;
+}
+
+/* ============================================================================ */
+/*                           RESPONSIVE DESIGN                               */
+/* ============================================================================ */
+
+@media (max-width: 768px) {
+  .ocrPage {
+    padding: var(--spacing-md);
+  }
+  
+  .pageTitle {
+    font-size: var(--font-2xl);
+  }
+  
+  .editReceiptHeader {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    align-items: stretch;
+  }
+  
+  .saveButton {
+    width: 100%;
+  }
+  
+  .imagePreviewWrapper {
+    min-height: 200px;
+  }
+  
+  .previewImage {
+    width: 200px;
+    height: 200px;
+  }
+}

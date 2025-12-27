@@ -2,16 +2,17 @@
 
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { getStoredUser, logout, isUserAuthenticated } from "../../utils/auth";
-import styles from "../page.module.css";
+import { getStoredUser, logout, isUserAuthenticated } from "@/lib/auth";
+import { Button } from "@/components/ui/Button";
+import styles from "@/styles/components/Account.module.css";
 
 export default function AccountPage() {
 	const router = useRouter();
-	const [user, setUser] = useState<any>(null);
+	const [user, setUser] = useState<{ id: number; username: string; email: string } | null>(null);
 	const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
-	const [activeView, setActiveView] = useState<'menu' | 'profile' | 'password'>('menu');
-	const [passwordForm, setPasswordForm] = useState({ currentPassword: '', newPassword: '' });
-	const [profileForm, setProfileForm] = useState({ username: '', email: '' });
+	const [activeView, setActiveView] = useState<"menu" | "profile" | "password">("menu");
+	const [passwordForm, setPasswordForm] = useState({ currentPassword: "", newPassword: "" });
+	const [profileForm, setProfileForm] = useState({ username: "", email: "" });
 	const [hasChanges, setHasChanges] = useState(false);
 	const [isLoading, setIsLoading] = useState(false);
 
@@ -67,7 +68,7 @@ export default function AccountPage() {
 		setIsLoading(true);
 		try {
 			const token = localStorage.getItem("token");
-			const response = await fetch("http://localhost:5000/api/users/password", {
+			const response = await fetch("http://localhost:5001/api/users/password", {
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json",
@@ -83,12 +84,12 @@ export default function AccountPage() {
 
 			if (response.ok) {
 				setMessage({ type: "success", text: "Wachtwoord succesvol gewijzigd!" });
-				setPasswordForm({ currentPassword: '', newPassword: '' });
-				setActiveView('menu');
+				setPasswordForm({ currentPassword: "", newPassword: "" });
+				setActiveView("menu");
 			} else {
 				setMessage({ type: "error", text: data.error || "Fout bij wijzigen wachtwoord" });
 			}
-		} catch (error) {
+		} catch {
 			setMessage({ type: "error", text: "Netwerkfout, probeer opnieuw" });
 		} finally {
 			setIsLoading(false);
@@ -101,7 +102,7 @@ export default function AccountPage() {
 			return;
 		}
 
-		if (!profileForm.email.includes('@')) {
+		if (!profileForm.email.includes("@")) {
 			setMessage({ type: "error", text: "Voer een geldig emailadres in" });
 			return;
 		}
@@ -109,7 +110,7 @@ export default function AccountPage() {
 		setIsLoading(true);
 		try {
 			const token = localStorage.getItem("token");
-			const response = await fetch("http://localhost:5000/api/users/profile", {
+			const response = await fetch("http://localhost:5001/api/users/profile", {
 				method: "PUT",
 				headers: {
 					"Content-Type": "application/json",
@@ -131,7 +132,7 @@ export default function AccountPage() {
 			} else {
 				setMessage({ type: "error", text: data.error || "Fout bij bijwerken profiel" });
 			}
-		} catch (error) {
+		} catch {
 			setMessage({ type: "error", text: "Netwerkfout, probeer opnieuw" });
 		} finally {
 			setIsLoading(false);
@@ -139,8 +140,8 @@ export default function AccountPage() {
 	};
 
 	const goBack = () => {
-		setActiveView('menu');
-		setPasswordForm({ currentPassword: '', newPassword: '' });
+		setActiveView("menu");
+		setPasswordForm({ currentPassword: "", newPassword: "" });
 		if (user) {
 			setProfileForm({ username: user.username, email: user.email });
 			setHasChanges(false);
@@ -162,197 +163,106 @@ export default function AccountPage() {
 			<div className={styles.authWrapper}>
 				<div className="card">
 					{/* Header */}
-					<div style={{ display: "flex", alignItems: "center", marginBottom: "30px", justifyContent: "center" }}>
-						<h1 className={styles.authTitle} style={{ margin: 0 }}>
-							{activeView === 'menu' ? `Hallo, ${user.username}!` : 
-							 activeView === 'profile' ? 'Profiel' :
-							 activeView === 'password' ? 'Wachtwoord wijzigen' : 'Account'}
-						</h1>
+					<div className={`${styles.accountHeader} flex-center`}>
+						<h1 className={styles.authTitle}>{activeView === "menu" ? `Hallo, ${user.username}!` : activeView === "profile" ? "Profiel" : activeView === "password" ? "Wachtwoord wijzigen" : "Account"}</h1>
 					</div>
 
 					{/* Message Display */}
-					{message && (
-						<div 
-							style={{ 
-								marginBottom: "20px", 
-								padding: "12px", 
-								borderRadius: "6px",
-								backgroundColor: message.type === "success" ? "#d1fae5" : "#fee2e2",
-								color: message.type === "success" ? "#065f46" : "#991b1b",
-								border: `1px solid ${message.type === "success" ? "#6ee7b7" : "#fca5a5"}`,
-							}}
-						>
-							{message.text}
-						</div>
-					)}
+					{message && <div className={`message-util ${message.type === "success" ? "message-success" : "message-error"}`}>{message.text}</div>}
 
 					{/* Menu View */}
-					{activeView === 'menu' && (
-						<div>
-							<div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-								<button 
-									onClick={() => setActiveView('profile')}
-									className="btn btn-primary"
-									style={{ 
-										padding: "16px 24px", 
-										fontSize: "1em",
-										justifyContent: "flex-start",
-										textAlign: "left"
-									}}
-								>
+					{activeView === "menu" && (
+						<div className={styles.menuContainer}>
+							<div className={styles.menuButtons}>
+								<Button onClick={() => setActiveView("profile")} variant="secondary" className={styles.menuButton}>
 									👤 Profiel bekijken
-								</button>
+								</Button>
 								
-								<button 
-									onClick={() => setActiveView('password')}
-									className="btn btn-secondary"
-									style={{ 
-										padding: "16px 24px", 
-										fontSize: "1em",
-										justifyContent: "flex-start",
-										textAlign: "left"
-									}}
-								>
+								<Button onClick={() => setActiveView("password")} variant="secondary" className={styles.menuButton}>
 									🔐 Wachtwoord wijzigen
-								</button>
+								</Button>
 								
-								<button 
-									onClick={handleLogout}
-									className="btn btn-danger"
-									style={{ 
-										padding: "16px 24px", 
-										fontSize: "1em",
-										justifyContent: "flex-start",
-										textAlign: "left"
-									}}
-								>
+								<Button onClick={handleLogout} variant="secondary" className={styles.menuButton}>
 									🚪 Uitloggen
-								</button>
+								</Button>
 							</div>
 						</div>
 					)}
 
 					{/* Profile View */}
-					{activeView === 'profile' && (
-						<div>
-							<div style={{ 
-								padding: "20px", 
-								backgroundColor: "#f8fafc", 
-								borderRadius: "8px", 
-								border: "1px solid #e2e8f0" 
-							}}>
-								<div style={{ marginBottom: "16px" }}>
-									<label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
+					{activeView === "profile" && (
+						<div className={styles.profileView}>
+							<div className={styles.profileInfo}>
+								<div className={styles.formGroup}>
+									<label htmlFor="account-username" className={styles.formLabel}>
 										Gebruikersnaam
 									</label>
-									<input
-										type="text"
-										value={profileForm.username}
-										onChange={(e) => setProfileForm({ ...profileForm, username: e.target.value })}
-										className="form-control"
-										style={{ 
-											width: "100%", 
-											padding: "10px", 
-											border: "1px solid #d1d5db", 
-											borderRadius: "4px",
-											fontSize: "1em"
-										}}
-									/>
-								</div>
-								
-								<div style={{ marginBottom: "20px" }}>
-									<label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
-										Email
-									</label>
-									<input
-										type="email"
-										value={profileForm.email}
-										onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })}
-										className="form-control"
-										style={{ 
-											width: "100%", 
-											padding: "10px", 
-											border: "1px solid #d1d5db", 
-											borderRadius: "4px",
-											fontSize: "1em"
-										}}
-									/>
+									<input id="account-username" type="text" value={profileForm.username} onChange={(e) => setProfileForm({ ...profileForm, username: e.target.value })} className="input-field" />
 								</div>
 
-								<div style={{ display: "flex", gap: "10px", justifyContent: "center" }}>
-									<button 
+								<div className={styles.formGroup}>
+									<label htmlFor="account-email" className={styles.formLabel}>
+										Email
+									</label>
+									<input id="account-email" type="email" value={profileForm.email} onChange={(e) => setProfileForm({ ...profileForm, email: e.target.value })} className="input-field" />
+								</div>
+
+								<div className={styles.formActions}>
+									<Button
 										onClick={handleProfileSave}
-										className="btn btn-primary"
-										disabled={!hasChanges || isLoading || !profileForm.username.trim() || !profileForm.email.trim() || !profileForm.email.includes('@')}
-										style={{ 
-											opacity: (!hasChanges || isLoading || !profileForm.username.trim() || !profileForm.email.trim() || !profileForm.email.includes('@')) ? 0.6 : 1,
-											cursor: (!hasChanges || isLoading || !profileForm.username.trim() || !profileForm.email.trim() || !profileForm.email.includes('@')) ? 'not-allowed' : 'pointer'
-										}}
+										variant="primary"
+										className={!hasChanges || isLoading || !profileForm.username.trim() || !profileForm.email.trim() || !profileForm.email.includes("@") ? styles.disabled : ""}
+										disabled={!hasChanges || isLoading || !profileForm.username.trim() || !profileForm.email.trim() || !profileForm.email.includes("@")}
 									>
 										{isLoading ? "Opslaan..." : "Opslaan"}
-									</button>
-									<button 
-										onClick={goBack}
-										className="btn btn-secondary"
-									>
+									</Button>
+									<Button onClick={goBack} variant="secondary">
 										Annuleren
-									</button>
+									</Button>
 								</div>
 							</div>
 						</div>
 					)}
 
 					{/* Password Change View */}
-					{activeView === 'password' && (
-						<div>
-							<div style={{ 
-								padding: "20px", 
-								backgroundColor: "#f8fafc", 
-								borderRadius: "8px", 
-								border: "1px solid #e2e8f0" 
-							}}>
-								<div style={{ marginBottom: "16px" }}>
-									<label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
+					{activeView === "password" && (
+						<div className={styles.passwordView}>
+							<div className={styles.profileInfo}>
+								<div className={styles.formGroup}>
+									<label htmlFor="account-current-password" className={styles.formLabel}>
 										Huidig Wachtwoord
 									</label>
 									<input
+										id="account-current-password"
 										type="password"
 										value={passwordForm.currentPassword}
 										onChange={(e) => setPasswordForm({ ...passwordForm, currentPassword: e.target.value })}
-										className="form-control"
+										className="input-field"
 										placeholder="Voer je huidige wachtwoord in"
-										style={{ width: "100%", padding: "10px", border: "1px solid #d1d5db", borderRadius: "4px" }}
-									/>
-								</div>
-								
-								<div style={{ marginBottom: "20px" }}>
-									<label style={{ display: "block", marginBottom: "5px", fontWeight: "bold" }}>
-										Nieuw Wachtwoord (min. 6 tekens)
-									</label>
-									<input
-										type="password"
-										value={passwordForm.newPassword}
-										onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
-										className="form-control"
-										placeholder="Voer je nieuwe wachtwoord in"
-										style={{ width: "100%", padding: "10px", border: "1px solid #d1d5db", borderRadius: "4px" }}
 									/>
 								</div>
 
-								<div style={{ display: "flex", gap: "10px" }}>
-									<button 
-										onClick={handlePasswordChange}
-										className="btn btn-primary"
-										disabled={isLoading || !passwordForm.currentPassword || !passwordForm.newPassword}
-									>
+								<div className={styles.formGroup}>
+									<label htmlFor="account-new-password" className={styles.formLabel}>
+										Nieuw Wachtwoord (min. 6 tekens)
+									</label>
+									<input
+										id="account-new-password"
+										type="password"
+										value={passwordForm.newPassword}
+										onChange={(e) => setPasswordForm({ ...passwordForm, newPassword: e.target.value })}
+										className="input-field"
+										placeholder="Voer je nieuwe wachtwoord in"
+									/>
+								</div>
+
+								<div className={styles.formActions}>
+									<Button onClick={handlePasswordChange} variant="primary" disabled={isLoading || !passwordForm.currentPassword || !passwordForm.newPassword}>
 										{isLoading ? "Opslaan..." : "Wachtwoord wijzigen"}
-									</button>
-									<button 
-										onClick={goBack}
-										className="btn btn-secondary"
-									>
+									</Button>
+									<Button onClick={goBack} variant="secondary">
 										Annuleren
-									</button>
+									</Button>
 								</div>
 							</div>
 						</div>

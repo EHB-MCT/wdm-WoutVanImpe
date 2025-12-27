@@ -1,0 +1,129 @@
+/* ============================================================================ */
+/*                    DASHBOARD HEADER COMPONENT                           */
+/* ============================================================================ */
+
+.dashboardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xl);
+  padding: var(--spacing-lg);
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-base);
+}
+
+.homeLink {
+  text-decoration: none;
+}
+
+.title {
+  font-size: var(--font-xl);
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0;
+  text-align: center;
+  flex: 1;
+}
+
+.categoryInfo {
+  font-size: var(--font-sm);
+  color: var(--muted-color);
+  background-color: var(--muted-bg);
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  margin: 0;
+}
+
+.controlsSection {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: var(--spacing-xl);
+  gap: var(--spacing-lg);
+  flex-wrap: wrap;
+}
+
+.monthNavigation {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.monthDisplay {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--foreground);
+  min-width: 150px;
+  text-align: center;
+}
+
+.filterControls {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.categorySelect {
+  padding: var(--spacing-sm) var(--spacing-md);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  background-color: var(--card-bg);
+  color: var(--foreground);
+  font-size: var(--font-sm);
+  min-width: 150px;
+  cursor: pointer;
+}
+
+.categorySelect:focus {
+  outline: none;
+  border-color: var(--brand-color);
+  box-shadow: 0 0 0 3px var(--brand-shadow);
+}
+
+/* ============================================================================ */
+/*                           RESPONSIVE DESIGN                               */
+/* ============================================================================ */
+
+@media (max-width: 768px) {
+  .dashboardHeader {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    text-align: center;
+    padding: var(--spacing-md);
+  }
+  
+  .title {
+    font-size: var(--font-lg);
+  }
+  
+  .controlsSection {
+    flex-direction: column;
+    gap: var(--spacing-md);
+  }
+  
+  .monthNavigation {
+    justify-content: center;
+  }
+  
+  .categorySelect {
+    width: 100%;
+    min-width: auto;
+  }
+}
+
+@media (max-width: 480px) {
+  .dashboardHeader {
+    padding: var(--spacing-sm);
+  }
+  
+  .title {
+    font-size: var(--font-base);
+  }
+  
+  .monthDisplay {
+    font-size: var(--font-base);
+    min-width: 120px;
+  }
+}
