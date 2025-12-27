@@ -63,7 +63,7 @@ export function MonthlyOverview({ currentDate, onPreviousMonth, onNextMonth, can
 				<button
 					className={styles.monthNavButton}
 					onClick={onNextMonth}
-					disabled={canGoNext}
+					disabled={!canGoNext}
 					aria-label="Volgende maand"
 					style={{
 						opacity: canGoNext ? 1 : 0.3,
