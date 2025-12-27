@@ -3,7 +3,6 @@
 /* ============================================================================ */
 
 .ocrPage {
-  min-height: 100vh;
   padding: var(--spacing-xl);
   background-color: var(--background);
 }
