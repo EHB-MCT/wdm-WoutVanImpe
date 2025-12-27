@@ -1,43 +1,81 @@
 "use client";
 import { ReceiptData } from "@/types/receipt";
 import { extractReceiptData, processOCR } from "@/lib/receiptExtraction";
+import { ProcessingStep } from "./EnhancedLoadingStates";
 
 interface ReceiptProcessorProps {
 	imgInputRef: React.RefObject<HTMLInputElement | null>;
 	setFoundText: (text: string) => void;
 	setEditableData: (data: ReceiptData | null) => void;
-	setIsLoading: (loading: boolean) => void;
+	setProcessingStep: (step: ProcessingStep) => void;
+	setProcessingProgress: (progress: number) => void;
+	setErrorMessage: (message: string) => void;
 }
 
-export function ReceiptProcessor({ imgInputRef, setFoundText, setEditableData, setIsLoading }: ReceiptProcessorProps) {
+export function ReceiptProcessor({ 
+	imgInputRef, 
+	setFoundText, 
+	setEditableData, 
+	setProcessingStep, 
+	setProcessingProgress,
+	setErrorMessage 
+}: ReceiptProcessorProps) {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault();
-		setIsLoading(true);
 		setFoundText("");
 		setEditableData(null);
-
+		setErrorMessage("");
+		
 		try {
-			// Step 1: Get OCR text
+			// Step 1: Upload and validate file
 			const file = imgInputRef.current?.files?.[0];
 			if (!file) {
-				throw new Error("No file selected");
+				throw new Error("Geen bestand geselecteerd");
 			}
+
+			setProcessingStep("uploading");
+			setProcessingProgress(10);
+
+			// Step 2: OCR Processing
+			setProcessingStep("ocr-processing");
+			setProcessingProgress(25);
 
 			const ocrText = await processOCR(file);
 			setFoundText(ocrText);
+			
+			setProcessingStep("ocr-complete");
+			setProcessingProgress(50);
 
-			// Step 2: Extract structured data with Ollama
+			// Step 3: AI Processing
+			setProcessingStep("ai-processing");
+			setProcessingProgress(60);
+
 			const extractedData = await extractReceiptData(ocrText);
+			
 			if (extractedData) {
 				setEditableData(extractedData);
+				setProcessingStep("ai-complete");
+				setProcessingProgress(90);
+				
+				// Small delay to show completion state
+				await new Promise(resolve => setTimeout(resolve, 500));
+				
+				setProcessingStep("success");
+				setProcessingProgress(100);
 			} else {
+				setProcessingStep("ai-complete");
+				setProcessingProgress(90);
 				console.warn("Failed to extract structured data, showing OCR text only");
+				
+				// Still consider it successful but with OCR only
+				setTimeout(() => setProcessingStep("success"), 500);
 			}
 		} catch (error) {
 			console.error("Processing error:", error);
-			setFoundText(`Error: ${error instanceof Error ? error.message : "Unknown error occurred"}`);
-		} finally {
-			setIsLoading(false);
+			const errorMessage = error instanceof Error ? error.message : "Onbekende fout opgetreden";
+			setErrorMessage(errorMessage);
+			setProcessingStep("error");
+			setFoundText(`Error: ${errorMessage}`);
 		}
 	};
 
