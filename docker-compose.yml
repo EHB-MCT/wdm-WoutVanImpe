@@ -2,8 +2,10 @@ services:
   tesseract:
     build:
       context: ./tesseract
+    environment:
+      TESSERACT_PORT: ${TESSERACT_PORT}
     ports:
-      - 3000:3000
+      - "${TESSERACT_PORT}:${TESSERACT_PORT}"
     networks:
       - app-network
 
@@ -11,28 +13,35 @@ services:
     build:
       context: ./frontend
     ports:
-      - 3001:3001
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+    environment:
+      FRONTEND_PORT: ${FRONTEND_PORT}
+      NEXT_PUBLIC_API_PORT: ${API_PORT}
+      NEXT_PUBLIC_OLLAMA_PORT: ${OLLAMA_PORT}
+      NEXT_PUBLIC_TESSERACT_PORT: ${TESSERACT_PORT}
     networks:
       - app-network
 
   ollama:
     image: ollama/ollama:latest
     ports:
-      - "11434:11434"
+      - "${OLLAMA_PORT}:${OLLAMA_PORT}"
     volumes:
       - ./ollama:/root/.ollama
     networks:
       - app-network
 
-  db:
+  database:
     image: postgres
     restart: always
     environment:
-      POSTGRES_USER:
-      POSTGRES_PASSWORD:
-      POSTGRES_DB:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_DB}
+    ports:
+      - "${DATABASE_PORT}:${DATABASE_PORT}"
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -d db -U ${POSTGRES_USER}"]
+      test: ["CMD-SHELL", "pg_isready -d ${DATABASE_DB} -U ${DATABASE_USER}"]
       interval: 1s
       timeout: 5s
       retries: 10
@@ -43,7 +52,7 @@ services:
     image: adminer
     restart: always
     ports:
-      - 8080:8080
+      - "${ADMINER_PORT}:${ADMINER_PORT}"
     networks:
       - app-network
 
@@ -52,18 +61,18 @@ services:
       context: ./api
     command: sh -c "npm run knex:migrate && npm start"
     environment:
-      DATABASE_HOST: db
-      POSTGRES_USER:
-      POSTGRES_PASSWORD:
-      POSTGRES_DB:
-      API_PORT:
-      API_JWT_SECRET:
+      DATABASE_HOST: database
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_DB: ${DATABASE_DB}
+      API_PORT: ${API_PORT}
+      API_JWT_SECRET: ${API_JWT_SECRET}
     ports:
       - "${API_PORT}:${API_PORT}"
     networks:
       - app-network
     depends_on:
-      db:
+      database:
         condition: service_healthy
 
 networks:

@@ -10,6 +10,6 @@ COPY src ./src
 COPY next.config.ts .
 COPY tsconfig.json .
 
-EXPOSE 3001
+EXPOSE $FRONTEND_PORT
 
 CMD ["npm", "run", "dev"]

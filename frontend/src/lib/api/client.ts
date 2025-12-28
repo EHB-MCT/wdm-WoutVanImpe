@@ -11,13 +11,9 @@ interface ApiClientConfig {
 // Remove unused interface
 
 export class ApiError extends Error {
-	constructor(
-		message: string,
-		public status?: number,
-		public response?: Response
-	) {
+	constructor(message: string, public status?: number, public response?: Response) {
 		super(message);
-		this.name = 'ApiError';
+		this.name = "ApiError";
 	}
 }
 
@@ -26,7 +22,7 @@ class BaseApiClient {
 	private timeout: number;
 
 	constructor(config: ApiClientConfig) {
-		this.baseUrl = config.baseUrl.replace(/\/$/, ''); // Remove trailing slash
+		this.baseUrl = config.baseUrl.replace(/\/$/, ""); // Remove trailing slash
 		this.timeout = config.timeout || 10000;
 	}
 
@@ -34,9 +30,9 @@ class BaseApiClient {
 	 * Get authentication headers
 	 */
 	private getAuthHeaders(): Record<string, string> {
-		const token = localStorage.getItem('token');
+		const token = localStorage.getItem("token");
 		const headers: Record<string, string> = {
-			'Content-Type': 'application/json',
+			"Content-Type": "application/json",
 		};
 
 		if (token) {
@@ -53,9 +49,9 @@ class BaseApiClient {
 		// Handle automatic token refresh if needed
 		this.handleTokenRefresh(response);
 
-			if (!response.ok) {
-			let errorMessage = 'API request failed';
-			
+		if (!response.ok) {
+			let errorMessage = "API request failed";
+
 			try {
 				const errorData = await response.json();
 				errorMessage = errorData.error || errorData.message || errorMessage;
@@ -70,7 +66,7 @@ class BaseApiClient {
 			const data = await response.json();
 			return data;
 		} catch {
-			throw new ApiError('Invalid JSON response', response.status, response);
+			throw new ApiError("Invalid JSON response", response.status, response);
 		}
 	}
 
@@ -79,15 +75,15 @@ class BaseApiClient {
 	 */
 	private handleTokenRefresh(response: Response): void {
 		// Check for custom headers indicating token refresh
-		const newToken = response.headers.get('X-New-Token');
-		const refreshToken = response.headers.get('X-Refresh-Token');
+		const newToken = response.headers.get("X-New-Token");
+		const refreshToken = response.headers.get("X-Refresh-Token");
 
 		if (newToken) {
-			localStorage.setItem('token', newToken);
+			localStorage.setItem("token", newToken);
 		}
 
 		if (refreshToken) {
-			localStorage.setItem('refreshToken', refreshToken);
+			localStorage.setItem("refreshToken", refreshToken);
 		}
 	}
 
@@ -107,8 +103,8 @@ class BaseApiClient {
 			return response;
 		} catch (error) {
 			clearTimeout(timeoutId);
-			if (error instanceof Error && error.name === 'AbortError') {
-				throw new ApiError('Request timeout');
+			if (error instanceof Error && error.name === "AbortError") {
+				throw new ApiError("Request timeout");
 			}
 			throw error;
 		}
@@ -120,7 +116,7 @@ class BaseApiClient {
 	async get<T>(endpoint: string): Promise<T> {
 		const url = `${this.baseUrl}${endpoint}`;
 		const response = await this.makeRequest(url, {
-			method: 'GET',
+			method: "GET",
 			headers: this.getAuthHeaders(),
 		});
 
@@ -133,7 +129,7 @@ class BaseApiClient {
 	async post<T>(endpoint: string, data: unknown): Promise<T> {
 		const url = `${this.baseUrl}${endpoint}`;
 		const response = await this.makeRequest(url, {
-			method: 'POST',
+			method: "POST",
 			headers: this.getAuthHeaders(),
 			body: JSON.stringify(data),
 		});
@@ -147,7 +143,7 @@ class BaseApiClient {
 	async put<T>(endpoint: string, data: unknown): Promise<T> {
 		const url = `${this.baseUrl}${endpoint}`;
 		const response = await this.makeRequest(url, {
-			method: 'PUT',
+			method: "PUT",
 			headers: this.getAuthHeaders(),
 			body: JSON.stringify(data),
 		});
@@ -161,7 +157,7 @@ class BaseApiClient {
 	async delete<T>(endpoint: string): Promise<T> {
 		const url = `${this.baseUrl}${endpoint}`;
 		const response = await this.makeRequest(url, {
-			method: 'DELETE',
+			method: "DELETE",
 			headers: this.getAuthHeaders(),
 		});
 
@@ -174,7 +170,7 @@ class BaseApiClient {
 	async patch<T>(endpoint: string, data: unknown): Promise<T> {
 		const url = `${this.baseUrl}${endpoint}`;
 		const response = await this.makeRequest(url, {
-			method: 'PATCH',
+			method: "PATCH",
 			headers: this.getAuthHeaders(),
 			body: JSON.stringify(data),
 		});
@@ -185,7 +181,7 @@ class BaseApiClient {
 
 // Create and export the default API client instance
 export const apiClient = new BaseApiClient({
-	baseUrl: 'http://localhost:5001',
+	baseUrl: `http://localhost:${process.env.NEXT_PUBLIC_API_PORT}`,
 	timeout: 10000,
 });
 

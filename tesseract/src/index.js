@@ -7,7 +7,7 @@ const fs = require("fs");
 
 const app = express();
 app.use(cors());
-const port = 3000;
+const port = process.env.TESSERACT_PORT;
 
 const upload = multer({ storage: multer.memoryStorage() });
 

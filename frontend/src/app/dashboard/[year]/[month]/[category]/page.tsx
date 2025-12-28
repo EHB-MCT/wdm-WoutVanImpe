@@ -110,7 +110,7 @@ export default function DashboardPage() {
 			}
 
 			// Fetch receipts
-			const receiptsResponse = await fetch("http://localhost:5001/api/receipts", {
+			const receiptsResponse = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/api/receipts`, {
 				headers: { Authorization: `Bearer ${token}` },
 			});
 
@@ -253,7 +253,7 @@ export default function DashboardPage() {
 	const saveReceipt = async (updatedReceipt: Receipt) => {
 		try {
 			const token = localStorage.getItem("token");
-			const response = await fetch(`http://localhost:5001/api/receipts/${updatedReceipt.id}`, {
+			const response = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/api/receipts/${updatedReceipt.id}`, {
 				method: "PUT",
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -297,7 +297,7 @@ export default function DashboardPage() {
 	const deleteReceipt = async (receiptId: number) => {
 		try {
 			const token = localStorage.getItem("token");
-			const response = await fetch(`http://localhost:5001/api/receipts/${receiptId}`, {
+			const response = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/api/receipts/${receiptId}`, {
 				method: "DELETE",
 				headers: { Authorization: `Bearer ${token}` },
 			});

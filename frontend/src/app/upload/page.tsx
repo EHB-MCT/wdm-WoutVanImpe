@@ -175,7 +175,7 @@ export default function Home() {
 				items: editableData.items || [],
 			};
 
-			const response = await fetch("http://localhost:5001/api/receipts", {
+			const response = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/api/receipts`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -245,7 +245,7 @@ export default function Home() {
 	useEffect(() => {
 		const fetchCategories = async () => {
 			try {
-				const response = await fetch("http://localhost:5001/api/categories");
+				const response = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/api/categories`);
 				if (response.ok) {
 					// Handle automatic token refresh (though categories endpoint doesn't require auth)
 					const refreshSuccess = handleTokenRefresh(response);

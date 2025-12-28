@@ -122,7 +122,7 @@ export const extractReceiptData = async (ocrText: string): Promise<ReceiptData |
 
  IMPORTANT: Return ONLY raw JSON object. Nothing else.`;
 
-		const response = await fetch("http://localhost:11434/api/generate", {
+		const response = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_OLLAMA_PORT}/api/generate`, {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json",
@@ -210,7 +210,7 @@ export const processOCR = async (file: File): Promise<string> => {
 	const formData = new FormData();
 	formData.append("image", file);
 
-	const response = await fetch("http://localhost:3000/OCR", {
+	const response = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_TESSERACT_PORT}/OCR`, {
 		method: "POST",
 		body: formData,
 	});

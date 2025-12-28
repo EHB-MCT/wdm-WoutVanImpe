@@ -6,6 +6,6 @@ RUN npm i --quiet
 
 COPY src src
 
-EXPOSE 3000
+EXPOSE $TESSERACT_PORT
 
 CMD ["npm", "run", "start"]

@@ -13,7 +13,7 @@ export function useDashboardData(currentDate: Date) {
 	const fetchReceipts = async () => {
 		try {
 			const token = localStorage.getItem("token");
-			const response = await fetch("http://localhost:5001/api/receipts", {
+			const response = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/api/receipts`, {
 				headers: {
 					Authorization: `Bearer ${token}`,
 				},
