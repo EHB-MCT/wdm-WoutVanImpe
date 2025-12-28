@@ -1,62 +1,54 @@
-/**
- * Account menu component
- * Displays navigation options for account management
- */
-
 "use client";
 
 import React from "react";
 import { Button } from "../ui/Button";
 
 interface AccountMenuProps {
-	onProfileClick: () => void;
-	onPasswordClick: () => void;
-	onLogout: () => void;
+    onProfileClick: () => void;
+    onPasswordClick: () => void;
+    onLogout: () => void;
 }
 
+/**
+ * Account menu component.
+ * Displays navigation buttons for profile management and logout.
+ * @param props - Component props with click handlers.
+ */
 export const AccountMenu: React.FC<AccountMenuProps> = ({ onProfileClick, onPasswordClick, onLogout }) => {
-	return (
-		<div>
-			<div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-				<Button
-					onClick={onProfileClick}
-					variant="primary"
-					style={{
-						padding: "16px 24px",
-						fontSize: "1em",
-						justifyContent: "flex-start",
-						textAlign: "left",
-					}}
-				>
-					👤 Profiel bekijken
-				</Button>
+    const buttonStyle: React.CSSProperties = {
+        padding: "16px 24px",
+        fontSize: "1em",
+        justifyContent: "flex-start",
+        textAlign: "left",
+    };
 
-				<Button
-					onClick={onPasswordClick}
-					variant="primary"
-					style={{
-						padding: "16px 24px",
-						fontSize: "1em",
-						justifyContent: "flex-start",
-						textAlign: "left",
-					}}
-				>
-					🔐 Wachtwoord wijzigen
-				</Button>
+    return (
+        <div>
+            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                <Button
+                    onClick={onProfileClick}
+                    variant="primary"
+                    style={buttonStyle}
+                >
+                    👤 Profiel bekijken
+                </Button>
 
-				<Button
-					onClick={onLogout}
-					variant="primary"
-					style={{
-						padding: "16px 24px",
-						fontSize: "1em",
-						justifyContent: "flex-start",
-						textAlign: "left",
-					}}
-				>
-					🚪 Uitloggen
-				</Button>
-			</div>
-		</div>
-	);
+                <Button
+                    onClick={onPasswordClick}
+                    variant="primary"
+                    style={buttonStyle}
+                >
+                    🔐 Wachtwoord wijzigen
+                </Button>
+                
+                <Button
+                    onClick={onLogout}
+                    variant="primary"
+                    style={buttonStyle}
+                >
+                    🚪 Uitloggen
+                </Button>
+            </div>
+        </div>
+    );
 };

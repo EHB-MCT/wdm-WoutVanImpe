@@ -1,8 +1,3 @@
-/**
- * Reusable chart components for financial data visualization
- * Extracted from dashboard to reduce code duplication
- */
-
 "use client";
 
 import React from "react";
@@ -26,10 +21,19 @@ interface SpendingTrendChartProps {
 	className?: string;
 }
 
+interface CategoryChartProps {
+	data: CategorySpendingData[];
+	height?: number;
+	className?: string;
+}
+
+/**
+ * Line chart visualization for daily spending trends.
+ */
 export const SpendingTrendChart: React.FC<SpendingTrendChartProps> = ({ data, height = 300, className }) => {
 	if (!data || data.length === 0) {
 		return (
-			<div className={`chart-container ${className || ""} ${"no-data-chart"} chart-height-${height}`}>
+			<div className={`chart-container ${className || ""} no-data-chart chart-height-${height}`}>
 				<p className="no-data-message">Geen gegevens beschikbaar</p>
 			</div>
 		);
@@ -48,16 +52,13 @@ export const SpendingTrendChart: React.FC<SpendingTrendChartProps> = ({ data, he
 	);
 };
 
-interface CategoryChartProps {
-	data: CategorySpendingData[];
-	height?: number;
-	className?: string;
-}
-
+/**
+ * Bar chart visualization for spending by category.
+ */
 export const CategoryChart: React.FC<CategoryChartProps> = ({ data, height = 300, className }) => {
 	if (!data || data.length === 0) {
 		return (
-			<div className={`chart-container ${className || ""} ${"no-data-chart"} chart-height-${height}`}>
+			<div className={`chart-container ${className || ""} no-data-chart chart-height-${height}`}>
 				<p className="no-data-message">Geen categoriegevens beschikbaar</p>
 			</div>
 		);

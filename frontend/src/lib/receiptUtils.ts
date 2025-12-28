@@ -7,7 +7,8 @@ import type { ReceiptItem } from "@/types/receipt";
 import { VALID_CATEGORIES_SET, DEFAULTS, VALIDATION } from "./constants";
 
 /**
- * Calculates total price from array of receipt items
+ * Calculates total price from array of receipt items.
+ * Sums up the price * quantity for all items with valid pricing.
  */
 export const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 	return items.reduce((total, item) => {
@@ -20,7 +21,7 @@ export const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 };
 
 /**
- * Validates and sanitizes category name
+ * Validates and sanitizes category name.
  */
 export const validateCategory = (category: string | null): string => {
 	if (!category) return DEFAULTS.CATEGORY;
@@ -144,6 +145,7 @@ export const isFutureDate = (dateString: string): boolean => {
 /**
  * Formats currency amount for display
  */
+
 export const formatCurrency = (amount: number | string): string => {
 	const numeric = safeParseNumber(amount);
 	return `€${numeric.toFixed(2)}`;
@@ -152,6 +154,7 @@ export const formatCurrency = (amount: number | string): string => {
 /**
  * Formats date for display in Dutch format
  */
+
 export const formatDate = (dateString: string, options?: Intl.DateTimeFormatOptions): string => {
 	try {
 		const date = new Date(dateString);

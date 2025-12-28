@@ -1,4 +1,4 @@
-interface User {
+export interface User {
 	id: number;
 	username: string;
 	email: string;
@@ -11,19 +11,20 @@ interface JwtPayload {
 	exp: number;
 }
 
+/**
+ * Validates token structure and expiration.
+ * Note: This is a frontend-only check for UI states; actual security verification happens on the backend.
+ */
 export const isValidToken = (token: string): boolean => {
 	try {
-		// Basic structure check only - trust backend verification
 		const parts = token.split(".");
 		if (parts.length !== 3) {
 			return false;
 		}
 
-		// Decode JWT token (without verification - frontend check only)
 		const payload = parts[1];
 		const decodedPayload = JSON.parse(atob(payload));
 
-		// Check if token is expired
 		const currentTime = Math.floor(Date.now() / 1000);
 		return decodedPayload.exp > currentTime;
 	} catch (error) {
@@ -34,7 +35,6 @@ export const isValidToken = (token: string): boolean => {
 
 export const getTokenExpiration = (token: string): Date | null => {
 	try {
-		// Basic structure check only - trust backend verification
 		const parts = token.split(".");
 		if (parts.length !== 3) {
 			return null;
@@ -50,10 +50,7 @@ export const getTokenExpiration = (token: string): Date | null => {
 };
 
 const clearStorage = (key: string): void => {
-	// Check if we're in a browser environment
-	if (globalThis.window === undefined) {
-		return;
-	}
+	if (globalThis.window === undefined) return;
 
 	try {
 		localStorage.removeItem(key);
@@ -64,10 +61,7 @@ const clearStorage = (key: string): void => {
 };
 
 const getFromStorage = (key: string): string | null => {
-	// Check if we're in a browser environment
-	if (globalThis.window === undefined) {
-		return null;
-	}
+	if (globalThis.window === undefined) return null;
 
 	try {
 		return localStorage.getItem(key) || sessionStorage.getItem(key) || null;
@@ -77,22 +71,20 @@ const getFromStorage = (key: string): string | null => {
 	}
 };
 
-export const removeExpiredTokens = (): void => {
-	const token = getFromStorage("token");
-
-	if (token) {
-		if (!isValidToken(token)) {
-			console.log("Token expired, removing authentication data");
-			logout();
-		}
-	}
-};
-
 export const logout = (): void => {
 	console.log("Logging out user, removing authentication data");
 	clearStorage("token");
 	clearStorage("user");
 	clearStorage("stayLoggedIn");
+};
+
+export const removeExpiredTokens = (): void => {
+	const token = getFromStorage("token");
+
+	if (token && !isValidToken(token)) {
+		console.log("Token expired, removing authentication data");
+		logout();
+	}
 };
 
 export const getTokenInfo = (): { isValid: boolean; expiresIn: number | null; isExpired: boolean } => {
@@ -109,20 +101,16 @@ export const getTokenInfo = (): { isValid: boolean; expiresIn: number | null; is
 	const now = new Date();
 	const expiresIn = expirationDate.getTime() - now.getTime();
 	const isExpired = expiresIn <= 0;
-	const isValid = !isExpired;
 
 	return {
-		isValid,
-		expiresIn: isExpired ? null : Math.floor(expiresIn / 1000 / 60), // in minutes
+		isValid: !isExpired,
+		expiresIn: isExpired ? null : Math.floor(expiresIn / 1000 / 60), // minutes
 		isExpired,
 	};
 };
 
 export const handleTokenRefresh = (response: Response): boolean => {
-	// Check if we're in a browser environment
-	if (globalThis.window === undefined) {
-		return true;
-	}
+	if (globalThis.window === undefined) return true;
 
 	try {
 		const newToken = response.headers.get("X-New-Token");
@@ -136,6 +124,7 @@ export const handleTokenRefresh = (response: Response): boolean => {
 			} catch (storageError) {
 				console.error("Failed to store token in localStorage:", storageError instanceof Error ? storageError.message : String(storageError));
 
+				// Fallback to session storage if local storage fails (e.g., Safari private mode)
 				try {
 					sessionStorage.setItem("token", newToken);
 					console.log("Token stored in sessionStorage as fallback");
@@ -155,7 +144,7 @@ export const handleTokenRefresh = (response: Response): boolean => {
 };
 
 export const isUserAuthenticated = (): boolean => {
-	removeExpiredTokens(); // Clean up expired tokens first
+	removeExpiredTokens();
 	const token = getFromStorage("token");
 	return !!token && isValidToken(token);
 };

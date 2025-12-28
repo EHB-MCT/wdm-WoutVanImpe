@@ -28,13 +28,14 @@ interface CategoryBreakdownProps {
 	onCategoryClick: (category: string) => void;
 }
 
-const CategoryBreakdown: React.FC<CategoryBreakdownProps> = ({ categoryData, onCategoryClick }) => {
+function CategoryBreakdown({ categoryData, onCategoryClick }: CategoryBreakdownProps) {
 	return (
 		<div className={styles.combinedContent}>
 			<div className={styles.categoryList}>
 				{categoryData.map((cat, index) => (
 					<button key={cat.name} className={styles.categoryItem} onClick={() => onCategoryClick(cat.name)} aria-label={`Bekijk details voor categorie ${cat.name}, bedrag €${cat.value.toFixed(2)}`}>
 						<div className={styles.categoryInfo}>
+							{/* Uses index modulo 8 for consistent colors defined in CSS */}
 							<div className={`${styles.categoryDot} ${styles[`color${index % 8}`]}`} />
 							<span className={styles.categoryName}>{cat.name}</span>
 						</div>
@@ -46,9 +47,13 @@ const CategoryBreakdown: React.FC<CategoryBreakdownProps> = ({ categoryData, onC
 			<PieChartDisplay categoryData={categoryData} />
 		</div>
 	);
-};
+}
 
-export function MonthlyOverview({ currentDate, onPreviousMonth, onNextMonth, canGoNext, totalSpent, hasReceipts, categoryData, onCategoryClick }: Readonly<MonthlyOverviewProps>) {
+/**
+ * Monthly spending overview component.
+ * Displays total spending, category breakdown chart, and month navigation.
+ */
+export function MonthlyOverview({ currentDate, onPreviousMonth, onNextMonth, canGoNext, totalSpent, hasReceipts, categoryData, onCategoryClick }: MonthlyOverviewProps) {
 	const formatMonthYear = (date: Date): string => {
 		return date.toLocaleDateString("nl-BE", { month: "long", year: "numeric" });
 	};
@@ -59,7 +64,9 @@ export function MonthlyOverview({ currentDate, onPreviousMonth, onNextMonth, can
 				<button className={styles.monthNavButton} onClick={onPreviousMonth} aria-label="Vorige maand">
 					←
 				</button>
+
 				<h2 className={styles.monthTitle}>{formatMonthYear(currentDate)}</h2>
+
 				<button
 					className={styles.monthNavButton}
 					onClick={onNextMonth}

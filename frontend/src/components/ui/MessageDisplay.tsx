@@ -1,8 +1,3 @@
-/**
- * Message display component for success/error messages
- * Auto-dismisses after configured time
- */
-
 "use client";
 
 import React, { useEffect } from "react";
@@ -14,11 +9,14 @@ interface MessageDisplayProps {
 	autoDismiss?: boolean;
 }
 
+/**
+ * Displays temporary success/error feedback messages.
+ */
 export const MessageDisplay: React.FC<MessageDisplayProps> = ({ message, onClose, autoDismiss = true }) => {
 	useEffect(() => {
 		if (message && autoDismiss && !onClose) {
 			const timer = setTimeout(() => {
-				// Component will handle auto-dismiss internally
+				// Logic relies on parent component clearing the message state
 			}, VALIDATION.AUTO_DISMISS_MESSAGE_MS);
 			return () => clearTimeout(timer);
 		}

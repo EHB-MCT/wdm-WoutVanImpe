@@ -1,20 +1,20 @@
 "use client";
 
 import React from "react";
+import type { CategorySpending } from "@/types/receipt";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
 import styles from "@/styles/pages/Dashboard.module.css";
-
-interface CategorySpending {
-	name: string;
-	value: number;
-	[key: string]: string | number;
-}
 
 interface PieChartDisplayProps {
 	categoryData: CategorySpending[];
 }
 
+/**
+ * Renders a pie chart visualization of spending categories.
+ * @param props - Category data containing values and names.
+ */
 export function PieChartDisplay({ categoryData }: Readonly<PieChartDisplayProps>) {
+	// CSS custom properties defined in globals.css
 	const colors = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)", "var(--chart-5)", "var(--chart-6)", "var(--chart-7)", "var(--chart-8)"];
 
 	if (categoryData.length === 0) {
@@ -43,6 +43,7 @@ export function PieChartDisplay({ categoryData }: Readonly<PieChartDisplayProps>
 							<Cell key={`cell-${entry.name}-${entry.value}`} fill={colors[index % 8]} />
 						))}
 					</Pie>
+
 					<Tooltip formatter={(value: number | undefined) => `€${(value || 0).toFixed(2)}`} />
 					<Legend />
 				</PieChart>

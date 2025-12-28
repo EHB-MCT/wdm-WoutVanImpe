@@ -1,20 +1,15 @@
-/**
- * Categories API service
- * Handles category management
- */
-
-import apiClient from './client';
+import apiClient from "./client";
 
 export interface Category {
 	id: number;
 	name: string;
 }
 
+/**
+ * Service for managing expense categories.
+ */
 export const categoriesApi = {
-	/**
-	 * Get all available categories
-	 */
 	async getAll(): Promise<Category[]> {
-		return apiClient.get<Category[]>('/api/categories');
+		return apiClient.get<Category[]>("/api/categories");
 	},
 };

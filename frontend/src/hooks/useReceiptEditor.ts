@@ -1,8 +1,3 @@
-/**
- * Custom hook for receipt editing functionality
- * Provides reusable state management and operations for receipt forms
- */
-
 import { useState, useCallback } from "react";
 import type { ReceiptData, ReceiptItem } from "@/types/receipt";
 import { calculateTotalFromItems, createNewReceiptItem, formatReceiptItemForAPI } from "@/lib/receiptUtils";
@@ -13,36 +8,34 @@ interface UseReceiptEditorOptions {
 	onValidationChange?: (validation: ValidationResult) => void;
 }
 
+/**
+ * Manages receipt editing state, validation, and total calculations.
+ */
 export function useReceiptEditor(options: UseReceiptEditorOptions = {}) {
 	const { initialData, onValidationChange } = options;
 	const [editableData, setEditableData] = useState<ReceiptData | null>(initialData || null);
 	const [validation, setValidation] = useState<ValidationResult | null>(null);
 
-	// Update receipt data field
 	const updateEditableData = useCallback(
 		(field: keyof ReceiptData, value: string | number | null | ReceiptItem[] | undefined) => {
 			if (!editableData) return;
 
-			const newData = {
-				...editableData,
-				[field]: value,
-			};
+			const newData = { ...editableData };
 
-			// Recalculate total if items change
-			if (field === "items" && newData.items) {
-				newData.total_price = calculateTotalFromItems(newData.items);
-			}
-
-			// Handle undefined values by converting to null for consistency
+			// Handle undefined values by converting to null for consistency with API expectations
 			if (value === undefined) {
 				(newData as Record<string, unknown>)[field] = null;
 			} else {
 				(newData as Record<string, unknown>)[field] = value;
 			}
 
+			// Auto-recalculate total if the items list changes
+			if (field === "items" && Array.isArray(value)) {
+				newData.total_price = calculateTotalFromItems(value);
+			}
+
 			setEditableData(newData);
 
-			// Validate and optionally notify parent
 			const newValidation = validateReceiptData(newData);
 			setValidation(newValidation);
 			onValidationChange?.(newValidation);
@@ -50,7 +43,6 @@ export function useReceiptEditor(options: UseReceiptEditorOptions = {}) {
 		[editableData, onValidationChange]
 	);
 
-	// Update individual item
 	const updateItem = useCallback(
 		(index: number, field: keyof ReceiptItem, value: string | number | null) => {
 			if (!editableData?.items) return;
@@ -66,7 +58,6 @@ export function useReceiptEditor(options: UseReceiptEditorOptions = {}) {
 		[editableData, updateEditableData]
 	);
 
-	// Add new item
 	const addNewItem = useCallback(() => {
 		if (!editableData) return;
 
@@ -75,7 +66,6 @@ export function useReceiptEditor(options: UseReceiptEditorOptions = {}) {
 		updateEditableData("items", updatedItems);
 	}, [editableData, updateEditableData]);
 
-	// Remove item
 	const removeItem = useCallback(
 		(index: number) => {
 			if (!editableData?.items) return;
@@ -86,9 +76,9 @@ export function useReceiptEditor(options: UseReceiptEditorOptions = {}) {
 		[editableData, updateEditableData]
 	);
 
-	// Initialize with new data
 	const initializeData = useCallback(
 		(data: ReceiptData) => {
+			// Ensure total is consistent with items upon load
 			const dataWithCorrectTotal = {
 				...data,
 				total_price: calculateTotalFromItems(data.items || []),
@@ -102,13 +92,11 @@ export function useReceiptEditor(options: UseReceiptEditorOptions = {}) {
 		[onValidationChange]
 	);
 
-	// Reset all data
 	const resetData = useCallback(() => {
 		setEditableData(null);
 		setValidation(null);
 	}, []);
 
-	// Prepare data for API submission
 	const prepareForAPI = useCallback(() => {
 		if (!editableData) return null;
 
@@ -123,7 +111,6 @@ export function useReceiptEditor(options: UseReceiptEditorOptions = {}) {
 		};
 	}, [editableData]);
 
-	// Validate current data
 	const validateCurrentData = useCallback(() => {
 		if (!editableData) return null;
 		const validationResult = validateReceiptData(editableData);
@@ -131,7 +118,6 @@ export function useReceiptEditor(options: UseReceiptEditorOptions = {}) {
 		return validationResult;
 	}, [editableData]);
 
-	// Get CSS class name for field based on value
 	const getFieldClassName = useCallback((value: string | number | null, isQuantity: boolean = false, isPrice: boolean = false) => {
 		const baseClass = "input-field";
 		const isEmpty = value === null || value === "" || (isQuantity && value === 0) || (isPrice && value === 0);
@@ -139,19 +125,14 @@ export function useReceiptEditor(options: UseReceiptEditorOptions = {}) {
 	}, []);
 
 	return {
-		// State
 		editableData,
 		validation,
-
-		// Actions
 		updateEditableData,
 		updateItem,
 		addNewItem,
 		removeItem,
 		initializeData,
 		resetData,
-
-		// Utilities
 		prepareForAPI,
 		validateCurrentData,
 		getFieldClassName,

@@ -1,50 +1,81 @@
 "use client";
+
 import { ValidationResult } from "@/lib/receiptValidation";
 import { Button } from "@/components/ui/Button";
 import styles from "@/styles/components/ValidationModal.module.css";
+import { JSX } from "react";
 
 interface ValidationModalProps {
 	validation: ValidationResult;
 	isOpen: boolean;
 	onClose: () => void;
-	onContinue?: () => void;
 	onResetForm?: () => void;
+	onContinue?: () => void;
 }
 
-export function ValidationModal({ validation, isOpen, onClose, onContinue, onResetForm }: Readonly<ValidationModalProps>) {
+/**
+ * Modal for displaying validation feedback (success, errors, warnings).
+ * Prevents saving invalid receipts and provides actionable feedback.
+ */
+export function ValidationModal({ validation, isOpen, onClose, onContinue, onResetForm }: Readonly<ValidationModalProps>): JSX.Element | null {
 	if (!isOpen) return null;
 
-	const handleBackdropClick = (e: React.MouseEvent) => {
+	const handleBackdropClick = (e: React.MouseEvent<HTMLDialogElement>): void => {
 		if (e.target === e.currentTarget) {
 			onClose();
 		}
 	};
 
-	const handleKeyDown = (e: React.KeyboardEvent) => {
-		if (e.key === 'Escape') {
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLDialogElement>): void => {
+		if (e.key === "Escape") {
 			onClose();
 		}
 	};
 
-const isSaveSuccess = validation.success && validation.isValid;
-	const isSaveError = validation.errors.some(error => error.field === "Save Error");
+	const isSaveSuccess = validation.success && validation.isValid;
+	const isSaveError = validation.errors.some((error) => error.field === "Save Error");
+	const hasIssues = validation.errors.length > 0 || validation.warnings.length > 0;
+
+	// Determine modal title based on state
+	const getModalTitle = () => {
+		if (isSaveSuccess) return "✅ Bon Opgeslagen";
+		if (isSaveError) return "❌ Fout bij Opslaan";
+		if (validation.isValid) return "✅ Bon Klaar om Opslaan";
+		return "❌ Validatiefouten Gevonden";
+	};
+
+	// Determine primary button label
+	const getButtonLabel = () => {
+		if (isSaveSuccess) return "OK";
+		if (isSaveError) return "Sluiten";
+		if (validation.isValid) return "Doorgaan";
+		return "Probleem Oplossen";
+	};
+
+	// Determine primary button action
+	const handleMainAction = () => {
+		if (isSaveSuccess) {
+			onClose();
+			if (onResetForm) onResetForm();
+			return;
+		}
+		if (isSaveError) {
+			onClose();
+			return;
+		}
+		if (validation.isValid && onContinue) {
+			onContinue();
+			return;
+		}
+		onClose();
+	};
 
 	return (
-		<dialog 
-			className={styles.modalBackdrop} 
-			onClick={handleBackdropClick} 
-			onKeyDown={handleKeyDown}
-			open
-			aria-label="Close validation modal"
-		>
+		<dialog className={styles.modalBackdrop} onClick={handleBackdropClick} onKeyDown={handleKeyDown} open aria-label="Close validation modal">
 			<div className={styles.modalContent}>
 				<div className={styles.modalHeader}>
-					<h3 className={styles.modalTitle}>
-						{isSaveSuccess ? "✅ Bon Opgeslagen" : 
-						 isSaveError ? "❌ Fout bij Opslaan" :
-						 validation.isValid ? "✅ Bon Klaar om Opslaan" :
-						 "❌ Validatiefouten Gevonden"}
-					</h3>
+					<h3 className={styles.modalTitle}>{getModalTitle()}</h3>
+
 					<button onClick={onClose} className={styles.modalCloseButton} aria-label="Close validation modal">
 						×
 					</button>
@@ -61,8 +92,8 @@ const isSaveSuccess = validation.success && validation.isValid;
 						<div className={`${styles.validationSection} ${styles.errorSection}`}>
 							<h4 className={styles.validationTitle}>❌ Fout bij opslaan:</h4>
 							<ul className={styles.validationList}>
-								{validation.errors.map((error) => (
-									<li key={`error-${error.field}-${error.itemIndex || "general"}-${error.message.substring(0, 20)}`} className={styles.validationItem}>
+								{validation.errors.map((error, i) => (
+									<li key={`save-error-${i}`} className={styles.validationItem}>
 										{error.message}
 									</li>
 								))}
@@ -70,12 +101,12 @@ const isSaveSuccess = validation.success && validation.isValid;
 						</div>
 					)}
 
-					{!isSaveSuccess && !isSaveError && (validation.errors.length > 0 || validation.warnings.length > 0) && (
+					{!isSaveSuccess && !isSaveError && hasIssues && (
 						<div className={`${styles.validationSection} ${styles.errorSection}`}>
 							<h4 className={styles.validationTitle}>❌ Corrigeer deze fouten voordat u opslaat:</h4>
 							<ul className={styles.validationList}>
 								{[...validation.errors, ...validation.warnings].map((issue, index) => (
-									<li key={`issue-${index}-${issue.field}-${issue.itemIndex || "general"}-${issue.message.substring(0, 20)}`} className={styles.validationItem}>
+									<li key={`issue-${index}-${issue.field}`} className={styles.validationItem}>
 										<strong>{issue.itemIndex !== undefined ? `Artikel ${issue.itemIndex + 1}: ${issue.field}` : issue.field}:</strong> {issue.message}
 									</li>
 								))}
@@ -91,18 +122,8 @@ const isSaveSuccess = validation.success && validation.isValid;
 				</div>
 
 				<div className={styles.modalFooter}>
-					<Button 
-						onClick={
-							isSaveSuccess ? () => {
-								onClose();
-								if (onResetForm) onResetForm();
-							} :
-							isSaveError ? onClose :
-							validation.isValid && onContinue ? onContinue : onClose
-						}
-						variant="primary"
-					>
-						{isSaveSuccess ? "OK" : isSaveError ? "Sluiten" : validation.isValid ? "Doorgaan" : "Probleem Oplossen"}
+					<Button onClick={handleMainAction} variant="primary">
+						{getButtonLabel()}
 					</Button>
 				</div>
 			</div>

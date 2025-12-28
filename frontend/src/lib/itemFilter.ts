@@ -1,7 +1,11 @@
 import { ReceiptItem } from "@/types/receipt";
 
+/**
+ * Filters out metadata (totals, taxes, payment methods) and OCR noise from the item list.
+ */
 export const filterNonProductItems = (items: ReceiptItem[]): ReceiptItem[] => {
 	const excludePatterns = [
+		// Totals & Taxes
 		/^totaal$/i,
 		/^total$/i,
 		/^subtotaal$/i,
@@ -11,14 +15,20 @@ export const filterNonProductItems = (items: ReceiptItem[]): ReceiptItem[] => {
 		/^tax$/i,
 		/^kortin?g$/i,
 		/^discount$/i,
-		/^\d+$/,
-		/^[A-Z0-9]{3,}$/,
-		/^€?\d+,\d{2}$/,
+
+		// Payment Methods
 		/cash/i,
 		/visa/i,
 		/bancontact/i,
 		/credit card/i,
 		/debit card/i,
+
+		// Currency/Price noise
+		/^€?\d+,\d{2}$/,
+
+		// Pure numeric/code noise
+		/^\d+$/,
+		/^[A-Z0-9]{3,}$/,
 	];
 
 	return items.filter((item) => {
@@ -26,14 +36,14 @@ export const filterNonProductItems = (items: ReceiptItem[]): ReceiptItem[] => {
 
 		const name = item.name.trim();
 
-		// Check if name matches any exclusion pattern
 		for (const pattern of excludePatterns) {
 			if (pattern.test(name)) return false;
 		}
 
-		// Check if name is mostly numbers/codes (less than 30% letters)
+		// Heuristic: Filter out barcodes or serial numbers (strings with <30% letters)
 		const letterCount = (name.match(/[a-zA-Z]/g) || []).length;
 		const totalChars = name.replaceAll(/\s/g, "").length;
+
 		if (totalChars > 0 && letterCount / totalChars < 0.3) return false;
 
 		return true;

@@ -15,6 +15,9 @@ interface ButtonProps {
 	onKeyDown?: (e: React.KeyboardEvent<HTMLButtonElement>) => void;
 }
 
+/**
+ * Reusable button component with multiple visual variants and sizes.
+ */
 export function Button({ children, onClick, type = "button", variant = "primary", size = "md", disabled = false, className = "", style = {}, onKeyDown }: Readonly<ButtonProps>) {
 	const buttonClass = [styles.button, styles[variant], styles[size], disabled ? styles.disabled : "", className].filter(Boolean).join(" ");
 

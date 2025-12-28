@@ -1,36 +1,37 @@
-/**
- * API Client Configuration and Base Client
- * Centralized API communication for the Finance Tracker application
- */
+import { handleTokenRefresh } from "../auth";
+import { API_ENDPOINTS } from "../constants";
 
 interface ApiClientConfig {
 	baseUrl: string;
 	timeout?: number;
 }
 
-// Import auth utilities for centralized token management
-import { handleTokenRefresh } from '../auth';
-import { API_ENDPOINTS } from '../constants';
-
 export class ApiError extends Error {
-	constructor(message: string, public status?: number, public response?: Response) {
+	public status?: number;
+	public response?: Response;
+	public httpStatus?: number;
+
+	constructor(message: string, httpStatus?: number, response?: Response) {
 		super(message);
+		this.httpStatus = httpStatus;
+		this.response = response;
 		this.name = "ApiError";
 	}
 }
 
+/**
+ * Wrapper around the Fetch API.
+ * Handles JWT injection, timeout logic, and standardized error parsing.
+ */
 class BaseApiClient {
 	private readonly baseUrl: string;
 	private readonly timeout: number;
 
 	constructor(config: ApiClientConfig) {
-		this.baseUrl = config.baseUrl.replace(/\/$/, ""); // Remove trailing slash
+		this.baseUrl = config.baseUrl.replace(/\/$/, "");
 		this.timeout = config.timeout || 10000;
 	}
 
-	/**
-	 * Get authentication headers
-	 */
 	private getAuthHeaders(): Record<string, string> {
 		const token = globalThis.localStorage?.getItem("token");
 		const headers: Record<string, string> = {
@@ -44,11 +45,8 @@ class BaseApiClient {
 		return headers;
 	}
 
-	/**
-	 * Handle API response and errors
-	 */
 	private async handleResponse<T>(response: Response): Promise<T> {
-		// Use centralized token refresh handling
+		// Centralized check for 401s to trigger auto-logout/refresh
 		handleTokenRefresh(response);
 
 		if (!response.ok) {
@@ -65,16 +63,12 @@ class BaseApiClient {
 		}
 
 		try {
-			const data = await response.json();
-			return data;
+			return await response.json();
 		} catch {
 			throw new ApiError("Invalid JSON response", response.status, response);
 		}
 	}
 
-	/**
-	 * Make HTTP request with timeout
-	 */
 	private async makeRequest(url: string, options: RequestInit): Promise<Response> {
 		const controller = new AbortController();
 		const timeoutId = setTimeout(() => controller.abort(), this.timeout);
@@ -95,9 +89,6 @@ class BaseApiClient {
 		}
 	}
 
-	/**
-	 * GET request
-	 */
 	async get<T>(endpoint: string): Promise<T> {
 		const url = `${this.baseUrl}${endpoint}`;
 		const response = await this.makeRequest(url, {
@@ -108,9 +99,6 @@ class BaseApiClient {
 		return this.handleResponse<T>(response);
 	}
 
-	/**
-	 * POST request
-	 */
 	async post<T>(endpoint: string, data: unknown): Promise<T> {
 		const url = `${this.baseUrl}${endpoint}`;
 		const response = await this.makeRequest(url, {
@@ -122,9 +110,6 @@ class BaseApiClient {
 		return this.handleResponse<T>(response);
 	}
 
-	/**
-	 * PUT request
-	 */
 	async put<T>(endpoint: string, data: unknown): Promise<T> {
 		const url = `${this.baseUrl}${endpoint}`;
 		const response = await this.makeRequest(url, {
@@ -136,9 +121,6 @@ class BaseApiClient {
 		return this.handleResponse<T>(response);
 	}
 
-	/**
-	 * DELETE request
-	 */
 	async delete<T>(endpoint: string): Promise<T> {
 		const url = `${this.baseUrl}${endpoint}`;
 		const response = await this.makeRequest(url, {
@@ -149,9 +131,6 @@ class BaseApiClient {
 		return this.handleResponse<T>(response);
 	}
 
-	/**
-	 * PATCH request
-	 */
 	async patch<T>(endpoint: string, data: unknown): Promise<T> {
 		const url = `${this.baseUrl}${endpoint}`;
 		const response = await this.makeRequest(url, {
@@ -164,7 +143,6 @@ class BaseApiClient {
 	}
 }
 
-// Create and export the default API client instance
 export const apiClient = new BaseApiClient({
 	baseUrl: API_ENDPOINTS.BASE_URL,
 	timeout: 10000,

@@ -1,24 +1,45 @@
 import { ReceiptData } from "@/types/receipt";
 import { VALID_CATEGORIES_SET } from "./constants";
 
+/**
+ * Represents a validation error for receipt data fields.
+ * Contains error details for user feedback and form highlighting.
+ */
 export interface ValidationError {
+	/** Field name where validation error occurred */
 	field: string;
+	/** Human-readable error message describing the validation issue */
 	message: string;
+	/** Optional item index for array-level validation errors */
 	itemIndex?: number;
 }
 
+/**
+ * Represents the result of receipt data validation.
+ * Contains validation status and detailed error/warning information.
+ */
 export interface ValidationResult {
+	/** Overall validation status - true if no errors */
 	isValid: boolean;
+	/** List of validation errors that prevent data submission */
 	errors: ValidationError[];
+	/** List of validation warnings that don't prevent submission */
 	warnings: ValidationError[];
+	/** Optional success message for validation feedback */
 	success?: string;
 }
 
+/**
+ * Validates receipt data for completeness and correctness.
+ * Performs comprehensive validation including business rules and data integrity checks.
+ * @param {ReceiptData} data - The receipt data to validate
+ * @returns {ValidationResult} Validation result with errors, warnings, and validity status
+ */
 export const validateReceiptData = (data: ReceiptData): ValidationResult => {
 	const errors: ValidationError[] = [];
 	const warnings: ValidationError[] = [];
 
-// Validate required store fields
+	// Validate required store fields
 	if (!data.store_name || data.store_name.trim() === "") {
 		errors.push({
 			field: "Winkelnaam",
@@ -166,11 +187,21 @@ export const validateReceiptData = (data: ReceiptData): ValidationResult => {
 	};
 };
 
+/**
+ * Checks if receipt data has incomplete fields that need user attention.
+ * @param {ReceiptData} data - The receipt data to check
+ * @returns {boolean} True if there are incomplete fields, false otherwise
+ */
 export const hasIncompleteFields = (data: ReceiptData): boolean => {
 	const result = validateReceiptData(data);
 	return result.errors.length > 0;
 };
 
+/**
+ * Extracts list of incomplete field names from validation errors.
+ * @param {ReceiptData} data - The receipt data to analyze
+ * @returns {string[]} Array of field names with errors, including item indices
+ */
 export const getIncompleteFields = (data: ReceiptData): string[] => {
 	const result = validateReceiptData(data);
 	return result.errors.map((error) => (error.itemIndex !== undefined ? `Item ${error.itemIndex + 1}: ${error.field}` : error.field));

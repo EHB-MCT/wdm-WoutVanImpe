@@ -4,6 +4,10 @@ interface OCRTextDisplayProps {
 	foundText: string;
 }
 
+/**
+ * Collapsible display for raw OCR text.
+ * Useful for debugging extraction accuracy.
+ */
 export function OCRTextDisplay({ foundText }: Readonly<OCRTextDisplayProps>) {
 	if (!foundText) return null;
 

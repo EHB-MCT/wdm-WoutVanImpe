@@ -13,6 +13,10 @@ interface WelcomeSectionProps {
 	user: User | null;
 }
 
+/**
+ * Dashboard welcome header.
+ * Displays the user's name and the current date.
+ */
 export function WelcomeSection({ user }: Readonly<WelcomeSectionProps>) {
 	const formatDate = (date: Date): string => {
 		return date.toLocaleDateString("nl-BE", { day: "numeric", month: "long", year: "numeric" });

@@ -4,25 +4,29 @@ import React, { useEffect, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import styles from "@/styles/pages/Dashboard.module.css";
 import { CTASection } from "@/components/dashboard/CTASection";
-import { GuestWelcome } from "@/components/dashboard/GuestWelcome";
 import { MonthlyOverview } from "@/components/dashboard/MonthlyOverview";
 import { WelcomeSection } from "@/components/dashboard/WelcomeSection";
 import { AuthGuard } from "@/components/ui/AuthGuard";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { removeExpiredTokens, getStoredUser } from "@/lib/auth";
 import { User } from "@/types/receipt";
+import { GuestWelcome } from "@/components/dashboard/GuestWelcome";
 
+/**
+ * Home page component for authenticated and guest users.
+ * Displays personalized welcome, spending overview, and navigation to detailed dashboard.
+ * @returns {JSX.Element} Home page.
+ */
 export default function HomePage() {
 	const router = useRouter();
+
 	const [user, setUser] = useState<User | null>(null);
 	const [currentDate, setCurrentDate] = useState(new Date());
 	const { loading, getMonthlyData } = useDashboardData(currentDate);
 
 	useEffect(() => {
-		// Clean up expired tokens first
 		removeExpiredTokens();
 
-		// Get stored user (only if token is valid)
 		const storedUser = getStoredUser();
 		setUser(storedUser);
 	}, []);
@@ -67,7 +71,9 @@ export default function HomePage() {
 				) : (
 					<div className={styles.dashboardContainer}>
 						<WelcomeSection user={user} />
+
 						<CTASection currentDate={currentDate} />
+
 						{monthlyData && (
 							<MonthlyOverview
 								currentDate={currentDate}

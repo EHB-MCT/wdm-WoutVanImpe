@@ -1,8 +1,3 @@
-/**
- * SummaryCard component for dashboard
- * Displays summary statistics in card format
- */
-
 "use client";
 
 import React from "react";
@@ -15,7 +10,11 @@ interface SummaryCardProps {
 	className?: string;
 }
 
-export const SummaryCard: React.FC<SummaryCardProps> = ({ title, amount, subtitle, className }) => {
+/**
+ * Dashboard summary card.
+ * Displays a key metric (title + formatted amount) with an optional subtitle.
+ */
+export function SummaryCard({ title, amount, subtitle, className }: Readonly<SummaryCardProps>) {
 	return (
 		<div className={`summary-card ${className || ""}`}>
 			<h3 className="summary-card-title">{title}</h3>
@@ -23,4 +22,4 @@ export const SummaryCard: React.FC<SummaryCardProps> = ({ title, amount, subtitl
 			{subtitle && <p className="summary-card-subtitle">{subtitle}</p>}
 		</div>
 	);
-};
+}

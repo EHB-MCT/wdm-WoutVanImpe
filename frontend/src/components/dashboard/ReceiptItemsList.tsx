@@ -1,7 +1,8 @@
 "use client";
+
 import React from "react";
 import { ReceiptData, ReceiptItem } from "@/types/receipt";
-import { ReceiptItemComponent } from "./ReceiptItem";
+import { ReceiptItem as ReceiptItemComponent } from "./ReceiptItem";
 import { Button } from "@/components/ui/Button";
 import styles from "@/styles/components/Receipt.module.css";
 import listStyles from "@/styles/components/ReceiptItemsList.module.css";
@@ -14,7 +15,11 @@ interface ReceiptItemsListProps {
 	categories?: string[];
 }
 
-const ReceiptItemsList = React.memo(({ editableData, updateItem, addNewItem, removeItem, categories = [] }: Readonly<ReceiptItemsListProps>) => {
+/**
+ * List container for receipt items.
+ * Manages the grid of editable items and the "Add Item" functionality.
+ */
+export const ReceiptItemsList = React.memo(({ editableData, updateItem, addNewItem, removeItem, categories = [] }: Readonly<ReceiptItemsListProps>) => {
 	if (!editableData) {
 		return null;
 	}
@@ -23,6 +28,7 @@ const ReceiptItemsList = React.memo(({ editableData, updateItem, addNewItem, rem
 		<div className="mb-xl">
 			<div className={`${styles.itemsHeader} flex-between`}>
 				<strong>Items ({editableData.items?.length || 0}):</strong>
+
 				<Button onClick={addNewItem} variant="secondary" className={listStyles.addItemButton}>
 					+ Add Item
 				</Button>
@@ -42,5 +48,3 @@ const ReceiptItemsList = React.memo(({ editableData, updateItem, addNewItem, rem
 });
 
 ReceiptItemsList.displayName = "ReceiptItemsList";
-
-export { ReceiptItemsList };

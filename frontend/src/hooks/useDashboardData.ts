@@ -2,15 +2,31 @@ import { useState, useEffect } from "react";
 import { Receipt } from "@/types/receipt";
 import { receiptsApi } from "@/lib/api/receipts";
 
-export function useDashboardData(currentDate: Date) {
+interface MonthlyData {
+	totalSpent: number;
+	categoryData: Array<{ name: string; value: number }>;
+	hasReceipts: boolean;
+}
+
+interface DashboardDataReturn {
+	receipts: Receipt[];
+	loading: boolean;
+	getMonthlyData: (targetDate: Date) => MonthlyData;
+}
+
+/**
+ * Manages dashboard state.
+ * Fetches receipts and provides analytics calculations for specific months.
+ */
+export function useDashboardData(currentDate: Date): DashboardDataReturn {
 	const [receipts, setReceipts] = useState<Receipt[]>([]);
-	const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState<boolean>(true);
 
 	useEffect(() => {
 		fetchReceipts();
 	}, [currentDate]);
 
-	const fetchReceipts = async () => {
+	const fetchReceipts = async (): Promise<void> => {
 		try {
 			const data = await receiptsApi.getAll();
 			setReceipts(data);
@@ -21,7 +37,7 @@ export function useDashboardData(currentDate: Date) {
 		}
 	};
 
-	const getMonthlyData = (targetDate: Date) => {
+	const getMonthlyData = (targetDate: Date): MonthlyData => {
 		const year = targetDate.getFullYear();
 		const month = targetDate.getMonth();
 
@@ -30,14 +46,24 @@ export function useDashboardData(currentDate: Date) {
 			return receiptDate.getFullYear() === year && receiptDate.getMonth() === month;
 		});
 
-		const totalSpent = monthlyReceipts.reduce((sum, receipt) => sum + (typeof receipt.total_amount === "number" ? receipt.total_amount : Number.parseFloat(receipt.total_amount || 0)), 0);
+		const totalSpent = monthlyReceipts.reduce((sum, receipt) => {
+			// API may return total_amount as string or number
+			const amount = typeof receipt.total_amount === "number" ? receipt.total_amount : Number.parseFloat(receipt.total_amount || "0");
+			return sum + amount;
+		}, 0);
 
+		// Aggregate spending by category
 		const categorySpending: { [key: string]: number } = {};
+
 		monthlyReceipts.forEach((receipt) => {
 			receipt.items.forEach((item) => {
 				const category = item.category || "Overig";
-				const itemPrice = typeof item.price === "number" ? item.price : Number.parseFloat(item.price || 0);
-				const itemQuantity = typeof item.quantity === "number" ? item.quantity : Number.parseFloat(item.quantity || 1);
+
+				// Defensive parsing for price/quantity
+				const itemPrice = typeof item.price === "number" ? item.price : Number.parseFloat(String(item.price ?? "0"));
+
+				const itemQuantity = typeof item.quantity === "number" ? item.quantity : Number.parseFloat(String(item.quantity ?? "1"));
+
 				const itemTotal = itemPrice * itemQuantity;
 				categorySpending[category] = (categorySpending[category] || 0) + itemTotal;
 			});

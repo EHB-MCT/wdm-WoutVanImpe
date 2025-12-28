@@ -1,8 +1,3 @@
-/**
- * Dashboard header component with navigation and controls
- * Extracted from main dashboard page for reusability
- */
-
 "use client";
 
 import React from "react";
@@ -20,17 +15,18 @@ interface DashboardHeaderProps {
 	formatMonthYear: (date: Date) => string;
 }
 
+/**
+ * Dashboard header with month navigation and category filtering.
+ * @param props - Navigation state and handlers.
+ */
 export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ currentDate, currentCategory, validCategories, canGoNext, onPreviousMonth, onNextMonth, onCategoryChange, formatMonthYear }) => {
 	return (
 		<>
-			{/* Header */}
 			<div className={styles.dashboardHeader}>
 				<h1 className={styles.title}>Dashboard: {formatMonthYear(currentDate)}</h1>
 			</div>
 
-			{/* Controls */}
 			<div className={styles.controlsSection}>
-				{/* Month Navigation */}
 				<div className={styles.monthNavigation}>
 					<Button onClick={onPreviousMonth} aria-label="Vorige maand" variant="secondary">
 						←
@@ -41,7 +37,6 @@ export const DashboardHeader: React.FC<DashboardHeaderProps> = ({ currentDate, c
 					</Button>
 				</div>
 
-				{/* Filter Controls */}
 				<div className={styles.filterControls}>
 					<select value={currentCategory} onChange={(e) => onCategoryChange(e.target.value)} className={styles.categorySelect}>
 						<option value="all">Alle categorieën</option>

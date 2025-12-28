@@ -4,133 +4,123 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import styles from "@/styles/components/Navigation.module.css";
+import { NAVIGATION } from "@/lib/constants";
 
 export interface NavLinkProps {
-  href: string;
-  label: string;
-  icon?: React.ReactNode;
-  isActive?: boolean;
+	href: string;
+	label: string;
+	icon?: React.ReactNode;
+	isActive?: boolean;
+	onCloseMobile?: () => void;
 }
 
 export interface NavigationProps {
-  showBrand?: boolean;
-  brandText?: string;
-  className?: string;
+	showBrand?: boolean;
+	brandText?: string;
+	className?: string;
 }
 
-export function NavLink({ href, label, icon, isActive, onCloseMobile }: Readonly<NavLinkProps & { onCloseMobile?: () => void }>) {
-  const pathname = usePathname();
-  
-  // Determine if link is active
-  const isCurrentPage = isActive ?? pathname === href;
-  
-  // Handle special case for dashboard dynamic routes
-  const isDashboardRoute = pathname.startsWith("/dashboard") && href === "/dashboard";
-  const isAccountRoute = pathname.startsWith("/account") && href === "/account";
-  const finalActive = isCurrentPage || isDashboardRoute || isAccountRoute;
-  
-  const handleClick = () => {
-    if (onCloseMobile) {
-      onCloseMobile();
-    }
-  };
-  
-  return (
-    <li className={styles.navItem}>
-      <Link
-        href={href}
-        className={`${styles.navLink} ${finalActive ? styles.navLinkActive : ""}`}
-        aria-current={finalActive ? "page" : undefined}
-        onClick={handleClick}
-      >
-        {icon && <span className={styles.navIcon}>{icon}</span>}
-        <span className={styles.navLabel}>{label}</span>
-      </Link>
-    </li>
-  );
+/**
+ * Navigation link component.
+ * Handles active state detection for exact matches and sub-routes (e.g. Dashboard).
+ */
+export function NavLink({ href, label, icon, isActive, onCloseMobile }: Readonly<NavLinkProps>) {
+	const pathname = usePathname();
+
+	const isCurrentPage = isActive ?? pathname === href;
+
+	// specific check to keep parent link active when viewing sub-routes
+	const isDashboardRoute = pathname.startsWith("/dashboard") && href === "/dashboard";
+	const isAccountRoute = pathname.startsWith("/account") && href === "/account";
+
+	const finalActive = isCurrentPage || isDashboardRoute || isAccountRoute;
+
+	const handleClick = () => {
+		if (onCloseMobile) {
+			onCloseMobile();
+		}
+	};
+
+	return (
+		<li className={styles.navItem}>
+			<Link href={href} className={`${styles.navLink} ${finalActive ? styles.navLinkActive : ""}`} aria-current={finalActive ? "page" : undefined} onClick={handleClick}>
+				{icon && <span className={styles.navIcon}>{icon}</span>}
+				<span className={styles.navLabel}>{label}</span>
+			</Link>
+		</li>
+	);
 }
 
-export function Navigation({ 
-  showBrand = true, 
-  brandText = "FinanceTracker", 
-  className = "" 
-}: Readonly<NavigationProps>) {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+/**
+ * Main application navigation bar.
+ * Includes responsive mobile menu handling.
+ */
+export function Navigation({ showBrand = true, brandText = "FinanceTracker", className = "" }: Readonly<NavigationProps>) {
+	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
+	const toggleMobileMenu = () => {
+		setIsMobileMenuOpen(!isMobileMenuOpen);
+	};
 
-  const closeMobileMenu = () => {
-    setIsMobileMenuOpen(false);
-  };
+	const closeMobileMenu = () => {
+		setIsMobileMenuOpen(false);
+	};
 
-  // Close mobile menu on ESC key press
-  useEffect(() => {
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape' && isMobileMenuOpen) {
-        closeMobileMenu();
-      }
-    };
+	useEffect(() => {
+		const handleKeyDown = (event: KeyboardEvent) => {
+			if (event.key === "Escape" && isMobileMenuOpen) {
+				closeMobileMenu();
+			}
+		};
 
-    document.addEventListener('keydown', handleKeyDown);
-    return () => {
-      document.removeEventListener('keydown', handleKeyDown);
-    };
-  }, [isMobileMenuOpen]);
+		document.addEventListener("keydown", handleKeyDown);
+		return () => {
+			document.removeEventListener("keydown", handleKeyDown);
+		};
+	}, [isMobileMenuOpen]);
 
-  return (
-    <nav className={`${styles.navigation} ${className}`}>
-      <div className={styles.navContainer}>
-        {/* Brand/Logo */}
-        {showBrand && (
-          <Link href="/" className={styles.navBrand}>
-            <span className={styles.navBrandIcon}>💰</span>
-            <span>{brandText}</span>
-          </Link>
-        )}
+	return (
+		<nav className={`${styles.navigation} ${className}`}>
+			<div className={styles.navContainer}>
+				{showBrand && (
+					<Link href="/" className={styles.navBrand}>
+						<span className={styles.navBrandIcon}>{NAVIGATION.BRAND.ICON}</span>
+						<span>{brandText}</span>
+					</Link>
+				)}
 
-        {/* Desktop Navigation */}
-        <ul className={styles.navMenu}>
-          <NavLink href="/" label="Home" icon="🏠" />
-          <NavLink href="/upload" label="Upload" icon="📤" />
-          <NavLink href={`/dashboard/${new Date().getFullYear()}/${new Date().getMonth() + 1}/all`} label="Dashboard" icon="📊" />
-          <NavLink href="/account" label="Account" icon="👤" />
-        </ul>
+				<ul className={styles.navMenu}>
+					{NAVIGATION.MAIN_LINKS.map((link) => (
+						<NavLink
+							key={link.href}
+							// Dynamically construct dashboard link to always point to current month
+							href={link.href === "/dashboard" ? `/dashboard/${new Date().getFullYear()}/${new Date().getMonth() + 1}/all` : link.href}
+							label={link.label}
+							icon={link.icon}
+						/>
+					))}
+				</ul>
 
-        {/* Mobile Menu Toggle */}
-        <button
-          className={styles.navMobileToggle}
-          onClick={toggleMobileMenu}
-          aria-label="Toggle navigation menu"
-          aria-expanded={isMobileMenuOpen}
-        >
-          {isMobileMenuOpen ? "✕" : "☰"}
-        </button>
+				<button className={styles.navMobileToggle} onClick={toggleMobileMenu} aria-label="Toggle navigation menu" aria-expanded={isMobileMenuOpen}>
+					{isMobileMenuOpen ? NAVIGATION.MOBILE.TOGGLE_CLOSE : NAVIGATION.MOBILE.TOGGLE_OPEN}
+				</button>
 
-        {/* Mobile Navigation Menu */}
-        {isMobileMenuOpen && (
-          <>
-            {/* Backdrop overlay */}
-            <button 
-              className={styles.navMobileBackdrop}
-              onClick={closeMobileMenu}
-              aria-label="Close mobile menu"
-              type="button"
-            />
-            <div className={`${styles.navMobileMenu} ${styles.isOpen}`}>
-              <ul className={styles.navMenu}>
-                <NavLink href="/" label="Home" icon="🏠" />
-                <NavLink href="/upload" label="Upload" icon="📤" />
-                <NavLink href={`/dashboard/${new Date().getFullYear()}/${new Date().getMonth() + 1}/all`} label="Dashboard" icon="📊" />
-                <NavLink href="/account" label="Account" icon="👤" />
-              </ul>
-            </div>
-          </>
-        )}
-      </div>
-    </nav>
-  );
+				{isMobileMenuOpen && (
+					<>
+						<button className={styles.navMobileBackdrop} onClick={closeMobileMenu} aria-label="Close mobile menu" type="button" />
+
+						<div className={`${styles.navMobileMenu} ${styles.isOpen}`}>
+							<ul className={styles.navMenu}>
+								{NAVIGATION.MAIN_LINKS.map((link) => (
+									<NavLink key={link.href} href={link.href === "/dashboard" ? `/dashboard/${new Date().getFullYear()}/${new Date().getMonth() + 1}/all` : link.href} label={link.label} icon={link.icon} onCloseMobile={closeMobileMenu} />
+								))}
+							</ul>
+						</div>
+					</>
+				)}
+			</div>
+		</nav>
+	);
 }
 
 export default Navigation;

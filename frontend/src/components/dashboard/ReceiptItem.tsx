@@ -1,21 +1,27 @@
 "use client";
+
 import React from "react";
-import { ReceiptItem } from "@/types/receipt";
+import type { ReceiptItem as ReceiptItemType } from "@/types/receipt";
 import { Button } from "@/components/ui/Button";
 import styles from "@/styles/components/Receipt.module.css";
 import { safeParseNumber, safeParseInt } from "@/lib/receiptUtils";
 
 interface ReceiptItemProps {
-	item: ReceiptItem;
+	item: ReceiptItemType;
 	index: number;
-	updateItem: (index: number, field: keyof ReceiptItem, value: string | number | null) => void;
+	updateItem: (index: number, field: keyof ReceiptItemType, value: string | number | null) => void;
 	removeItem: (index: number) => void;
 	categories?: string[];
 }
 
-const ReceiptItemComponent = React.memo(({ item, index, updateItem, removeItem, categories = [] }: Readonly<ReceiptItemProps>) => {
+/**
+ * Individual receipt line item component.
+ * Handles editing of item details (name, category, quantity, price) within the receipt form.
+ */
+export const ReceiptItem = React.memo(({ item, index, updateItem, removeItem, categories = [] }: Readonly<ReceiptItemProps>) => {
 	const getFieldClassName = (value: string | number | null, isQuantity: boolean = false, isPrice: boolean = false) => {
 		const baseClass = "input-field";
+		// Zero is considered "empty" / invalid for quantity and price in this context
 		const isEmpty = value === null || value === "" || (isQuantity && value === 0) || (isPrice && value === 0);
 		return isEmpty ? `${baseClass} incompleteField` : baseClass;
 	};
@@ -29,6 +35,7 @@ const ReceiptItemComponent = React.memo(({ item, index, updateItem, removeItem, 
 					</label>
 					<input id={`item-name-${index}`} type="text" value={item.name || ""} onChange={(e) => updateItem(index, "name", e.target.value)} className={getFieldClassName(item.name)} placeholder="Item name" />
 				</div>
+
 				<div>
 					<label htmlFor={`item-category-${index}`} className={`label-text ${styles.itemField}`}>
 						Category
@@ -42,6 +49,7 @@ const ReceiptItemComponent = React.memo(({ item, index, updateItem, removeItem, 
 						))}
 					</select>
 				</div>
+
 				<div>
 					<label htmlFor={`item-quantity-${index}`} className={`label-text ${styles.itemField}`}>
 						Quantity
@@ -57,6 +65,7 @@ const ReceiptItemComponent = React.memo(({ item, index, updateItem, removeItem, 
 						placeholder="x"
 					/>
 				</div>
+
 				<div>
 					<label htmlFor={`item-price-${index}`} className={`label-text ${styles.itemField}`}>
 						Price (€)
@@ -72,16 +81,15 @@ const ReceiptItemComponent = React.memo(({ item, index, updateItem, removeItem, 
 						placeholder="0.00"
 					/>
 				</div>
+
 				<div className={styles.itemRemoveBtn}>
-					<Button onClick={() => removeItem(index)} variant="danger" className={styles.removeItemButton}>
+					<Button onClick={() => removeItem(index)} variant="danger" className={styles.removeItemButton} aria-label={`Remove item ${item.name || "from list"}`}>
 						×
 					</Button>
 				</div>
 			</div>
-	</div>
+		</div>
 	);
 });
 
-ReceiptItemComponent.displayName = "ReceiptItemComponent";
-
-export { ReceiptItemComponent };
+ReceiptItem.displayName = "ReceiptItem";

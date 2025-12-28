@@ -2,25 +2,25 @@ import { ReceiptData, ReceiptItem } from "@/types/receipt";
 import { filterNonProductItems } from "./itemFilter";
 import { VALID_CATEGORIES_SET } from "./constants";
 
-// Determine if store type is mixed-type (allows multiple categories)
 const isMixedTypeStore = (storeType: string): boolean => {
 	return storeType === "supermarket";
 };
 
-// Validate and sanitize category
 const validateCategory = (category: string | null): string => {
 	if (!category) return "Overig";
 
-	// Check if category is exactly one of valid categories
 	if (VALID_CATEGORIES_SET.has(category)) {
 		return category;
 	}
 
-	// If not valid, default to "Overig"
 	console.warn(`Invalid category "${category}" detected, defaulting to "Overig"`);
 	return "Overig";
 };
 
+/**
+ * Orchestrates the AI extraction pipeline.
+ * Sends raw OCR text to a local LLM (Ollama) to parse structured JSON.
+ */
 export const extractReceiptData = async (ocrText: string): Promise<ReceiptData | null | undefined> => {
 	try {
 		const prompt = `Extract receipt data from following OCR text and return ONLY a JSON object. No explanations, no markdown formatting, no conversational text.
@@ -142,19 +142,16 @@ export const extractReceiptData = async (ocrText: string): Promise<ReceiptData |
 			throw new Error("No response from Ollama");
 		}
 
-		// The response from Ollama is a JSON string that needs to be parsed
 		try {
 			console.log(data.response);
 			const parsedData = JSON.parse(data.response);
 
-			// Validate and sanitize structure
 			if (parsedData && typeof parsedData === "object") {
 				const rawItems = Array.isArray(parsedData.items) ? parsedData.items : [];
 
-				// Filter out non-product items
 				const filteredItems = filterNonProductItems(rawItems);
 
-				// Use AI's store type determination
+				// Use AI's store type determination to guide heuristic categorization
 				const storeType = parsedData.store_type || "unknown";
 				const primaryCategory = parsedData.primary_category || "Overig";
 				const isMixedType = isMixedTypeStore(storeType);
@@ -165,10 +162,10 @@ export const extractReceiptData = async (ocrText: string): Promise<ReceiptData |
 					let category: string;
 
 					if (isMixedType) {
-						// For mixed-type stores (supermarkets), use AI's individual categorization
+						// Supermarkets have diverse items; rely on AI's per-item category
 						category = validateCategory(item.category);
 					} else {
-						// For single-type stores, use AI's primary category determination
+						// Specialized stores (e.g., Pharmacy) force a single category for all items
 						category = validateCategory(primaryCategory);
 					}
 
@@ -187,7 +184,7 @@ export const extractReceiptData = async (ocrText: string): Promise<ReceiptData |
 					time: parsedData.time || null,
 					total_price: typeof parsedData.total_price === "number" ? parsedData.total_price : null,
 					payment_method: parsedData.payment_method || null,
-					raw_ocr_text: null, // Raw OCR text not available from AI extraction
+					raw_ocr_text: null,
 					items: sanitizedItems,
 				};
 			} else {
@@ -204,6 +201,9 @@ export const extractReceiptData = async (ocrText: string): Promise<ReceiptData |
 	}
 };
 
+/**
+ * Sends image to Tesseract service for OCR.
+ */
 export const processOCR = async (file: File): Promise<string> => {
 	const formData = new FormData();
 	formData.append("image", file);

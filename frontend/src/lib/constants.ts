@@ -1,21 +1,11 @@
-/**
- * Shared constants for finance tracker application
- * Centralized configuration to avoid duplication across components
- */
-
-// Valid categories for receipts (single source of truth)
 export const VALID_CATEGORIES = ["Boodschappen", "Huishouden", "Verkeer & Vervoer", "Gezondheid & Zorg", "Vrije Tijd & Uitgaan", "Winkels & Kleding", "Financieel & Diensten", "Overig"] as const;
 
-// Create Set for efficient existence checks (derived from VALID_CATEGORIES)
 export const VALID_CATEGORIES_SET = new Set(VALID_CATEGORIES as readonly string[]);
 
-// Type for valid category
-export type ValidCategory = typeof VALID_CATEGORIES[number];
+export type ValidCategory = (typeof VALID_CATEGORIES)[number];
 
-// Category color scheme for charts (uses CSS variables)
 export const CATEGORY_COLORS = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)", "var(--chart-5)", "var(--chart-6)", "var(--chart-7)", "var(--chart-8)"] as const;
 
-// API endpoints
 export const API_ENDPOINTS = {
 	BASE_URL: `http://localhost:${process.env.NEXT_PUBLIC_API_PORT}`,
 	RECEIPTS: "/api/receipts",
@@ -26,16 +16,16 @@ export const API_ENDPOINTS = {
 	REGISTER: "/api/register",
 } as const;
 
-// Validation constants
 export const VALIDATION = {
 	PASSWORD_MIN_LENGTH: 6,
 	AUTO_DISMISS_MESSAGE_MS: 3000,
 	TOKEN_REFRESH_BUFFER_MS: 900000, // 15 minutes
+	LOGOUT_REDIRECT_DELAY_MS: 1500,
+	PASSWORD_CHANGE_SUCCESS_DELAY_MS: 3000,
 	MIN_PRICE: 0,
 	MIN_QUANTITY: 1,
 } as const;
 
-// Date format constants
 export const DATE_FORMATS = {
 	DUTCH_DATE_ONLY: "nl-BE",
 	DISPLAY_DATE: "DD-MM-YYYY",
@@ -43,14 +33,12 @@ export const DATE_FORMATS = {
 	DISPLAY_TIME: "HH:MM",
 } as const;
 
-// Default values
 export const DEFAULTS = {
 	QUANTITY: 1,
 	CATEGORY: "Overig",
 	DATE_TIME: "12:00:00",
 } as const;
 
-// Error messages in Dutch
 export const ERROR_MESSAGES = {
 	REQUIRED_FIELD: "Dit veld is verplicht",
 	INVALID_EMAIL: "Voer een geldig emailadres in",
@@ -62,12 +50,45 @@ export const ERROR_MESSAGES = {
 	NOT_AUTHENTICATED: "Je moet ingelogd zijn om deze actie uit te voeren",
 	NETWORK_ERROR: "Netwerkfout, probeer opnieuw",
 	GENERIC_ERROR: "Er is een onverwachte fout opgetreden",
+	AUTH_REDIRECT_MESSAGE: "User not authenticated, redirecting to login page",
+	RECEIPT_UPDATE_ERROR: "Er is een fout opgetreden bij het opslaan",
+	RECEIPT_DELETE_ERROR: "Er is een fout opgetreden bij het verwijderen",
 } as const;
 
-// Success messages in Dutch
 export const SUCCESS_MESSAGES = {
 	RECEIPT_SAVED: "Bon succesvol opgeslagen!",
 	PROFILE_UPDATED: "Profiel succesvol bijgewerkt!",
 	PASSWORD_CHANGED: "Wachtwoord succesvol gewijzigd!",
 	LOGGED_OUT: "Succesvol uitgelogd!",
+} as const;
+
+export const TIME_FORMATS = {
+	DISPLAY: "HH:MM",
+	DEFAULT_TIME: "12:00",
+	SUBSTRING_LENGTH: 5,
+} as const;
+
+export const ID_GENERATION = {
+	TEMP_PREFIX: "temp-",
+} as const;
+
+export const CONFIRMATION_MESSAGES = {
+	DELETE_RECEIPT: "Weet je zeker dat je dit ticket wilt verwijderen?",
+} as const;
+
+export const NAVIGATION = {
+	MAIN_LINKS: [
+		{ href: "/", label: "Home", icon: "🏠" },
+		{ href: "/upload", label: "Upload", icon: "📤" },
+		{ href: "/dashboard", label: "Dashboard", icon: "📊" },
+		{ href: "/account", label: "Account", icon: "👤" },
+	] as const,
+	BRAND: {
+		ICON: "💰",
+		DEFAULT_TEXT: "FinanceTracker",
+	},
+	MOBILE: {
+		TOGGLE_OPEN: "☰",
+		TOGGLE_CLOSE: "✕",
+	},
 } as const;

@@ -1,9 +1,4 @@
-/**
- * Tesseract OCR API service
- * Handles image processing and text extraction
- */
-
-import apiClient from './client';
+import apiClient from "./client";
 
 export interface OcrRequest {
 	image: string;
@@ -34,22 +29,19 @@ export interface ExtractedReceipt {
 	}>;
 }
 
+/**
+ * API service for OCR and AI data extraction.
+ */
 export const ocrApi = {
-	/**
-	 * Process image with OCR
-	 */
-	async processImage(imageData: string, language = 'nld'): Promise<OcrResponse> {
-		return apiClient.post<OcrResponse>('/api/ocr/process', {
+	async processImage(imageData: string, language = "nld"): Promise<OcrResponse> {
+		return apiClient.post<OcrResponse>("/api/ocr/process", {
 			image: imageData,
 			language,
 		});
 	},
 
-	/**
-	 * Extract receipt data from OCR text
-	 */
-	async extractReceipt(ocrText: string, language = 'nld'): Promise<ExtractedReceipt> {
-		return apiClient.post<ExtractedReceipt>('/api/ocr/extract', {
+	async extractReceipt(ocrText: string, language = "nld"): Promise<ExtractedReceipt> {
+		return apiClient.post<ExtractedReceipt>("/api/ocr/extract", {
 			ocr_text: ocrText,
 			language,
 		});

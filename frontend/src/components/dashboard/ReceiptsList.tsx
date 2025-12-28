@@ -1,8 +1,3 @@
-/**
- * ReceiptsList component for dashboard
- * Displays paginated list of receipts with basic info
- */
-
 "use client";
 
 import React from "react";
@@ -17,7 +12,11 @@ interface ReceiptsListProps {
 	className?: string;
 }
 
-const ReceiptsListComponent: React.FC<ReceiptsListProps> = ({ receipts, onReceiptClick, className }) => {
+/**
+ * Renders a clickable list of receipts with a summary preview.
+ * Shows a "No Data" message if the receipt array is empty.
+ */
+export const ReceiptsList: React.FC<Readonly<ReceiptsListProps>> = ({ receipts, onReceiptClick, className }) => {
 	if (!receipts || receipts.length === 0) {
 		return (
 			<div className={className}>
@@ -32,39 +31,35 @@ const ReceiptsListComponent: React.FC<ReceiptsListProps> = ({ receipts, onReceip
 	return (
 		<div className={`${className} ${styles.receiptsList}`}>
 			{receipts.map((receipt) => (
-					<Button key={receipt.id} onClick={() => onReceiptClick(receipt)} variant="secondary" className={styles.receiptCard}>
-						{/* Header */}
-						<div className={styles.receiptHeader}>
-							<h4 className={styles.receiptStore}>{receipt.store_name}</h4>
-							<span className={styles.receiptDate}>{formatDate(receipt.purchase_date)}</span>
-						</div>
+				<Button key={receipt.id} onClick={() => onReceiptClick(receipt)} variant="secondary" className={styles.receiptCard}>
+					<div className={styles.receiptHeader}>
+						<h4 className={styles.receiptStore}>{receipt.store_name}</h4>
+						<span className={styles.receiptDate}>{formatDate(receipt.purchase_date)}</span>
+					</div>
 
-						{/* Details */}
-						<div className={styles.receiptDetails}>
-							<span className={styles.receiptAmount}>{formatCurrency(receipt.total_amount)}</span>
-							<span className={styles.receiptPayment}>{receipt.payment_method}</span>
-						</div>
+					<div className={styles.receiptDetails}>
+						<span className={styles.receiptAmount}>{formatCurrency(receipt.total_amount)}</span>
+						<span className={styles.receiptPayment}>{receipt.payment_method}</span>
+					</div>
 
-						{/* Items Preview */}
-						<div className={styles.receiptItems}>
-							{receipt.items.slice(0, 3).map((item, index) => {
-								const price = safeParseNumber(item.price);
-								const quantity = safeParseInt(item.quantity, 1);
+					<div className={styles.receiptItems}>
+						{receipt.items.slice(0, 3).map((item, index) => {
+							const price = safeParseNumber(item.price);
+							const quantity = safeParseInt(item.quantity, 1);
 
-								return (
-									<div key={`${receipt.id}-item-${index}`} className={styles.receiptItem}>
-										<span>{item.name}</span>
-										<span>{formatCurrency(price * quantity)}</span>
-									</div>
-								);
-							})}
-							{receipt.items.length > 3 && <p className={styles.receiptMore}>+{receipt.items.length - 3} meer items</p>}
-						</div>
-					</Button>
+							return (
+								<div key={`${receipt.id}-item-${index}`} className={styles.receiptItem}>
+									<span>{item.name}</span>
+									<span>{formatCurrency(price * quantity)}</span>
+								</div>
+							);
+						})}
+						{receipt.items.length > 3 && <p className={styles.receiptMore}>+{receipt.items.length - 3} meer items</p>}
+					</div>
+				</Button>
 			))}
 		</div>
 	);
 };
 
-export const ReceiptsList = React.memo(ReceiptsListComponent);
 ReceiptsList.displayName = "ReceiptsList";

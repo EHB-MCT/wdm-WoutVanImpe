@@ -1,7 +1,9 @@
 "use client";
+
 import Image from "next/image";
 import { Button } from "../ui/Button";
 import styles from "@/styles/pages/Upload.module.css";
+import { JSX } from "react";
 
 interface ImageUploadProps {
 	imgInputRef: React.RefObject<HTMLInputElement | null>;
@@ -11,7 +13,11 @@ interface ImageUploadProps {
 	onSubmit: (e: React.FormEvent) => void;
 }
 
-export function ImageUpload({ imgInputRef, imgPreview, onChange, isLoading, onSubmit }: Readonly<ImageUploadProps>) {
+/**
+ * Image upload component.
+ * Handles file selection, preview rendering, and form submission for OCR.
+ */
+export function ImageUpload({ imgInputRef, imgPreview, onChange, isLoading, onSubmit }: Readonly<ImageUploadProps>): JSX.Element {
 	return (
 		<div className={`card ${styles.uploadCard}`}>
 			<form className={styles.ocrForm} onSubmit={onSubmit}>
@@ -20,7 +26,7 @@ export function ImageUpload({ imgInputRef, imgPreview, onChange, isLoading, onSu
 						Kies een afbeelding
 					</label>
 
-					<input id="image-upload" ref={imgInputRef} required type="file" accept="image/*" onChange={onChange} className={`input-field ${styles.fileInput}`} disabled={isLoading} />
+					<input id="image-upload" ref={imgInputRef} required type="file" accept="image/*" onChange={onChange} className={`input-field ${styles.fileInput}`} disabled={isLoading} aria-label="Selecteer afbeelding voor OCR verwerking" />
 				</div>
 
 				<div className={styles.uploadButtonContainer}>
@@ -34,6 +40,7 @@ export function ImageUpload({ imgInputRef, imgPreview, onChange, isLoading, onSu
 								onSubmit(e);
 							}
 						}}
+						aria-disabled={isLoading || !imgPreview}
 					>
 						{isLoading ? "Processing..." : "Upload & Scan"}
 					</Button>
