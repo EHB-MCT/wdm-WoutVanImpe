@@ -21,7 +21,7 @@ export interface LoginResponse {
 }
 
 export interface RegisterRequest {
-	name: string;
+	username: string;
 	email: string;
 	password: string;
 }
@@ -52,7 +52,7 @@ export const authApi = {
 
 	async register(userData: RegisterRequest): Promise<LoginResponse> {
 		const hashedUserData = {
-			name: userData.name,
+			username: userData.username,
 			email: userData.email,
 			password: hashPassword(userData.password),
 		};
