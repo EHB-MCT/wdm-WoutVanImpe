@@ -17,10 +17,16 @@ class AuthService {
   async registerUser(userData) {
     const { username, email, password } = userData;
 
-    // Check if user already exists
-    const existingUser = await db("users").where({ email }).orWhere({ username }).first();
-    if (existingUser) {
-      throw new Error("Gebruiker bestaat al.");
+    // Check if email or username already exists
+    const existingEmail = await db("users").where({ email }).first();
+    const existingUsername = await db("users").where({ username }).first();
+    
+    if (existingEmail) {
+      throw new Error("Dit e-mailadres is al in gebruik.");
+    }
+    
+    if (existingUsername) {
+      throw new Error("Deze gebruikersnaam is al in gebruik.");
     }
 
     // Store SHA256 hash directly (password is already hashed from frontend)
