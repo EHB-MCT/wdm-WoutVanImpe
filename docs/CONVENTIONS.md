@@ -19,6 +19,57 @@ These rules apply to both Frontend and Backend environments.
 | **Classes** | `PascalCase` | `UserController`, `ImageProcessor` | |
 | **Files** | `kebab-case` | `user-controller.js`, `date-utils.ts` | **Exception:** React Components (see Frontend section). |
 
+### Documentation & Comments
+
+Code should be self-documenting where possible. Comments should explain why something is done, not what is being done.
+
+#### 1. JSDoc (Contextual Documentation)
+
+Use JSDoc (`/** ... */`) for all exported functions, hooks, classes, and API endpoints. This generates the "gray text" context/tooltip in IDEs.
+
+**Format:**
+```typescript
+/**
+ * Short description of the function's goal.
+ * @param {Type} name - Description of the parameter.
+ * @returns {Type} Description of the return value.
+ */
+```
+
+**Example:**
+```typescript
+/**
+ * Processes the image and extracts text using Tesseract.
+ * @param {string} localPath - The filesystem path to the temp image.
+ * @returns {Promise<string>} The raw text extracted from the OCR.
+ */
+async function processImage(localPath: string): Promise<string> { ... }
+```
+
+#### 2. Inline Comments
+
+Use `//` for single-line explanations within logic blocks. Only use these for complex logic or business rule exceptions.
+
+**Example:**
+```javascript
+// We add a 500ms delay to allow the Tesseract worker to initialize fully
+await delay(500);
+```
+
+#### 3. React/JSX Comments
+
+Inside JSX/HTML blocks, use the brace syntax.
+
+**Example:**
+```typescript
+return (
+  <div>
+    {/* The sidebar is hidden on mobile screens */}
+    <Sidebar />
+  </div>
+)
+```
+
 ### Formatting & Syntax
 
 - **Quotes:** Use double quotes `"` for strings (or adhere to Prettier defaults).
@@ -26,7 +77,6 @@ These rules apply to both Frontend and Backend environments.
 - **Equality:** Always use strict equality `===` and `!==`.
 - **Async/Await:** Prefer `async/await` over `.then()` chains for better readability.
 - **Comments:** Use JSDoc format for complex functions.
-
 ---
 
 ## 2. Frontend: Next.js & React
@@ -216,42 +266,3 @@ Maintain a `.env.example` file with keys but no values.
 - **Next.js (Public):** Must start with `NEXT_PUBLIC_` (e.g., `NEXT_PUBLIC_API_URL`).
 
 ---
-
-## 7. Project-Specific Standards
-
-### Finance Tracker Specific Conventions
-
-#### Database Conventions
-- Table names in `snake_case` (e.g., `receipt_items`, `purchase_dates`)
-- Foreign keys follow pattern `{table}_id` (e.g., `user_id`, `receipt_id`)
-- Timestamps use `created_at` and `updated_at`
-- Use Dutch language for database column names where applicable
-
-#### API Response Conventions
-- Error messages in Dutch
-- Success responses follow consistent structure
-- Use `status` field for operation results
-- Pagination with `limit` and `offset` parameters
-
-#### Frontend Localization
-- All user-facing text in Dutch
-- Date formatting: `DD-MM-YYYY`
-- Currency formatting: `€1.234,56` (Dutch format)
-- Number formatting uses Dutch decimal separators
-
-#### Security Conventions
-- JWT tokens with 15-minute expiration
-- Automatic token refresh mechanism
-- Password hashing with SHA256
-- Input validation on both client and server
-
----
-
-## How to use this file
-
-1. **Copy** the content inside the code block above.
-2. **Create** a new file named `CONVENTIONS.md` in your project root.
-3. **Paste** the content.
-4. **Share** it with your team or keep it as a reference for yourself.
-
-Would you like me to set up a configuration file for **ESLint** or **Prettier** that automatically enforces these rules?
