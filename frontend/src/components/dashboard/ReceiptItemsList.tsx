@@ -14,11 +14,13 @@ interface ReceiptItemsListProps {
 }
 
 export function ReceiptItemsList({ editableData, updateItem, addNewItem, removeItem, categories = [] }: Readonly<ReceiptItemsListProps>) {
-	if (!editableData) return null;
+	if (!editableData) {
+		return null;
+	}
 
 	return (
 		<div className="mb-xl">
-			<div className={`${styles.itemsHeader} flex-between`}>
+			<div className={`${styles.itemsHeader} flex-between`} style={{margin: "10px 0px"}}>
 				<strong>Items ({editableData.items?.length || 0}):</strong>
 				<Button onClick={addNewItem} variant="secondary" className={listStyles.addItemButton}>
 					+ Add Item

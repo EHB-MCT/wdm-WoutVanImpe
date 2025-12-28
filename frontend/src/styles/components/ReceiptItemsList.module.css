@@ -25,6 +25,11 @@
   gap: var(--spacing-md);
 }
 
+.itemsFooterSpacing {
+  margin-top: var(--spacing-xl);
+  height: 40px;
+}
+
 .noItemsMessage {
   text-align: center;
   padding: var(--spacing-2xl);

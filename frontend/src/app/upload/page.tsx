@@ -147,6 +147,14 @@ export default function Home() {
 		setValidation(newValidation);
 	};
 
+const resetForm = () => {
+		setImgPreview("");
+		setFoundText("");
+		setEditableData(null);
+		setImgSubmitted(false);
+		setValidation(null);
+	};
+
 	const proceedWithSave = async () => {
 		if (!editableData) return;
 
@@ -191,20 +199,26 @@ export default function Home() {
 				throw new Error(errorData.error || `Opslaan mislukt: ${response.status} ${response.statusText}`);
 			}
 
-			const savedReceipt = await response.json();
+const savedReceipt = await response.json();
 			console.log("Receipt saved successfully:", savedReceipt);
 
-			// Reset form after successful save
-			setImgPreview("");
-			setFoundText("");
-			setEditableData(null);
-			setImgSubmitted(false);
-			setValidation(null);
-
-			alert("Bon succesvol opgeslagen!");
+			// Show success message in validation modal
+			setValidation({
+				isValid: true,
+				errors: [],
+				warnings: [],
+				success: "Bon succesvol opgeslagen!"
+			});
+			setShowValidationModal(true);
 		} catch (error) {
 			console.error("Save error:", error);
-			alert(`Fout bij opslaan bon: ${error instanceof Error ? error.message : "Onbekende fout"}`);
+			// Show error message in validation modal
+			setValidation({
+				isValid: false,
+				errors: [{ field: "Save Error", message: error instanceof Error ? error.message : "Onbekende fout" }],
+				warnings: []
+			});
+			setShowValidationModal(true);
 		} finally {
 			setIsSaving(false);
 		}
@@ -295,12 +309,7 @@ export default function Home() {
 							<div>
 								<div className={styles.editReceiptHeader}>
 									<strong>Edit Receipt Data:</strong>
-									<Button onClick={handleSave} disabled={isSaving} variant="primary" className={styles.saveButton}>
-										{isSaving ? "Saving..." : "Save Receipt"}
-									</Button>
 								</div>
-
-								{showValidationModal && validation && <ValidationModal validation={validation} isOpen={showValidationModal} onClose={() => setShowValidationModal(false)} onContinue={proceedWithSave} />}
 
 								<div className={componentStyles.receiptFormSection}>
 									<ReceiptForm editableData={editableData} updateEditableData={updateEditableData} />
@@ -309,6 +318,14 @@ export default function Home() {
 								</div>
 
 								<OCRTextDisplay foundText={foundText} />
+
+								<div className={styles.saveButtonContainer}>
+									<Button onClick={handleSave} disabled={isSaving} variant="primary" className={styles.saveButton}>
+										{isSaving ? "Saving..." : "Save Receipt"}
+									</Button>
+								</div>
+
+								{showValidationModal && validation && <ValidationModal validation={validation} isOpen={showValidationModal} onClose={() => setShowValidationModal(false)} onContinue={proceedWithSave} onResetForm={resetForm} />}
 							</div>
 						);
 						const foundTextState = (

@@ -18,8 +18,8 @@ export class ApiError extends Error {
 }
 
 class BaseApiClient {
-	private baseUrl: string;
-	private timeout: number;
+	private readonly baseUrl: string;
+	private readonly timeout: number;
 
 	constructor(config: ApiClientConfig) {
 		this.baseUrl = config.baseUrl.replace(/\/$/, ""); // Remove trailing slash
