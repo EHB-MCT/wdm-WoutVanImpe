@@ -31,19 +31,22 @@ export function ReceiptProcessor({ imgInputRef, setFoundText, setEditableData, s
 
 		try {
 			// 1. Extract raw text via Tesseract
+			setProcessingStep("ocr-processing");
+			setProcessingProgress(30);
+			
 			const ocrText = await processOCR(file);
 
 			setFoundText(ocrText);
-			setProcessingStep("ocr-processing");
-			setProcessingProgress(40);
+			setProcessingStep("ocr-complete");
+			setProcessingProgress(50);
 
 			// 2. Parse text into structured data via AI
+			setProcessingStep("ai-processing");
+			setProcessingProgress(70);
+			
 			const extractedData = await extractReceiptData(ocrText);
 
 			setEditableData(extractedData ?? null);
-			setProcessingStep("ai-processing");
-			setProcessingProgress(75);
-
 			setProcessingStep("ai-complete");
 			setProcessingProgress(90);
 
