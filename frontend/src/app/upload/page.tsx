@@ -161,6 +161,15 @@ export default function Home() {
         setEditableData(null);
         setImgSubmitted(false);
         setValidation(null);
+        setProcessingStep("idle");
+        setProcessingProgress(0);
+        setProcessingError("");
+        setIsSaving(false);
+        
+        // Clear the file input
+        if (imgInputRef.current) {
+            imgInputRef.current.value = "";
+        }
     };
 
     const proceedWithSave = async () => {
@@ -193,6 +202,12 @@ export default function Home() {
                 success: "Bon succesvol opgeslagen!",
             });
             setShowValidationModal(true);
+            
+            // Reset form after successful save
+            setTimeout(() => {
+                resetForm();
+                setShowValidationModal(false);
+            }, 2000); // Show success message for 2 seconds, then reset
         } catch (error) {
             console.error("Save error:", error);
             setValidation({
