@@ -85,7 +85,7 @@ const isSaveSuccess = validation.success && validation.isValid;
 
 					{!isSaveSuccess && !isSaveError && validation.isValid && validation.warnings.length === 0 && onContinue && (
 						<div className={`${styles.validationSection} ${styles.successSection}`}>
-							<p className={styles.successMessage}>✅ Klik op "Doorgaan" om uw bon op te slaan.</p>
+							<p className={styles.successMessage}>✅ Klik op &quot;Doorgaan&quot; om uw bon op te slaan.</p>
 						</div>
 					)}
 				</div>

@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import { ReceiptData } from "@/types/receipt";
 import styles from "@/styles/components/Receipt.module.css";
 
@@ -7,7 +8,7 @@ interface ReceiptFormProps {
 	updateEditableData: (field: keyof ReceiptData, value: string | number | null) => void;
 }
 
-export function ReceiptForm({ editableData, updateEditableData }: Readonly<ReceiptFormProps>) {
+const ReceiptForm = React.memo(({ editableData, updateEditableData }: Readonly<ReceiptFormProps>) => {
 	if (!editableData) return null;
 
 	const getFieldClassName = (value: string | number | null) => {
@@ -58,4 +59,8 @@ export function ReceiptForm({ editableData, updateEditableData }: Readonly<Recei
 			</div>
 		</div>
 	);
-}
+});
+
+ReceiptForm.displayName = "ReceiptForm";
+
+export { ReceiptForm };

@@ -29,7 +29,7 @@ interface SpendingTrendChartProps {
 export const SpendingTrendChart: React.FC<SpendingTrendChartProps> = ({ data, height = 300, className }) => {
 	if (!data || data.length === 0) {
 		return (
-			<div className={`chart-container ${className || ""} ${"no-data-chart"}`} style={{ height: `${height}px` }}>
+			<div className={`chart-container ${className || ""} ${"no-data-chart"} chart-height-${height}`}>
 				<p className="no-data-message">Geen gegevens beschikbaar</p>
 			</div>
 		);
@@ -57,7 +57,7 @@ interface CategoryChartProps {
 export const CategoryChart: React.FC<CategoryChartProps> = ({ data, height = 300, className }) => {
 	if (!data || data.length === 0) {
 		return (
-			<div className={`chart-container ${className || ""} ${"no-data-chart"}`} style={{ height: `${height}px` }}>
+			<div className={`chart-container ${className || ""} ${"no-data-chart"} chart-height-${height}`}>
 				<p className="no-data-message">Geen categoriegevens beschikbaar</p>
 			</div>
 		);

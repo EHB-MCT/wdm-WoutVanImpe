@@ -1,8 +1,6 @@
 import { ReceiptData, ReceiptItem } from "@/types/receipt";
 import { filterNonProductItems } from "./itemFilter";
-
-// Predefined categories for validation (as Set for efficient existence checks)
-const VALID_CATEGORIES = new Set(["Boodschappen", "Huishouden", "Verkeer & Vervoer", "Gezondheid & Zorg", "Vrije Tijd & Uitgaan", "Winkels & Kleding", "Financieel & Diensten", "Overig"]);
+import { VALID_CATEGORIES_SET } from "./constants";
 
 // Determine if store type is mixed-type (allows multiple categories)
 const isMixedTypeStore = (storeType: string): boolean => {
@@ -14,7 +12,7 @@ const validateCategory = (category: string | null): string => {
 	if (!category) return "Overig";
 
 	// Check if category is exactly one of valid categories
-	if (VALID_CATEGORIES.has(category)) {
+	if (VALID_CATEGORIES_SET.has(category)) {
 		return category;
 	}
 

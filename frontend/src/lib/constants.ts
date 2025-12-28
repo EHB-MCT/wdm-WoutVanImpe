@@ -1,10 +1,16 @@
 /**
- * Shared constants for the finance tracker application
+ * Shared constants for finance tracker application
  * Centralized configuration to avoid duplication across components
  */
 
-// Valid categories for receipts
+// Valid categories for receipts (single source of truth)
 export const VALID_CATEGORIES = ["Boodschappen", "Huishouden", "Verkeer & Vervoer", "Gezondheid & Zorg", "Vrije Tijd & Uitgaan", "Winkels & Kleding", "Financieel & Diensten", "Overig"] as const;
+
+// Create Set for efficient existence checks (derived from VALID_CATEGORIES)
+export const VALID_CATEGORIES_SET = new Set(VALID_CATEGORIES as readonly string[]);
+
+// Type for valid category
+export type ValidCategory = typeof VALID_CATEGORIES[number];
 
 // Category color scheme for charts (uses CSS variables)
 export const CATEGORY_COLORS = ["var(--chart-1)", "var(--chart-2)", "var(--chart-3)", "var(--chart-4)", "var(--chart-5)", "var(--chart-6)", "var(--chart-7)", "var(--chart-8)"] as const;

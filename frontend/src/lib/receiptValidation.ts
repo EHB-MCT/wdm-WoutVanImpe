@@ -1,7 +1,5 @@
 import { ReceiptData } from "@/types/receipt";
-
-// Predefined categories for validation (as Set for efficient existence checks)
-const VALID_CATEGORIES = new Set(["Boodschappen", "Huishouden", "Verkeer & Vervoer", "Gezondheid & Zorg", "Vrije Tijd & Uitgaan", "Winkels & Kleding", "Financieel & Diensten", "Overig"]);
+import { VALID_CATEGORIES_SET } from "./constants";
 
 export interface ValidationError {
 	field: string;
@@ -112,7 +110,7 @@ export const validateReceiptData = (data: ReceiptData): ValidationResult => {
 					message: "Categorie is verplicht",
 					itemIndex: index,
 				});
-			} else if (!VALID_CATEGORIES.has(item.category)) {
+			} else if (!VALID_CATEGORIES_SET.has(item.category)) {
 				errors.push({
 					field: "Categorie",
 					message: "Ongeldige categorie - kies uit de vooraf gedefinieerde categoriën",

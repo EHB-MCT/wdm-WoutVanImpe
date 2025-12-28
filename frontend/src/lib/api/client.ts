@@ -8,7 +8,9 @@ interface ApiClientConfig {
 	timeout?: number;
 }
 
-// Remove unused interface
+// Import auth utilities for centralized token management
+import { handleTokenRefresh } from '../auth';
+import { API_ENDPOINTS } from '../constants';
 
 export class ApiError extends Error {
 	constructor(message: string, public status?: number, public response?: Response) {
@@ -30,7 +32,7 @@ class BaseApiClient {
 	 * Get authentication headers
 	 */
 	private getAuthHeaders(): Record<string, string> {
-		const token = localStorage.getItem("token");
+		const token = globalThis.localStorage?.getItem("token");
 		const headers: Record<string, string> = {
 			"Content-Type": "application/json",
 		};
@@ -46,8 +48,8 @@ class BaseApiClient {
 	 * Handle API response and errors
 	 */
 	private async handleResponse<T>(response: Response): Promise<T> {
-		// Handle automatic token refresh if needed
-		this.handleTokenRefresh(response);
+		// Use centralized token refresh handling
+		handleTokenRefresh(response);
 
 		if (!response.ok) {
 			let errorMessage = "API request failed";
@@ -67,23 +69,6 @@ class BaseApiClient {
 			return data;
 		} catch {
 			throw new ApiError("Invalid JSON response", response.status, response);
-		}
-	}
-
-	/**
-	 * Handle automatic token refresh from API responses
-	 */
-	private handleTokenRefresh(response: Response): void {
-		// Check for custom headers indicating token refresh
-		const newToken = response.headers.get("X-New-Token");
-		const refreshToken = response.headers.get("X-Refresh-Token");
-
-		if (newToken) {
-			localStorage.setItem("token", newToken);
-		}
-
-		if (refreshToken) {
-			localStorage.setItem("refreshToken", refreshToken);
 		}
 	}
 
@@ -181,7 +166,7 @@ class BaseApiClient {
 
 // Create and export the default API client instance
 export const apiClient = new BaseApiClient({
-	baseUrl: `http://localhost:${process.env.NEXT_PUBLIC_API_PORT}`,
+	baseUrl: API_ENDPOINTS.BASE_URL,
 	timeout: 10000,
 });
 

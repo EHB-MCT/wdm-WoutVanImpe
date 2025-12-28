@@ -8,12 +8,13 @@ import { ProfileForm } from "@/components/account/ProfileForm";
 import { PasswordForm } from "@/components/account/PasswordForm";
 import { MessageDisplay } from "@/components/ui/MessageDisplay";
 import { authApi, type ProfileUpdateRequest, type PasswordChangeRequest } from "@/lib/api";
+import { User } from "@/types/receipt";
 import { ApiError } from "@/lib/api";
 import styles from "@/styles/components/Account.module.css";
 
 export default function AccountPage() {
 	const router = useRouter();
-	const [user, setUser] = useState<{ id: number; username: string; email: string } | null>(null);
+	const [user, setUser] = useState<User | null>(null);
 	const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
 	const [activeView, setActiveView] = useState<"menu" | "profile" | "password">("menu");
 	const [passwordForm, setPasswordForm] = useState({ currentPassword: "", newPassword: "" });

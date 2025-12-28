@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Receipt } from "@/types/dashboard";
-import { handleTokenRefresh } from "@/lib/auth";
+import { Receipt } from "@/types/receipt";
+import { receiptsApi } from "@/lib/api/receipts";
 
 export function useDashboardData(currentDate: Date) {
 	const [receipts, setReceipts] = useState<Receipt[]>([]);
@@ -12,22 +12,8 @@ export function useDashboardData(currentDate: Date) {
 
 	const fetchReceipts = async () => {
 		try {
-			const token = localStorage.getItem("token");
-			const response = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/api/receipts`, {
-				headers: {
-					Authorization: `Bearer ${token}`,
-				},
-			});
-
-			if (response.ok) {
-				// Handle automatic token refresh
-				const refreshSuccess = handleTokenRefresh(response);
-				if (!refreshSuccess) {
-					console.warn("Token refresh failed during receipts fetch");
-				}
-				const data = await response.json();
-				setReceipts(data);
-			}
+			const data = await receiptsApi.getAll();
+			setReceipts(data);
 		} catch (error) {
 			console.error("Error fetching receipts:", error);
 		} finally {

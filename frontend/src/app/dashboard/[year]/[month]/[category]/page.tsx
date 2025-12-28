@@ -15,47 +15,32 @@ import { ReceiptsList } from "@/components/dashboard/ReceiptsList";
 import { SummaryCard } from "@/components/dashboard/SummaryCard";
 import { AuthGuard } from "@/components/ui/AuthGuard";
 import { SpendingTrendChart, CategoryChart } from "@/components/ui/Charts";
-import { removeExpiredTokens, isUserAuthenticated, handleTokenRefresh } from "@/lib/auth";
+import { removeExpiredTokens, isUserAuthenticated } from "@/lib/auth";
 import { VALID_CATEGORIES } from "@/lib/constants";
 import { safeParseNumber, safeParseInt } from "@/lib/receiptUtils";
+import { receiptsApi, type Receipt } from "@/lib/api/receipts";
+import type { User, CategorySpending, ReceiptItem } from "@/types/receipt";
 
-interface User {
-	id: number;
-	username: string;
-	email: string;
+// Interface for the filtered data return type
+interface FilteredData {
+	totalSpent: number;
+	receipts: Receipt[];
+	dailySpendingData: Array<{ day: number; amount: number }>;
+	categoryData: CategorySpending[];
+	storeData: Array<{ name: string; count: number }>;
+	hasReceipts: boolean;
+	loading: boolean;
 }
 
-interface Receipt {
-	id: number;
-	total_amount: number;
-	purchase_date: string;
-	store_name: string;
-	payment_method: string;
-	raw_ocr_text: string;
-	items: ReceiptItem[];
-}
 
-interface ReceiptItem {
-	id: number;
-	name: string;
-	category: string;
-	price: number;
-	quantity: number;
-}
-
-interface CategorySpending {
-	name: string;
-	value: number;
-	[key: string]: string | number;
-}
 
 export default function DashboardPage() {
 	const params = useParams();
 	const router = useRouter();
 	const [user, setUser] = useState<User | null>(null);
-	const [loading, setLoading] = useState(true);
 	const [receipts, setReceipts] = useState<Receipt[]>([]);
 	const [selectedReceipt, setSelectedReceipt] = useState<Receipt | null>(null);
+	const [loading, setLoading] = useState(true);
 	const [showEditModal, setShowEditModal] = useState(false);
 
 	// Parse URL params and validate
@@ -82,16 +67,16 @@ export default function DashboardPage() {
 		// Clean up expired tokens first
 		removeExpiredTokens();
 
-		const token = localStorage.getItem("token");
-		if (token && isUserAuthenticated()) {
-			const storedUser = localStorage.getItem("user");
+		if (isUserAuthenticated()) {
+			const storedUser = globalThis.localStorage?.getItem("user");
 			if (storedUser) {
-				setUser(JSON.parse(storedUser));
+				const parsedUser = JSON.parse(storedUser);
+				setUser(parsedUser);
 				fetchData();
 			}
 		}
 		setLoading(false);
-	}, []);
+	}, [setUser]);
 
 	useEffect(() => {
 		if (user) {
@@ -101,28 +86,15 @@ export default function DashboardPage() {
 
 	const fetchData = async () => {
 		try {
-			// Clean up expired tokens and get fresh token
+			// Clean up expired tokens
 			removeExpiredTokens();
-			const token = localStorage.getItem("token");
 
-			if (!token) {
+			if (!isUserAuthenticated()) {
 				throw new Error("Niet ingelogd");
 			}
 
-			// Fetch receipts
-			const receiptsResponse = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/api/receipts`, {
-				headers: { Authorization: `Bearer ${token}` },
-			});
-
-			if (receiptsResponse.ok) {
-				// Handle automatic token refresh
-				const refreshSuccess = handleTokenRefresh(receiptsResponse);
-				if (!refreshSuccess) {
-					console.warn("Token refresh failed during receipts fetch");
-				}
-				const data = await receiptsResponse.json();
-				setReceipts(data);
-			}
+			const data = await receiptsApi.getAll();
+			setReceipts(data);
 		} catch (error) {
 			console.error("Error fetching data:", error);
 		}
@@ -157,11 +129,11 @@ export default function DashboardPage() {
 		return date.toLocaleDateString("nl-BE", { month: "long", year: "numeric" });
 	};
 
-	const getFilteredData = useMemo(() => {
+	const getFilteredData = useMemo((): FilteredData => {
 		const year = currentDate.getFullYear();
 		const month = currentDate.getMonth();
 
-		const monthlyReceipts = receipts.filter((receipt) => {
+		const monthlyReceipts = receipts.filter((receipt: Receipt) => {
 			const receiptDate = new Date(receipt.purchase_date);
 			const dateMatch = receiptDate.getFullYear() === year && receiptDate.getMonth() === month;
 
@@ -173,12 +145,12 @@ export default function DashboardPage() {
 
 		// Daily spending for trend chart - category-specific
 		const dailySpending: { [key: string]: number } = {};
-		monthlyReceipts.forEach((receipt) => {
+		monthlyReceipts.forEach((receipt: Receipt) => {
 			const day = new Date(receipt.purchase_date).getDate();
 
 			// Calculate amount only from items that match the selected category
 			let categoryAmount = 0;
-			receipt.items.forEach((item) => {
+			receipt.items.forEach((item: ReceiptItem) => {
 				if (currentCategory === "all" || item.category === currentCategory) {
 					const itemPrice = safeParseNumber(item.price);
 					const itemQuantity = safeParseInt(item.quantity);
@@ -198,8 +170,8 @@ export default function DashboardPage() {
 
 		// Category breakdown - only from items that match the selected category
 		const categorySpending: { [key: string]: number } = {};
-		monthlyReceipts.forEach((receipt) => {
-			receipt.items.forEach((item) => {
+		monthlyReceipts.forEach((receipt: Receipt) => {
+			receipt.items.forEach((item: ReceiptItem) => {
 				const category = item.category || "Overig";
 
 				// Only include item if we're showing "all" or if item matches the selected category
@@ -216,16 +188,16 @@ export default function DashboardPage() {
 			.map(([category, amount]) => ({ name: category, value: amount }))
 			.sort((a, b) => b.value - a.value);
 
-		// Store frequency - only from filtered receipts
+		// Store frequency - only from filtered receipts  
 		const storeFrequency: { [key: string]: number } = {};
-		monthlyReceipts.forEach((receipt) => {
-			storeFrequency[receipt.store_name] = (storeFrequency[receipt.store_name] || 0) + 1;
+		monthlyReceipts.forEach((receipt: Receipt) => {
+			const storeName = receipt.store_name || 'Onbekend';
+			storeFrequency[storeName] = (storeFrequency[storeName] || 0) + 1;
 		});
 
 		const storeData = Object.entries(storeFrequency)
-			.map(([store, count]) => ({ name: store, count }))
-			.sort((a, b) => b.count - a.count)
-			.slice(0, 10);
+			.map(([name, count]) => ({ name, count }))
+			.sort((a, b) => b.count - a.count);
 
 		// Calculate total spending from category data instead of all receipts
 		const totalSpent = categoryData.reduce((sum, category) => sum + category.value, 0);
@@ -237,8 +209,8 @@ export default function DashboardPage() {
 			categoryData,
 			storeData,
 			hasReceipts: monthlyReceipts.length > 0,
-		};
-	}, [receipts, currentDate, currentCategory]);
+		} as FilteredData;
+	}, [currentDate, currentCategory, receipts]);
 
 	const openReceiptModal = (receipt: Receipt) => {
 		setSelectedReceipt(receipt);
@@ -252,42 +224,22 @@ export default function DashboardPage() {
 
 	const saveReceipt = async (updatedReceipt: Receipt) => {
 		try {
-			const token = localStorage.getItem("token");
-			const response = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/api/receipts/${updatedReceipt.id}`, {
-				method: "PUT",
-				headers: {
-					Authorization: `Bearer ${token}`,
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify({
-					store_name: updatedReceipt.store_name,
-					purchase_date: updatedReceipt.purchase_date,
-					purchase_time: updatedReceipt.purchase_date?.split("T")[1] || "12:00:00",
-					total_amount: updatedReceipt.total_amount,
-					payment_method: updatedReceipt.payment_method,
-					raw_ocr_text: updatedReceipt.raw_ocr_text,
-					items: updatedReceipt.items.map((item) => ({
-						name: item.name,
-						category: item.category,
-						quantity: safeParseInt(item.quantity),
-						price: safeParseNumber(item.price),
-					})),
-				}),
+			const updatedData = await receiptsApi.update(updatedReceipt.id, {
+				store_name: updatedReceipt.store_name,
+				purchase_date: updatedReceipt.purchase_date,
+				purchase_time: updatedReceipt.purchase_time || "12:00:00",
+				total_amount: updatedReceipt.total_amount,
+				payment_method: updatedReceipt.payment_method,
+				items: updatedReceipt.items.map((item: ReceiptItem) => ({
+					name: item.name,
+					category: item.category,
+					quantity: safeParseInt(item.quantity),
+					price: safeParseNumber(item.price),
+					id: item.id,
+				})),
 			});
 
-			if (response.ok) {
-				// Handle automatic token refresh
-				const refreshSuccess = handleTokenRefresh(response);
-				if (!refreshSuccess) {
-					console.warn("Token refresh failed during receipt update");
-				}
-				const savedReceipt = await response.json();
-				setReceipts(receipts.map((r) => (r.id === savedReceipt.id ? savedReceipt : r)));
-				setSelectedReceipt(savedReceipt);
-			} else {
-				const error = await response.json();
-				alert(`Fout bij opslaan: ${error.error}`);
-			}
+			setReceipts(receipts.map((r) => (r.id === updatedReceipt.id ? updatedData : r)));
 		} catch (error) {
 			console.error("Error updating receipt:", error);
 			alert("Er is een fout opgetreden bij het opslaan");
@@ -296,20 +248,8 @@ export default function DashboardPage() {
 
 	const deleteReceipt = async (receiptId: number) => {
 		try {
-			const token = localStorage.getItem("token");
-			const response = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/api/receipts/${receiptId}`, {
-				method: "DELETE",
-				headers: { Authorization: `Bearer ${token}` },
-			});
-
-			if (response.ok) {
-				// Handle automatic token refresh
-				const refreshSuccess = handleTokenRefresh(response);
-				if (!refreshSuccess) {
-					console.warn("Token refresh failed during receipt deletion");
-				}
-				setReceipts(receipts.filter((r) => r.id !== receiptId));
-			}
+			await receiptsApi.delete(receiptId);
+			setReceipts(receipts.filter((r) => r.id !== receiptId));
 		} catch (error) {
 			console.error("Error deleting receipt:", error);
 		}
@@ -321,7 +261,7 @@ export default function DashboardPage() {
 		return nextMonth <= new Date(now.getFullYear(), now.getMonth());
 	}, [currentDate]);
 
-	const filteredData = getFilteredData;
+	const filteredData: FilteredData = getFilteredData;
 
 	if (loading) {
 		return (

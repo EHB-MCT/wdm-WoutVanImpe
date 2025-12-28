@@ -4,30 +4,15 @@
  */
 
 import apiClient from './client';
+import { Receipt, ReceiptItem } from '../../types/receipt';
 
-export interface ReceiptItem {
-	id: number;
-	name: string;
-	category: string;
-	quantity: number;
-	price: number;
-}
-
-export interface Receipt {
-	id: number;
-	total_amount: number;
-	purchase_date: string;
-	purchase_time?: string;
-	store_name: string;
-	payment_method: string;
-	raw_ocr_text: string;
-	items: ReceiptItem[];
-}
+// Re-export Receipt type for dashboard usage
+export type { Receipt } from '../../types/receipt';
 
 export interface CreateReceiptRequest {
 	store_name: string;
 	purchase_date: string;
-	purchase_time: string;
+	purchase_time?: string;
 	payment_method: string;
 	total_amount: number;
 	raw_ocr_text?: string;

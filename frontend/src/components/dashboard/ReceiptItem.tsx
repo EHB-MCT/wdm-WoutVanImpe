@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import { ReceiptItem } from "@/types/receipt";
 import { Button } from "@/components/ui/Button";
 import styles from "@/styles/components/Receipt.module.css";
@@ -12,7 +13,7 @@ interface ReceiptItemProps {
 	categories?: string[];
 }
 
-export function ReceiptItemComponent({ item, index, updateItem, removeItem, categories = [] }: Readonly<ReceiptItemProps>) {
+const ReceiptItemComponent = React.memo(({ item, index, updateItem, removeItem, categories = [] }: Readonly<ReceiptItemProps>) => {
 	const getFieldClassName = (value: string | number | null, isQuantity: boolean = false, isPrice: boolean = false) => {
 		const baseClass = "input-field";
 		const isEmpty = value === null || value === "" || (isQuantity && value === 0) || (isPrice && value === 0);
@@ -77,6 +78,10 @@ export function ReceiptItemComponent({ item, index, updateItem, removeItem, cate
 					</Button>
 				</div>
 			</div>
-		</div>
+	</div>
 	);
-}
+});
+
+ReceiptItemComponent.displayName = "ReceiptItemComponent";
+
+export { ReceiptItemComponent };

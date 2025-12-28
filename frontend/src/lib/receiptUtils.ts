@@ -4,7 +4,7 @@
  */
 
 import type { ReceiptItem } from "@/types/receipt";
-import { VALID_CATEGORIES, DEFAULTS, VALIDATION } from "./constants";
+import { VALID_CATEGORIES_SET, DEFAULTS, VALIDATION } from "./constants";
 
 /**
  * Calculates total price from array of receipt items
@@ -25,7 +25,7 @@ export const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 export const validateCategory = (category: string | null): string => {
 	if (!category) return DEFAULTS.CATEGORY;
 
-	if (VALID_CATEGORIES.includes(category as (typeof VALID_CATEGORIES)[number])) {
+	if (VALID_CATEGORIES_SET.has(category)) {
 		return category;
 	}
 

@@ -218,6 +218,23 @@ a {
 	color: var(--muted-color);
 }
 
+/* Chart utility classes */
+.chart-container {
+	position: relative;
+}
+
+.chart-height-400 {
+	height: 400px;
+}
+
+.chart-height-300 {
+	height: 300px;
+}
+
+.chart-min-height-400 {
+	min-height: 400px;
+}
+
 /* --- AUTH GUARD --- */
 .auth-redirect {
 	display: flex;
@@ -226,6 +243,11 @@ a {
 	height: 100vh;
 	font-size: var(--font-lg);
 	color: var(--muted-color);
+}
+
+/* --- LAYOUT --- */
+.main-content {
+	padding-top: 64px;
 }
 
 /* --- UTILITY CLASSES --- */

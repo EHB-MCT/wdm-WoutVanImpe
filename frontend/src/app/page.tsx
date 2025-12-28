@@ -10,7 +10,7 @@ import { WelcomeSection } from "@/components/dashboard/WelcomeSection";
 import { AuthGuard } from "@/components/ui/AuthGuard";
 import { useDashboardData } from "@/hooks/useDashboardData";
 import { removeExpiredTokens, getStoredUser } from "@/lib/auth";
-import { User } from "@/types/dashboard";
+import { User } from "@/types/receipt";
 
 export default function HomePage() {
 	const router = useRouter();

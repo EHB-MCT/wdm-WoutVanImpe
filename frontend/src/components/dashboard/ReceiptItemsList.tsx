@@ -1,4 +1,5 @@
 "use client";
+import React from "react";
 import { ReceiptData, ReceiptItem } from "@/types/receipt";
 import { ReceiptItemComponent } from "./ReceiptItem";
 import { Button } from "@/components/ui/Button";
@@ -13,14 +14,14 @@ interface ReceiptItemsListProps {
 	categories?: string[];
 }
 
-export function ReceiptItemsList({ editableData, updateItem, addNewItem, removeItem, categories = [] }: Readonly<ReceiptItemsListProps>) {
+const ReceiptItemsList = React.memo(({ editableData, updateItem, addNewItem, removeItem, categories = [] }: Readonly<ReceiptItemsListProps>) => {
 	if (!editableData) {
 		return null;
 	}
 
 	return (
 		<div className="mb-xl">
-			<div className={`${styles.itemsHeader} flex-between`} style={{margin: "10px 0px"}}>
+			<div className={`${styles.itemsHeader} flex-between`}>
 				<strong>Items ({editableData.items?.length || 0}):</strong>
 				<Button onClick={addNewItem} variant="secondary" className={listStyles.addItemButton}>
 					+ Add Item
@@ -38,4 +39,8 @@ export function ReceiptItemsList({ editableData, updateItem, addNewItem, removeI
 			)}
 		</div>
 	);
-}
+});
+
+ReceiptItemsList.displayName = "ReceiptItemsList";
+
+export { ReceiptItemsList };

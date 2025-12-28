@@ -22,7 +22,7 @@ export function PieChartDisplay({ categoryData }: Readonly<PieChartDisplayProps>
 	}
 
 	return (
-		<div className={styles.chartContainer} style={{ minHeight: "400px" }}>
+		<div className={`${styles.chartContainer} chart-min-height-400`}>
 			<ResponsiveContainer width="100%" height="100%">
 				<PieChart>
 					<Pie

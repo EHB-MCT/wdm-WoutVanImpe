@@ -13,9 +13,11 @@ import { OCRTextDisplay } from "@/components/upload/OCRTextDisplay";
 import { ValidationModal } from "@/components/upload/ValidationModal";
 import { Button } from "@/components/ui/Button";
 import { ReceiptProcessor } from "@/components/upload/ReceiptProcessor";
-import { removeExpiredTokens, isUserAuthenticated, handleTokenRefresh } from "@/lib/auth";
+import { removeExpiredTokens, isUserAuthenticated } from "@/lib/auth";
 import { ValidationResult, validateReceiptData } from "@/lib/receiptValidation";
 import { safeParseNumber, safeParseInt } from "@/lib/receiptUtils";
+import { receiptsApi, type CreateReceiptRequest } from "@/lib/api/receipts";
+import { categoriesApi } from "@/lib/api/categories";
 
 export default function Home() {
 	const imgInputRef = useRef<HTMLInputElement | null>(null);
@@ -167,39 +169,17 @@ const resetForm = () => {
 				throw new Error("Je moet ingelogd zijn om bonnen op te slaan.");
 			}
 
-			const token = localStorage.getItem("token");
-
-			const receiptPayload = {
-				store_name: editableData.store_name,
-				purchase_date: editableData.date,
-				purchase_time: editableData.time,
-				payment_method: editableData.payment_method,
-				total_amount: editableData.total_price,
-				raw_ocr_text: foundText || null,
+			const receiptPayload: CreateReceiptRequest = {
+				store_name: editableData.store_name || "",
+				purchase_date: editableData.date || "",
+				purchase_time: editableData.time || undefined,
+				payment_method: editableData.payment_method || "",
+				total_amount: editableData.total_price || 0,
+				raw_ocr_text: foundText || undefined,
 				items: editableData.items || [],
 			};
 
-			const response = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/api/receipts`, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					Authorization: `Bearer ${token}`,
-				},
-				body: JSON.stringify(receiptPayload),
-			});
-
-			// Handle automatic token refresh
-			const refreshSuccess = handleTokenRefresh(response);
-			if (!refreshSuccess) {
-				console.warn("Token refresh failed, continuing with current session");
-			}
-
-			if (!response.ok) {
-				const errorData = await response.json();
-				throw new Error(errorData.error || `Opslaan mislukt: ${response.status} ${response.statusText}`);
-			}
-
-const savedReceipt = await response.json();
+			const savedReceipt = await receiptsApi.create(receiptPayload);
 			console.log("Receipt saved successfully:", savedReceipt);
 
 			// Show success message in validation modal
@@ -255,16 +235,8 @@ const savedReceipt = await response.json();
 	useEffect(() => {
 		const fetchCategories = async () => {
 			try {
-				const response = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_API_PORT}/api/categories`);
-				if (response.ok) {
-					// Handle automatic token refresh (though categories endpoint doesn't require auth)
-					const refreshSuccess = handleTokenRefresh(response);
-					if (!refreshSuccess) {
-						console.warn("Token refresh failed during categories fetch");
-					}
-					const categoriesData: { id: number; name: string }[] = await response.json();
-					setCategories(categoriesData.map((cat) => cat.name));
-				}
+				const categoriesData = await categoriesApi.getAll();
+				setCategories(categoriesData.map((cat) => cat.name));
 			} catch (error) {
 				console.error("Error fetching categories:", error);
 			}

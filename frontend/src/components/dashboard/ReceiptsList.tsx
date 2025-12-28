@@ -7,26 +7,9 @@
 
 import React from "react";
 import { Button } from "../ui/Button";
+import { Receipt } from "@/types/receipt";
 import { formatCurrency, formatDate, safeParseNumber, safeParseInt } from "@/lib/receiptUtils";
 import styles from "@/styles/components/ReceiptsList.module.css";
-
-interface ReceiptItem {
-	id: number;
-	name: string;
-	category: string;
-	price: number;
-	quantity: number;
-}
-
-interface Receipt {
-	id: number;
-	total_amount: number;
-	purchase_date: string;
-	store_name: string;
-	payment_method: string;
-	raw_ocr_text: string;
-	items: ReceiptItem[];
-}
 
 interface ReceiptsListProps {
 	receipts: Receipt[];
@@ -34,7 +17,7 @@ interface ReceiptsListProps {
 	className?: string;
 }
 
-export const ReceiptsList: React.FC<ReceiptsListProps> = ({ receipts, onReceiptClick, className }) => {
+const ReceiptsListComponent: React.FC<ReceiptsListProps> = ({ receipts, onReceiptClick, className }) => {
 	if (!receipts || receipts.length === 0) {
 		return (
 			<div className={className}>
@@ -48,9 +31,7 @@ export const ReceiptsList: React.FC<ReceiptsListProps> = ({ receipts, onReceiptC
 
 	return (
 		<div className={`${className} ${styles.receiptsList}`}>
-			<h2 className={styles.receiptsListTitle}>Tickets ({receipts.length})</h2>
-			<div className={styles.receiptsGrid}>
-				{receipts.map((receipt) => (
+			{receipts.map((receipt) => (
 					<Button key={receipt.id} onClick={() => onReceiptClick(receipt)} variant="secondary" className={styles.receiptCard}>
 						{/* Header */}
 						<div className={styles.receiptHeader}>
@@ -80,8 +61,10 @@ export const ReceiptsList: React.FC<ReceiptsListProps> = ({ receipts, onReceiptC
 							{receipt.items.length > 3 && <p className={styles.receiptMore}>+{receipt.items.length - 3} meer items</p>}
 						</div>
 					</Button>
-				))}
-			</div>
+			))}
 		</div>
 	);
 };
+
+export const ReceiptsList = React.memo(ReceiptsListComponent);
+ReceiptsList.displayName = "ReceiptsList";
