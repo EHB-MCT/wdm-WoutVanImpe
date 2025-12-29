@@ -114,16 +114,16 @@ setInterval(() => {
 	
 	// Force garbage collection if memory usage is high
 	if (heapUsedMB > 1024) { // 1GB
-		if (global.gc) {
+		if (globalThis.gc) {
 			console.log("Forcing garbage collection...");
-			global.gc();
+			globalThis.gc();
 		}
 	}
 }, 30000); // Check every 30 seconds
 
 // Enable garbage collection
 if (process.env.NODE_ENV === 'development') {
-	global.gc = require('vm').runInNewContext('gc');
+	globalThis.gc = require('node:vm').runInNewContext('gc');
 }
 
 app.listen(PORT, () => {

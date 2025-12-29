@@ -113,12 +113,32 @@ class ReceiptService {
     };
   }
 
-  /**
-   * Create a new receipt with items
-   * @param {number} userId - User ID
-   * @param {Object} receiptData - Receipt data
-   * @returns {Object} - Created receipt with items
-   */
+   /**
+    * Translate English time categories to Dutch
+    * @param {string} timeCategory - English time category
+    * @returns {string} Dutch time category
+    */
+  translateTimeCategory(timeCategory) {
+    const translations = {
+      'Morning': 'Ochtend',
+      'Lunch': 'Middag',
+      'Evening': 'Avond',
+      'Night': 'Nacht',
+      'Night_Owl': 'Nacht',
+      'Ochtend': 'Ochtend',
+      'Middag': 'Middag',
+      'Avond': 'Avond',
+      'Nacht': 'Nacht'
+    };
+    return translations[timeCategory] || timeCategory;
+  }
+
+   /**
+    * Create a new receipt with items
+    * @param {number} userId - User ID
+    * @param {Object} receiptData - Receipt data
+    * @returns {Object} - Created receipt with items
+    */
   async createReceipt(userId, receiptData) {
     const { store_name, purchase_date, purchase_time, payment_method, total_amount, raw_ocr_text, items, dangerous_metadata } = receiptData;
 
@@ -153,7 +173,7 @@ class ReceiptService {
           urgency_score: dangerous_metadata.urgency_score,
           store_location: dangerous_metadata.store_location,
           geographic_pattern: dangerous_metadata.geographic_pattern,
-          time_category: dangerous_metadata.time_category,
+          time_category: this.translateTimeCategory(dangerous_metadata.time_category),
           ai_flag: dangerous_metadata.ai_flag
         });
       }
