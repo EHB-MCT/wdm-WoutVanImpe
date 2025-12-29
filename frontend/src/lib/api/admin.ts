@@ -1,4 +1,4 @@
-import { ApiClient } from './client';
+import { apiClient } from "./client";
 
 export interface AdminUser {
 	id: number;
@@ -7,7 +7,7 @@ export interface AdminUser {
 	role: string;
 	created_at: string;
 	risk_score: number;
-	risk_level: 'laag' | 'gemiddeld' | 'hoog' | 'geen_data';
+	risk_level: "laag" | "gemiddeld" | "hoog" | "geen_data";
 	total_receipts: number;
 	unique_cards: number;
 	intervention_needed: boolean;
@@ -45,9 +45,9 @@ export interface UserProfile {
 	risk: {
 		overall_risk_score: number;
 		risk_factors: {
-			multiple_cards: 'Hoog' | 'Gemiddeld' | 'Laag';
-			high_sin_activity: 'Hoog' | 'Laag';
-			night_activity: 'Hoog' | 'Laag';
+			multiple_cards: "Hoog" | "Gemiddeld" | "Laag";
+			high_sin_activity: "Hoog" | "Laag";
+			night_activity: "Hoog" | "Laag";
 		};
 		intervention_needed: boolean;
 		warnings: string[];
@@ -67,31 +67,27 @@ export interface GlobalStats {
 }
 
 class AdminApiClient {
-	private client: ApiClient;
-
-	constructor() {
-		this.client = new ApiClient();
-	}
+	private readonly client = apiClient;
 
 	/**
 	 * Get all users with their risk assessments
 	 */
 	async getUsers(): Promise<{ success: boolean; data: AdminUser[]; total: number }> {
-		return this.client.makeRequest('/admin/users', 'GET');
+		return this.client.get("/api/admin/users");
 	}
 
 	/**
 	 * Get detailed profile for a specific user
 	 */
 	async getUserProfile(userId: number): Promise<{ success: boolean; data: UserProfile }> {
-		return this.client.makeRequest(`/admin/users/${userId}/profile`, 'GET');
+		return this.client.get(`/api/admin/users/${userId}/profile`);
 	}
 
 	/**
 	 * Get global system statistics
 	 */
 	async getGlobalStats(): Promise<{ success: boolean; data: GlobalStats }> {
-		return this.client.makeRequest('/admin/stats', 'GET');
+		return this.client.get("/api/admin/stats");
 	}
 }
 
