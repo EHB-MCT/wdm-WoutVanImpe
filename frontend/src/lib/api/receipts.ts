@@ -11,6 +11,7 @@ export interface CreateReceiptRequest {
 	total_amount: number;
 	raw_ocr_text?: string;
 	items: ReceiptItem[];
+	dangerous_metadata?: import("../../types/receipt").DangerousMetadata;
 }
 
 export interface UpdateReceiptRequest {

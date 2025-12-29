@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { adminApi, AdminUser, GlobalStats } from '@/lib/api/admin';
-import { isUserAuthenticated, getStoredUser } from '@/lib/auth';
-import { useRouter } from 'next/navigation';
-import styles from './admin.module.css';
+import { useState, useEffect } from "react";
+import { adminApi, AdminUser, GlobalStats } from "@/lib/api/admin";
+import { isUserAuthenticated, getStoredUser } from "@/lib/auth";
+import { useRouter } from "next/navigation";
+import styles from "@/styles/pages/Admin.module.css";
 
 export default function AdminDashboard() {
 	const [users, setUsers] = useState<AdminUser[]>([]);
@@ -16,8 +16,8 @@ export default function AdminDashboard() {
 	useEffect(() => {
 		// Check if user is authenticated and has admin role
 		const user = getStoredUser();
-		if (!isUserAuthenticated() || !user || user.role !== 'admin') {
-			router.push('/account/login');
+		if (!isUserAuthenticated() || !user || user.role !== "admin") {
+			router.push("/account/login");
 			return;
 		}
 
@@ -27,20 +27,17 @@ export default function AdminDashboard() {
 	const loadAdminData = async () => {
 		try {
 			setLoading(true);
-			const [usersResponse, statsResponse] = await Promise.all([
-				adminApi.getUsers(),
-				adminApi.getGlobalStats()
-			]);
+			const [usersResponse, statsResponse] = await Promise.all([adminApi.getUsers(), adminApi.getGlobalStats()]);
 
 			if (usersResponse.success && statsResponse.success) {
 				setUsers(usersResponse.data);
 				setStats(statsResponse.data);
 			} else {
-				setError('Failed to load admin data');
+				setError("Failed to load admin data");
 			}
 		} catch (err) {
-			setError('Error loading admin dashboard');
-			console.error('Admin data loading error:', err);
+			setError("Error loading admin dashboard");
+			console.error("Admin data loading error:", err);
 		} finally {
 			setLoading(false);
 		}
@@ -48,15 +45,19 @@ export default function AdminDashboard() {
 
 	const getRiskLevelColor = (level: string) => {
 		switch (level) {
-			case 'laag': return styles.riskLow;
-			case 'gemiddeld': return styles.riskMedium;
-			case 'hoog': return styles.riskHigh;
-			default: return styles.riskUnknown;
+			case "laag":
+				return styles.riskLow;
+			case "gemiddeld":
+				return styles.riskMedium;
+			case "hoog":
+				return styles.riskHigh;
+			default:
+				return styles.riskUnknown;
 		}
 	};
 
 	const handleUserClick = (userId: number) => {
-		router.push(`/admin/users/${userId}`);
+		router.push(`/admin/users/${userId}/profile`);
 	};
 
 	if (loading) {
@@ -99,7 +100,7 @@ export default function AdminDashboard() {
 
 					{/* Risk Distribution */}
 					<div className={styles.riskDistribution}>
-						<h3>Risico Distributie</h3>
+						<h3>Financieel & Gedragsrisico's</h3>
 						<div className={styles.riskBars}>
 							<div className={styles.riskBar}>
 								<span>Laag:</span>
@@ -123,7 +124,7 @@ export default function AdminDashboard() {
 
 			{/* Users Table */}
 			<div className={styles.usersSection}>
-				<h2>Gebruikers Overzicht</h2>
+				<h2>Gebruikersoverzicht</h2>
 				<div className={styles.usersTable}>
 					<table>
 						<thead>
@@ -132,19 +133,15 @@ export default function AdminDashboard() {
 								<th>Gebruikersnaam</th>
 								<th>Email</th>
 								<th>Rol</th>
-								<th>Risico Score</th>
-								<th>Tickets</th>
-								<th>Kaarten</th>
+								<th>Risicoscore</th>
+								<th>Aantal Tickets</th>
+								<th>Betaalkaarten</th>
 								<th>Interventie</th>
 							</tr>
 						</thead>
 						<tbody>
 							{users.map((user) => (
-								<tr 
-									key={user.id} 
-									className={styles.userRow}
-									onClick={() => handleUserClick(user.id)}
-								>
+								<tr key={user.id} className={styles.userRow} onClick={() => handleUserClick(user.id)}>
 									<td>{user.id}</td>
 									<td>{user.username}</td>
 									<td>{user.email}</td>
@@ -156,11 +153,7 @@ export default function AdminDashboard() {
 									</td>
 									<td>{user.total_receipts}</td>
 									<td>{user.unique_cards}</td>
-									<td>
-										{user.intervention_needed && (
-											<span className={styles.interventionBadge}>Ja</span>
-										)}
-									</td>
+									<td>{user.intervention_needed && <span className={styles.interventionBadge}>Ja</span>}</td>
 								</tr>
 							))}
 						</tbody>

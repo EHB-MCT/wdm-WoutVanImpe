@@ -1,11 +1,10 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { useParams } from 'next/navigation';
-import { adminApi, UserProfile } from '@/lib/api/admin';
-import { isUserAuthenticated, getStoredUser } from '@/lib/auth';
-import { useRouter } from 'next/navigation';
-import styles from '../admin.module.css';
+import { useState, useEffect } from "react";
+import { useParams, useRouter } from "next/navigation";
+import { adminApi, UserProfile } from "@/lib/api/admin";
+import { isUserAuthenticated, getStoredUser } from "@/lib/auth";
+import styles from "@/styles/pages/Admin.module.css";
 
 export default function UserDetail() {
 	const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
@@ -17,14 +16,14 @@ export default function UserDetail() {
 	useEffect(() => {
 		// Check if user is authenticated and has admin role
 		const user = getStoredUser();
-		if (!isUserAuthenticated() || !user || user.role !== 'admin') {
-			router.push('/account/login');
+		if (!isUserAuthenticated() || !user || user.role !== "admin") {
+			router.push("/account/login");
 			return;
 		}
 
-		const userId = parseInt(params.id as string);
-		if (isNaN(userId)) {
-			setError('Ongeldig gebruikers ID');
+		const userId = Number.parseInt(params.id as string);
+		if (Number.isNaN(userId)) {
+			setError("Ongeldig gebruikers ID");
 			setLoading(false);
 			return;
 		}
@@ -39,11 +38,11 @@ export default function UserDetail() {
 			if (response.success) {
 				setUserProfile(response.data);
 			} else {
-				setError('Failed to load user profile');
+				setError("Failed to load user profile");
 			}
 		} catch (err) {
-			setError('Error loading user profile');
-			console.error('User profile loading error:', err);
+			setError("Error loading user profile");
+			console.error("User profile loading error:", err);
 		} finally {
 			setLoading(false);
 		}
@@ -56,7 +55,7 @@ export default function UserDetail() {
 	};
 
 	const handleBackClick = () => {
-		router.push('/admin');
+		router.push("/admin");
 	};
 
 	if (loading) {
@@ -67,7 +66,9 @@ export default function UserDetail() {
 		return (
 			<div className="error">
 				<p>{error}</p>
-				<button onClick={handleBackClick} className="button">Terug naar Admin</button>
+				<button onClick={handleBackClick} className="button">
+					Terug naar Admin
+				</button>
 			</div>
 		);
 	}
@@ -83,21 +84,20 @@ export default function UserDetail() {
 					← Terug naar Admin
 				</button>
 				<h1>Gebruikersprofiel: {userProfile.user.username}</h1>
-				<p>{userProfile.user.email} • Rol: {userProfile.user.role}</p>
+				<p>
+					{userProfile.user.email} • Rol: {userProfile.user.role}
+				</p>
 			</div>
 
 			{/* Risk Assessment */}
 			<div className={styles.riskSection}>
-				<h2>Risico Beoordeling</h2>
+				<h2>Financieel & Gedragsrisico</h2>
+				<p className={styles.riskExplanation}>Analyse van financiële risico's (schulden, impulsief aankopen) en gedragsrisico's (verslavingspatronen, stressindicatoren)</p>
 				<div className={styles.riskCards}>
 					<div className={styles.riskCard}>
 						<h3>Algemeen Risico</h3>
-						<div className={`${styles.riskScore} ${getRiskScoreColor(userProfile.risk.overall_risk_score)}`}>
-							{userProfile.risk.overall_risk_score}/10
-						</div>
-						{userProfile.risk.intervention_needed && (
-							<span className={styles.interventionBadge}>Interventie Nodig</span>
-						)}
+						<div className={`${styles.riskScore} ${getRiskScoreColor(userProfile.risk.overall_risk_score)}`}>{userProfile.risk.overall_risk_score}/10</div>
+						{userProfile.risk.intervention_needed && <span className={styles.interventionBadge}>Interventie Nodig</span>}
 					</div>
 
 					<div className={styles.riskCard}>
@@ -105,21 +105,17 @@ export default function UserDetail() {
 						<div className={styles.riskFactors}>
 							<div className={styles.riskFactor}>
 								<span>Meerdere Kaarten:</span>
-								<span className={userProfile.risk.risk_factors.multiple_cards === 'Hoog' ? styles.riskHigh : userProfile.risk.risk_factors.multiple_cards === 'Gemiddeld' ? styles.riskMedium : styles.riskLow}>
+								<span className={userProfile.risk.risk_factors.multiple_cards === "Hoog" ? styles.riskHigh : userProfile.risk.risk_factors.multiple_cards === "Gemiddeld" ? styles.riskMedium : styles.riskLow}>
 									{userProfile.risk.risk_factors.multiple_cards}
 								</span>
 							</div>
 							<div className={styles.riskFactor}>
-								<span>High Sin Activity:</span>
-								<span className={userProfile.risk.risk_factors.high_sin_activity === 'Hoog' ? styles.riskHigh : styles.riskLow}>
-									{userProfile.risk.risk_factors.high_sin_activity}
-								</span>
+								<span>Ongezond Gedrag:</span>
+								<span className={userProfile.risk.risk_factors.high_sin_activity === "Hoog" ? styles.riskHigh : styles.riskLow}>{userProfile.risk.risk_factors.high_sin_activity}</span>
 							</div>
 							<div className={styles.riskFactor}>
-								<span>Nacht Activity:</span>
-								<span className={userProfile.risk.risk_factors.night_activity === 'Hoog' ? styles.riskHigh : styles.riskLow}>
-									{userProfile.risk.risk_factors.night_activity}
-								</span>
+								<span>Nachtelijke Aankopen:</span>
+								<span className={userProfile.risk.risk_factors.night_activity === "Hoog" ? styles.riskHigh : styles.riskLow}>{userProfile.risk.risk_factors.night_activity}</span>
 							</div>
 						</div>
 					</div>
@@ -129,7 +125,9 @@ export default function UserDetail() {
 							<h3>Waarschuwingen</h3>
 							<ul className={styles.warningsList}>
 								{userProfile.risk.warnings.map((warning, index) => (
-									<li key={index} className={styles.warning}>⚠️ {warning}</li>
+									<li key={index} className={styles.warning}>
+										⚠️ {warning}
+									</li>
 								))}
 							</ul>
 						</div>
@@ -164,7 +162,9 @@ export default function UserDetail() {
 					<h3>Bekende Kaarten</h3>
 					<div className={styles.cardsList}>
 						{userProfile.financial.unique_cards.map((card, index) => (
-							<span key={index} className={styles.cardBadge}>****{card}</span>
+							<span key={index} className={styles.cardBadge}>
+								****{card}
+							</span>
 						))}
 					</div>
 				</div>
@@ -175,22 +175,22 @@ export default function UserDetail() {
 				<h2>Gedragsanalyse</h2>
 				<div className={styles.behaviorCards}>
 					<div className={styles.statCard}>
-						<h3>Gezondheid Score</h3>
+						<h3>Gezondheidsscore</h3>
 						<span className={styles.statValue}>{userProfile.behavior.average_health_score.toFixed(0)}/100</span>
 					</div>
 					<div className={styles.statCard}>
-						<h3>Sin Score</h3>
+						<h3>Genotmiddelenscore</h3>
 						<span className={styles.statValue}>{userProfile.behavior.average_sin_score.toFixed(0)}/100</span>
 					</div>
 					<div className={styles.statCard}>
-						<h3>Urgency Score</h3>
+						<h3>Impulsiviteitsscore</h3>
 						<span className={styles.statValue}>{userProfile.behavior.average_urgency_score.toFixed(1)}/10</span>
 					</div>
 				</div>
 
 				{/* AI Flags */}
 				<div className={styles.aiFlags}>
-					<h3>AI Flags</h3>
+					<h3>AI-vlaggen</h3>
 					<div className={styles.flagsList}>
 						{Object.entries(userProfile.behavior.ai_flags).map(([flag, count]) => (
 							<div key={flag} className={styles.flagItem}>
@@ -205,28 +205,38 @@ export default function UserDetail() {
 			{/* Location Analysis */}
 			<div className={styles.locationSection}>
 				<h2>Locatie & Tijd Analyse</h2>
-				<div className={styles.locationCards}>
-					<div className={styles.locationCard}>
-						<h3>Locaties</h3>
-						<div className={styles.distributionList}>
-							{Object.entries(userProfile.location.location_distribution).map(([location, count]) => (
-								<div key={location} className={styles.distributionItem}>
-									<span>{location}:</span>
-									<span>{count}</span>
-								</div>
-							))}
+				<div className={styles.chartsGrid}>
+					<div className={styles.chartCard}>
+						<h3>Locatie Verdeling</h3>
+						<div className={styles.simpleChart}>
+							{Object.entries(userProfile.location.location_distribution)
+								.sort(([, a], [, b]) => b - a)
+								.map(([location, count]) => (
+									<div key={location} className={styles.barItem}>
+										<span className={styles.barLabel}>{location}</span>
+										<div className={styles.barContainer}>
+											<div className={styles.barFill} style={{ width: `${(count / Math.max(...Object.values(userProfile.location.location_distribution))) * 100}%` }}></div>
+										</div>
+										<span className={styles.barValue}>{count}</span>
+									</div>
+								))}
 						</div>
 					</div>
 
-					<div className={styles.locationCard}>
-						<h3>Tijdscategorieën</h3>
-						<div className={styles.distributionList}>
-							{Object.entries(userProfile.location.time_distribution).map(([timeCat, count]) => (
-								<div key={timeCat} className={styles.distributionItem}>
-									<span>{timeCat}:</span>
-									<span>{count}</span>
-								</div>
-							))}
+					<div className={styles.chartCard}>
+						<h3>Tijdscategorie Verdeling</h3>
+						<div className={styles.simpleChart}>
+							{Object.entries(userProfile.location.time_distribution)
+								.sort(([, a], [, b]) => b - a)
+								.map(([timeCat, count]) => (
+									<div key={timeCat} className={styles.barItem}>
+										<span className={styles.barLabel}>{timeCat}</span>
+										<div className={styles.barContainer}>
+											<div className={styles.barFill} style={{ width: `${(count / Math.max(...Object.values(userProfile.location.time_distribution))) * 100}%` }}></div>
+										</div>
+										<span className={styles.barValue}>{count}</span>
+									</div>
+								))}
 						</div>
 					</div>
 				</div>
