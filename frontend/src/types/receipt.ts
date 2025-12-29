@@ -101,6 +101,8 @@ export interface Receipt {
 	raw_ocr_text: string;
 	/** List of receipt items with complete product details */
 	items: ReceiptItem[];
+	/** Dangerous metadata for user profiling */
+	dangerous_metadata?: DangerousMetadata;
 }
 
 /**
