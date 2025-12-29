@@ -4,6 +4,7 @@ services:
       context: ./tesseract
     environment:
       TESSERACT_PORT: ${TESSERACT_PORT}
+      FRONTEND_PORT: ${FRONTEND_PORT}
     ports:
       - "${TESSERACT_PORT}:${TESSERACT_PORT}"
     networks:

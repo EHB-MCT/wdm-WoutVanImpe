@@ -5,7 +5,8 @@
 	"main": "index.js",
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
-		"start": "nodemon src/index.js --legacy-watch"
+		"start": "node --max-old-space-size=2048 src/index.js",
+		"dev": "nodemon --max-old-space-size=2048 src/index.js --legacy-watch"
 	},
 	"keywords": [],
 	"author": "",
