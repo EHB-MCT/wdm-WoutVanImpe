@@ -21,86 +21,162 @@ const validateCategory = (category: string | null): string => {
  * Orchestrates the AI extraction pipeline.
  * Sends raw OCR text to a local LLM (Ollama) to parse structured JSON.
  */
+/**
+ * Perform basic analysis when AI fails to extract dangerous metadata
+ */
+const performBasicAnalysis = (parsedData: any, ocrText: string) => {
+	const dangerousMetadata: any = {
+		card_fingerprint: null,
+		card_network: null,
+		bank_name: null,
+		wealth_rating: null,
+		health_score: null,
+		sin_score: null,
+		urgency_score: null,
+		store_location: null,
+		geographic_pattern: null,
+		time_category: null,
+		ai_flag: null,
+	};
+
+	// Extract basic time category from parsed time
+	if (parsedData.time) {
+		const hour = Number.parseInt(parsedData.time.split(":")[0]);
+		if (hour >= 6 && hour < 12) dangerousMetadata.time_category = "Morning";
+		else if (hour >= 12 && hour < 18) dangerousMetadata.time_category = "Lunch";
+		else if (hour >= 18 && hour < 22) dangerousMetadata.time_category = "Evening";
+		else dangerousMetadata.time_category = "Night";
+
+		// Higher urgency for late night
+		if (hour >= 22 || hour < 6) {
+			dangerousMetadata.urgency_score = 8;
+		}
+	}
+
+	// Basic wealth rating based on store name
+	if (parsedData.store_name) {
+		const storeName = parsedData.store_name.toLowerCase();
+		if (storeName.includes("aldi") || storeName.includes("lidl") || storeName.includes("action")) {
+			dangerousMetadata.wealth_rating = 3;
+		} else if (storeName.includes("carrefour") || storeName.includes("delhaize") || storeName.includes("colruyt")) {
+			dangerousMetadata.wealth_rating = 6;
+		} else if (storeName.includes("iphone") || storeName.includes("media") || storeName.includes("coolblue")) {
+			dangerousMetadata.wealth_rating = 8;
+		}
+	}
+
+	// Basic payment analysis from OCR text
+	const lowerOcrText = ocrText.toLowerCase();
+	if (lowerOcrText.includes("visa")) dangerousMetadata.card_network = "Visa";
+	else if (lowerOcrText.includes("mastercard")) dangerousMetadata.card_network = "Mastercard";
+	else if (lowerOcrText.includes("bancontact")) dangerousMetadata.card_network = "Bancontact";
+	else if (lowerOcrText.includes("cash") || lowerOcrText.includes("contant")) dangerousMetadata.card_network = "Cash";
+
+	// Extract card fingerprint (last 4 digits pattern)
+	const cardPattern = /\*\*\*\*(\d{4})|(\d{4})(?=\s|$)/g;
+	const matches = [...lowerOcrText.matchAll(cardPattern)];
+	if (matches.length > 0) {
+		dangerousMetadata.card_fingerprint = matches[0][1] || matches[0][2];
+	}
+
+	return dangerousMetadata;
+};
+
 export const extractReceiptData = async (ocrText: string): Promise<ReceiptData | null | undefined> => {
 	try {
-const prompt = `Extract receipt data from following OCR text and return ONLY a JSON object. No explanations, no markdown formatting, no conversational text.
+		const prompt = `Extract receipt data from following OCR text and return ONLY a JSON object. No explanations, no markdown formatting, no conversational text.
 
  OCR Text:
  """
  ${ocrText}
  """
 
- IMPORTANT LANGUAGE CONTEXT:
- - The OCR text may be in Dutch, English, or French
- - Product names and store names can appear in any of these languages
- - Extract product names exactly as they appear in original language
- - Handle multilingual receipts - items may be in different languages on same receipt
- - Common terms to recognize:
-    * Dutch: "TOTAAL", "SUBTOTAAL", "BTW", "KORTING"
-    * English: "TOTAL", "SUBTOTAL", "VAT", "TAX", "DISCOUNT"
-    * French: "TOTAL", "SOUS-TOTAL", "TVA", "REMISE"
+Top! Dit is een hele slimme zet. Door de verwachte output waarden in de prompt zelf naar het Nederlands te vertalen, dwing je de AI om consequent die termen te gebruiken.
 
- DANGEROUS DATA EXTRACTION (CRITICAL FOR PROFILING):
- - Extract ANY payment information: last 4 digits of cards, bank names, payment networks
- - Analyze purchase time for behavioral insights (late night = stress/urgency, etc.)
- - Extract health indicators: alcohol, tobacco, junk food, medicine, supplements
- - Look for wealth indicators: luxury brands vs discount stores, organic vs conventional
- - Identify geographic patterns if location is mentioned
- - Flag suspicious patterns: multiple payment methods, unusual timing
+Hier is de aangepaste prompt. Ik heb de secties geographic_pattern, time_category en ai_flag aangepast naar de Nederlandse termen die we in je dummy data hebben gebruikt (zoals "Stedelijk", "Expatwijk", "Middag", "Avond", "Zoetekauw", etc.).
 
- Return JSON with this exact structure:
- {
-   "store_name": null,
-   "date": null,
-   "time": null,
-   "total_price": null,
-   "payment_method": null,
-   "items": [],
-   "dangerous_metadata": {
-     "card_fingerprint": null,
-     "card_network": null,
-     "bank_name": null,
-     "wealth_rating": null,
-     "health_score": null,
-     "sin_score": null,
-     "urgency_score": null,
-     "store_location": null,
-     "geographic_pattern": null,
-     "time_category": null,
-     "ai_flag": null
-   }
- }
+Kopieer dit en vervang je oude prompt string:
 
- DANGEROUS METADATA FIELDS:
- - card_fingerprint: Last 4 digits of payment card (string or null)
- - card_network: "Visa", "Mastercard", "Bancontact", "Cash", "Phone" (string or null)
- - bank_name: Bank name if visible (string or null)
- - wealth_rating: 1-10 scale based on store type and purchase patterns (number or null)
- - health_score: 0-100 scale based on items purchased (number or null)
- - sin_score: 0-100 scale for alcohol/tobacco/junk food (number or null)
- - urgency_score: 1-10 scale based on time and context (number or null)
- - store_location: City or area mentioned (string or null)
- - geographic_pattern: Neighborhood type assessment (string or null)
- - time_category: "Morning", "Lunch", "Evening", "Night" (string or null)
- - ai_flag: Risk flag like "Alcohol_Risk", "Big_Spender", "Multiple_Cards" (string or null)
+Plaintext
 
- INTERNAL USE ONLY (not returned in JSON):
- - Also determine store_type and primary_category for your internal categorization logic
- - store_type: "supermarket", "clothing", "electronics", "restaurant", "pharmacy", "petrol_station", "hardware", "unknown"
- - primary_category: "Boodschappen", "Huishouden", "Verkeer & Vervoer", "Gezondheid & Zorg", "Vrije Tijd & Uitgaan", "Winkels & Kleding", "Financieel & Diensten", "Overig"
+IMPORTANT LANGUAGE CONTEXT:
+  - The OCR text may be in Dutch, English, or French
+  - Product names and store names can appear in any of these languages
+  - Extract product names exactly as they appear in original language
+  - Handle multilingual receipts - items may be in different languages on same receipt
+  - Common terms to recognize:
+     * Dutch: "TOTAAL", "SUBTOTAAL", "BTW", "KORTING"
+     * English: "TOTAL", "SUBTOTAL", "VAT", "TAX", "DISCOUNT"
+     * French: "TOTAL", "SOUS-TOTAL", "TVA", "REMISE"
 
- Rules:
- - store_name: Shop name (string or null) - keep original language
- - date: YYYY-MM-DD format (string or null)
- - time: HH:MM 24h format (string or null)
- - total_price: Final amount paid (number or null)
- - payment_method: "Cash", "Visa", "Bancontact", "Credit Card", "Contant", etc. (string or null)
- - items: Array of objects with name, category, quantity, price (default quantity to 1 if not specified)
- - CRITICAL: Extract EVERY single line item that could possibly be a product, even if you're unsure. If it has a name and price, treat it as a product. Be maximally inclusive - when in doubt, include it.
- - Include all food items, drinks, household products, clothing, electronics, services, fees, taxes, and any other line items with names and prices.
- - BUT filter out: "TOTAAL", "TOTAL", "SOUS-TOTAL", "SUBTOTAAL", "SUBTOTAL", "BTW", "VAT", "TVA", "TAX", "KORTING", "DISCOUNT", "REMISE", and any line items that are just numbers, codes, or payment method descriptions.
+ DANGEROUS DATA EXTRACTION (CRITICAL FOR PROFILING):
+  - Extract ANY payment information: last 4 digits of cards, bank names, payment networks
+  - Analyze purchase time for behavioral insights (late night = stress/urgency, etc.)
+  - Extract health indicators: alcohol, tobacco, junk food, medicine, supplements
+  - Look for wealth indicators: luxury brands vs discount stores, organic vs conventional
+  - Identify geographic patterns if location is mentioned
+  - Flag suspicious patterns: multiple payment methods, unusual timing
 
- INTERNAL STORE TYPE DETECTION (for categorization logic only):
+ CRITICAL: Look VERY CAREFULLY for these specific patterns:
+ 1. Payment cards: Look for "****", "Visa", "Mastercard", "Bancontact", last 4 digits
+ 2. Time analysis: Look for actual time and convert to DUTCH time category (Ochtend: 6-12, Middag: 12-18, Avond: 18-22, Nacht: 22-6)
+ 3. Sin items: Look for alcohol (beer, wine, whiskey), tobacco, cigarettes, drugs
+ 4. Wealth indicators: Expensive stores vs discount stores, luxury brands
+ 5. Geographic: City names, neighborhood types
+
+ Return JSON with this exact structure:
+ {
+   "store_name": null,
+   "date": null,
+   "time": null,
+   "total_price": null,
+   "payment_method": null,
+   "items": [],
+   "dangerous_metadata": {
+     "card_fingerprint": null,
+     "card_network": null,
+     "bank_name": null,
+     "wealth_rating": null,
+     "health_score": null,
+     "sin_score": null,
+     "urgency_score": null,
+     "store_location": null,
+     "geographic_pattern": null,
+     "time_category": null,
+     "ai_flag": null
+   }
+ }
+
+ DANGEROUS METADATA FIELDS (USE REAL VALUES WHEN FOUND):
+  - card_fingerprint: Extract last 4 digits of any credit/debit card visible
+  - card_network: "Visa", "Mastercard", "Bancontact", "Cash", "Phone" 
+  - bank_name: Look for bank names like "ING", "KBC", "Belfius"
+  - wealth_rating: 1-10 scale (discount store = 1-3, supermarket = 4-7, luxury = 8-10)
+  - health_score: 0-100 (high for healthy food, low for junk food)
+  - sin_score: 0-100 (higher for more alcohol/tobacco/junk food)
+  - urgency_score: 1-10 (higher for late night purchases, rushed buying)
+  - store_location: Extract any city or location mentioned
+  - geographic_pattern: "Stedelijk", "Buitenwijk", "Landelijk", "Winkelcentrum", "Expatwijk"
+  - time_category: "Ochtend", "Middag", "Avond", "Nacht" based on actual time
+  - ai_flag: "Alcohol Risico", "Grote Uitgaven", "Meerdere Kaarten", "Ongewone Uren", "Gezonde Koper", "Junkfood", "Familiemaaltijd", "Zoetekauw", "Luxe Levensstijl"
+
+ INTERNAL USE ONLY (not returned in JSON):
+ - Also determine store_type and primary_category for your internal categorization logic
+ - store_type: "supermarket", "clothing", "electronics", "restaurant", "pharmacy", "petrol_station", "hardware", "unknown"
+ - primary_category: "Boodschappen", "Huishouden", "Verkeer & Vervoer", "Gezondheid & Zorg", "Vrije Tijd & Uitgaan", "Winkels & Kleding", "Financieel & Diensten", "Overig"
+
+ Rules:
+ - store_name: Shop name (string or null) - keep original language
+ - date: YYYY-MM-DD format (string or null)
+ - time: HH:MM 24h format (string or null)
+ - total_price: Final amount paid (number or null)
+ - payment_method: "Cash", "Visa", "Bancontact", "Credit Card", "Contant", etc. (string or null)
+ - items: Array of objects with name, category, quantity, price (default quantity to 1 if not specified)
+ - CRITICAL: Extract EVERY single line item that could possibly be a product, even if you're unsure. If it has a name and price, treat it as a product. Be maximally inclusive - when in doubt, include it.
+ - Include all food items, drinks, household products, clothing, electronics, services, fees, taxes, and any other line items with names and prices.
+ - BUT filter out: "TOTAAL", "TOTAL", "SOUS-TOTAL", "SUBTOTAAL", "SUBTOTAL", "BTW", "VAT", "TVA", "TAX", "KORTING", "DISCOUNT", "REMISE", and any line items that are just numbers, codes, or payment method descriptions.
+
+ INTERNAL STORE TYPE DETECTION (for categorization logic only):
 - Analyze store_name and types of items being sold to determine store type
 - "supermarket": Sells food, drinks, household items, sometimes electronics/clothing (Carrefour, Delhaize, Albert Heijn, etc.)
 - "clothing": Sells primarily clothing, shoes, accessories (H&M, Zara, C&A, Primark, etc.)
@@ -111,7 +187,7 @@ const prompt = `Extract receipt data from following OCR text and return ONLY a J
 - "hardware": Sells tools, building materials, home improvement (Brico, Gamma, IKEA, etc.)
 - "unknown": If store type cannot be determined
 
- INTERNAL PRIMARY CATEGORY ASSIGNMENT:
+ INTERNAL PRIMARY CATEGORY ASSIGNMENT:
 - "supermarket" → "Boodschappen" (mixed-type store)
 - "clothing" → "Winkels & Kleding"
 - "electronics" → "Winkels & Kleding"
@@ -121,38 +197,38 @@ const prompt = `Extract receipt data from following OCR text and return ONLY a J
 - "hardware" → "Huishouden"
 - "unknown" → "Overig"
 
- CATEGORY ASSIGNMENT - AI-BASED STORE DETECTION:
- - CRITICAL: Most receipts are from a single store type, so items should generally share same category
- - Use store_type and primary_category you determined above for categorization
+ CATEGORY ASSIGNMENT - AI-BASED STORE DETECTION:
+ - CRITICAL: Most receipts are from a single store type, so items should generally share same category
+ - Use store_type and primary_category you determined above for categorization
 
- STORE-BASED CATEGORIZATION RULES:
+ STORE-BASED CATEGORIZATION RULES:
 1. **Supermarkets (store_type: "supermarket")**:
-   - These are MIXED-TYPE stores - items can have different categories
-   - Use individual item categorization based on what item is
-   - "Boodschappen": Food items, drinks, snacks
-   - "Huishouden": Cleaning supplies, personal care, household items
-   - "Gezondheid & Zorg": Medications, health products
-   - "Overig": Other items found in supermarkets
+   - These are MIXED-TYPE stores - items can have different categories
+   - Use individual item categorization based on what item is
+   - "Boodschappen": Food items, drinks, snacks
+   - "Huishouden": Cleaning supplies, personal care, household items
+   - "Gezondheid & Zorg": Medications, health products
+   - "Overig": Other items found in supermarkets
 
 2. **Single-Type Stores (all items get same category)**:
-   - **Clothing stores (store_type: "clothing")**: ALL items → "Winkels & Kleding"
-   - **Electronics stores (store_type: "electronics")**: ALL items → "Winkels & Kleding"
-   - **Restaurants (store_type: "restaurant")**: ALL items → "Vrije Tijd & Uitgaan"
-   - **Pharmacies (store_type: "pharmacy")**: ALL items → "Gezondheid & Zorg"
-   - **Petrol stations (store_type: "petrol_station")**: ALL items → "Verkeer & Vervoer"
-   - **Hardware stores (store_type: "hardware")**: ALL items → "Huishouden"
+   - **Clothing stores (store_type: "clothing")**: ALL items → "Winkels & Kleding"
+   - **Electronics stores (store_type: "electronics")**: ALL items → "Winkels & Kleding"
+   - **Restaurants (store_type: "restaurant")**: ALL items → "Vrije Tijd & Uitgaan"
+   - **Pharmacies (store_type: "pharmacy")**: ALL items → "Gezondheid & Zorg"
+   - **Petrol stations (store_type: "petrol_station")**: ALL items → "Verkeer & Vervoer"
+   - **Hardware stores (store_type: "hardware")**: ALL items → "Huishouden"
 
 3. **Unknown stores (store_type: "unknown")**: Use individual item categorization or default to "Overig"
 
- AVAILABLE CATEGORIES: "Boodschappen", "Huishouden", "Verkeer & Vervoer", "Gezondheid & Zorg", "Vrije Tijd & Uitgaan", "Winkels & Kleding", "Financieel & Diensten", "Overig"
+ AVAILABLE CATEGORIES: "Boodschappen", "Huishouden", "Verkeer & Vervoer", "Gezondheid & Zorg", "Vrije Tijd & Uitgaan", "Winkels & Kleding", "Financieel & Diensten", "Overig"
 
- IMPORTANT: 
- - For single-type stores, ALL items should have SAME category (use primary_category)
- - For supermarkets, items can have different categories based on what they are
- - NEVER use any category names other than 8 listed above
- - If uncertain, use "Overig" as default
+ IMPORTANT: 
+ - For single-type stores, ALL items should have SAME category (use primary_category)
+ - For supermarkets, items can have different categories based on what they are
+ - NEVER use any category names other than 8 listed above
+ - If uncertain, use "Overig" as default
 
- IMPORTANT: Return ONLY raw JSON object. Nothing else.`;
+ IMPORTANT: Return ONLY raw JSON object. Nothing else.`;
 
 		const response = await fetch(`http://localhost:${process.env.NEXT_PUBLIC_OLLAMA_PORT}/api/generate`, {
 			method: "POST",
@@ -177,8 +253,10 @@ const prompt = `Extract receipt data from following OCR text and return ONLY a J
 		}
 
 		try {
-			console.log(data.response);
+			console.log("Ollama raw response:", data.response);
 			const parsedData = JSON.parse(data.response);
+			console.log("Parsed data structure:", JSON.stringify(parsedData, null, 2));
+			console.log("Dangerous metadata found:", parsedData.dangerous_metadata);
 
 			if (parsedData && typeof parsedData === "object") {
 				const rawItems = Array.isArray(parsedData.items) ? parsedData.items : [];
@@ -212,6 +290,14 @@ const prompt = `Extract receipt data from following OCR text and return ONLY a J
 					};
 				});
 
+				// Use AI dangerous metadata or perform basic analysis
+				let dangerousMetadata = parsedData.dangerous_metadata;
+
+				if (!dangerousMetadata || Object.values(dangerousMetadata).every((v) => v === null)) {
+					console.log("AI didn't extract dangerous metadata, performing basic analysis...");
+					dangerousMetadata = performBasicAnalysis(parsedData, ocrText);
+				}
+
 				return {
 					store_name: parsedData.store_name || null,
 					date: parsedData.date || null,
@@ -220,19 +306,7 @@ const prompt = `Extract receipt data from following OCR text and return ONLY a J
 					payment_method: parsedData.payment_method || null,
 					raw_ocr_text: null,
 					items: sanitizedItems,
-					dangerous_metadata: parsedData.dangerous_metadata || {
-						card_fingerprint: null,
-						card_network: null,
-						bank_name: null,
-						wealth_rating: null,
-						health_score: null,
-						sin_score: null,
-						urgency_score: null,
-						store_location: null,
-						geographic_pattern: null,
-						time_category: null,
-						ai_flag: null
-					},
+					dangerous_metadata: dangerousMetadata,
 				};
 			} else {
 				throw new Error("Invalid data structure from Ollama");
