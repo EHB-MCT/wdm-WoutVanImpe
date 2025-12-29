@@ -212,10 +212,13 @@ export default function DashboardPage() {
 
     const saveReceipt = async (updatedReceipt: Receipt) => {
         try {
+            // Extract just the date part from the purchase_date
+            const datePart = updatedReceipt.purchase_date ? String(updatedReceipt.purchase_date).split("T")[0] : "";
+            
             const updatedData = await receiptsApi.update(updatedReceipt.id, {
                 store_name: updatedReceipt.store_name,
-                purchase_date: updatedReceipt.purchase_date,
-                purchase_time: updatedReceipt.purchase_time || "12:00:00",
+                purchase_date: datePart,
+                purchase_time: updatedReceipt.purchase_time || "12:00",
                 total_amount: updatedReceipt.total_amount,
                 payment_method: updatedReceipt.payment_method,
                 items: updatedReceipt.items.map((item: ReceiptItem) => ({
