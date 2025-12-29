@@ -36,6 +36,8 @@ A full-stack web application for personal finance management with OCR-powered re
 
 - **Admin Dashboard**: User profiling with dangerous metadata analysis
 
+> **📝 Note on Model Accuracy**: The OCR and AI models in this demo run locally with smaller models for portability, which may result in reduced accuracy. For demonstration purposes, the account with username **"Wout"** has been populated with dummy data processed using more powerful OCR and AI models, showcasing the optimal performance and accuracy that would be achieved with production-grade models.
+
 ### 📊 Data Visualization
 
 - **Dashboard**: Interactive charts for spending patterns and category breakdowns
@@ -182,9 +184,23 @@ npm start
 
 ## 📖 Usage
 
+### Demo Accounts
+
+The application comes with two pre-configured accounts for demonstration:
+
+**👤 User Account (High-Quality Demo Data)**
+- **Email**: `wout@example.com`
+- **Password**: `student123`
+- **Purpose**: Showcases optimal OCR/AI accuracy with receipts processed using production-grade models
+
+**🔧 Admin Account (Administrative Access)**
+- **Email**: `admin@system.local`  
+- **Password**: `admin123`
+- **Purpose**: Full admin access to user management and dangerous metadata analytics
+
 ### For Users
 
-1. **Account Setup**: Register and create your account
+1. **Account Setup**: Login with demo credentials or register a new account
 
 2. **Upload Receipts**: Use the Upload page to add receipt images
 
@@ -223,36 +239,54 @@ npm start
 ## 📁 Project Structure
 
 ```
-
 wdm-WoutVanImpe/
-
-├── frontend/                 # Next.js frontend application
+├── frontend/                 # Next.js 15 frontend application
 │   ├── src/
-│   │   ├── app/         # App Router pages
-│   │   ├── components/    # React components
-│   │   ├── lib/          # Utilities and API clients
-│   │   ├── hooks/        # Custom React hooks
-│   │   └── types/        # TypeScript definitions
-│   └── package.json
-├── api/                     # Node.js Express backend
-│   ├── src/
-│   │   ├── controllers/ # Request handlers
-│   │   ├── services/    # Business logic
-│   │   ├── routes/       # API endpoints
-│   │   ├── middlewares/ # Express middleware
-│   │   └── migrations/   # Database schema
+│   │   ├── app/             # App Router pages and layouts
+│   │   │   ├── account/     # User account pages
+│   │   │   ├── admin/       # Admin dashboard
+│   │   │   ├── dashboard/   # Main financial dashboard
+│   │   │   └── upload/      # Receipt upload page
+│   │   ├── components/      # Reusable React components
+│   │   │   ├── account/     # Account-related components
+│   │   │   ├── dashboard/   # Dashboard components
+│   │   │   ├── ui/          # Generic UI components
+│   │   │   └── upload/      # Upload processing components
+│   │   ├── hooks/           # Custom React hooks
+│   │   ├── lib/             # Utilities, API clients, and helpers
+│   │   ├── styles/          # CSS Modules and design tokens
+│   │   └── types/           # TypeScript type definitions
+│   ├── package.json
+│   ├── next.config.ts
+│   └── tsconfig.json
+├── api/                     # Node.js Express backend API
+│   ├── config/              # Database and app configuration
+│   ├── controllers/         # Request handlers
+│   ├── middlewares/         # Express middleware (auth, validation)
+│   ├── migrations/          # Knex.js database migrations
+│   ├── routes/              # API endpoint definitions
+│   ├── seeds/               # Database seed data
+│   ├── services/            # Business logic and external API calls
+│   ├── utils/               # Helper functions and error handling
+│   ├── app.js               # Express application setup
+│   ├── knexfile.js          # Database configuration
 │   └── package.json
 ├── tesseract/                # OCR microservice
 │   ├── src/
-│   │   └── index.js
+│   │   └── index.js         # Tesseract.js OCR service
+│   ├── *.traineddata        # Language data files
 │   └── package.json
-├── docs/                    # Documentation
-│   ├── PROJECT_CONTEXT.md
-│   ├── STANDARDS.md
-│   └── PROMPTS.txt
-├── docker-compose.yml          # Service orchestration
-└── README.md                 # This file
-
+├── docs/                    # Project documentation
+│   ├── AI_REFERENCE.txt     # AI development reference
+│   ├── REFLECTION.MD        # Project reflections
+│   └── STANDARDS.md         # Coding standards and conventions
+├── .gitignore               # Git ignore rules
+├── docker-compose.yml       # Multi-service Docker configuration
+├── AGENTS.md                # Development commands and agent reference
+├── CODE_OF_CONDUCT.md       # Community guidelines
+├── CONTRIBUTING.md          # Contribution guidelines
+├── LICENSE                  # MIT License
+└── README.md               # This file
 ```
 
 ---
@@ -264,14 +298,19 @@ wdm-WoutVanImpe/
 This project follows comprehensive coding standards documented in [STANDARDS.md](./docs/STANDARDS.md):
 
 - **Naming Conventions**: camelCase, PascalCase, kebab-case
-
-- **Documentation**: JSDoc comments for all public APIs
-
+- **Documentation**: JSDoc comments for all public APIs  
 - **Type Safety**: TypeScript throughout the codebase
-
 - **Error Handling**: Comprehensive try/catch with proper responses
-
 - **Git Workflow**: Feature branches, conventional commits
+
+### Key Documentation Files
+
+- **[CONTRIBUTING.md](./CONTRIBUTING.md)** - Detailed contribution guidelines and workflow
+- **[STANDARDS.md](./docs/STANDARDS.md)** - Coding conventions and best practices
+- **[CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)** - Community guidelines
+- **[AGENTS.md](./AGENTS.md)** - Development commands and agent reference
+- **[docs/REFLECTION.MD](./docs/REFLECTION.MD)** - Project development reflections
+- **[docs/AI_REFERENCE.txt](./docs/AI_REFERENCE.txt)** - AI development reference material
 
 ### Available Scripts
 
@@ -341,41 +380,40 @@ API_JWT_SECRET=your_jwt_secret_key
 
 ## 🤝 Contributing
 
-This project serves as a reference implementation for web development best practices.
+Contributions are welcome! Please read our comprehensive [CONTRIBUTING.md](./CONTRIBUTING.md) for detailed guidelines.
 
-### For Course Participants
+### Quick Start for Contributors
 
-1. **Follow Standards**: Adhere to conventions in [STANDARDS.md](./docs/STANDARDS.md)
+1. **Read Standards**: Review [STANDARDS.md](./docs/STANDARDS.md) for coding conventions
+2. **Fork & Branch**: Create feature branches from `develop`
+3. **Follow Conventions**: Use conventional commits and proper documentation
+4. **Test Thoroughly**: Ensure all functionality works as expected
+5. **Submit PR**: Include detailed description and test results
 
-2. **Testing**: Add tests for new features and functionality
+### Development Commands
 
-3. **Documentation**: Update README and JSDoc comments
-
-4. **Git Workflow**: Use feature branches and conventional commits
-
-### Git Workflow Example
+See [AGENTS.md](./AGENTS.md) for available development scripts and commands:
 
 ```bash
+# Frontend development
+cd frontend && npm run dev
 
-# Create feature branch
+# API development  
+cd api && npm start
 
-git checkout -b feature/new-feature develop
+# Database migrations
+cd api && npm run knex:migrate
 
-
-
-# Make changes
-
-git add .
-
-git commit -m "feat(feature): add new user functionality"
-
-
-
-# Push and create pull request
-
-git push origin feature/new-feature
-
+# Linting
+npm run lint
 ```
+
+### Contribution Types
+
+- 🐛 **Bug Reports**: Use GitHub Issues with reproduction steps
+- ✨ **Features**: Follow the development workflow in CONTRIBUTING.md
+- 📝 **Documentation**: Improvements to any documentation files
+- 🧪 **Testing**: Test coverage and quality improvements
 
 ---
 
@@ -383,6 +421,17 @@ git push origin feature/new-feature
 
 ## 📄 License
 
-This project is licensed under the ISC License - see individual package.json files for details.
+This project is licensed under the **MIT License** - see the [LICENSE](./LICENSE) file for details.
+
+### License Summary
+
+- ✅ **Commercial use** allowed
+- ✅ **Modification** allowed  
+- ✅ **Distribution** allowed
+- ✅ **Private use** allowed
+- ⚠️ **Liability**: Software provided "AS IS" without warranty
+- ⚠️ **Copyright**: Must include original license and copyright notice
+
+Copyright © 2025 EHB MCT
 
 
