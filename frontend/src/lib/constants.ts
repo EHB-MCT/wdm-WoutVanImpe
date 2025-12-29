@@ -83,6 +83,7 @@ export const NAVIGATION = {
 		{ href: "/dashboard", label: "Dashboard", icon: "📊" },
 		{ href: "/account", label: "Account", icon: "👤" },
 	] as const,
+	ADMIN_LINK: { href: "/admin", label: "Admin", icon: "🔒" } as const,
 	BRAND: {
 		ICON: "💰",
 		DEFAULT_TEXT: "FinanceTracker",

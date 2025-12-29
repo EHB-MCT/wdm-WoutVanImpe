@@ -2,11 +2,13 @@ export interface User {
 	id: number;
 	username: string;
 	email: string;
+	role?: string;
 }
 
 interface JwtPayload {
 	userId: number;
 	username: string;
+	role?: string;
 	iat: number;
 	exp: number;
 }

@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
 import styles from "@/styles/components/Navigation.module.css";
 import { NAVIGATION } from "@/lib/constants";
+import { getStoredUser, isUserAuthenticated } from "@/lib/auth";
 
 export interface NavLinkProps {
 	href: string;
@@ -57,6 +58,7 @@ export function NavLink({ href, label, icon, isActive, onCloseMobile }: Readonly
  */
 export function Navigation({ showBrand = true, brandText = "FinanceTracker", className = "" }: Readonly<NavigationProps>) {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+	const [showAdminLink, setShowAdminLink] = useState(false);
 
 	const toggleMobileMenu = () => {
 		setIsMobileMenuOpen(!isMobileMenuOpen);
@@ -65,6 +67,13 @@ export function Navigation({ showBrand = true, brandText = "FinanceTracker", cla
 	const closeMobileMenu = () => {
 		setIsMobileMenuOpen(false);
 	};
+
+	// Check if user is admin
+	useEffect(() => {
+		const user = getStoredUser();
+		const isAdmin = isUserAuthenticated() && user && user.role === 'admin';
+		setShowAdminLink(isAdmin);
+	}, []);
 
 	useEffect(() => {
 		const handleKeyDown = (event: KeyboardEvent) => {
@@ -99,6 +108,14 @@ export function Navigation({ showBrand = true, brandText = "FinanceTracker", cla
 							icon={link.icon}
 						/>
 					))}
+					{showAdminLink && (
+						<NavLink
+							key={NAVIGATION.ADMIN_LINK.href}
+							href={NAVIGATION.ADMIN_LINK.href}
+							label={NAVIGATION.ADMIN_LINK.label}
+							icon={NAVIGATION.ADMIN_LINK.icon}
+						/>
+					)}
 				</ul>
 
 				<button className={styles.navMobileToggle} onClick={toggleMobileMenu} aria-label="Toggle navigation menu" aria-expanded={isMobileMenuOpen}>
@@ -114,6 +131,15 @@ export function Navigation({ showBrand = true, brandText = "FinanceTracker", cla
 								{NAVIGATION.MAIN_LINKS.map((link) => (
 									<NavLink key={link.href} href={link.href === "/dashboard" ? `/dashboard/${new Date().getFullYear()}/${new Date().getMonth() + 1}/all` : link.href} label={link.label} icon={link.icon} onCloseMobile={closeMobileMenu} />
 								))}
+								{showAdminLink && (
+									<NavLink 
+										key={NAVIGATION.ADMIN_LINK.href} 
+										href={NAVIGATION.ADMIN_LINK.href} 
+										label={NAVIGATION.ADMIN_LINK.label} 
+										icon={NAVIGATION.ADMIN_LINK.icon} 
+										onCloseMobile={closeMobileMenu} 
+									/>
+								)}
 							</ul>
 						</div>
 					</>

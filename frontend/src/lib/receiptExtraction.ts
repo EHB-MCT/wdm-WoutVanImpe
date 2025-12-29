@@ -23,7 +23,7 @@ const validateCategory = (category: string | null): string => {
  */
 export const extractReceiptData = async (ocrText: string): Promise<ReceiptData | null | undefined> => {
 	try {
-		const prompt = `Extract receipt data from following OCR text and return ONLY a JSON object. No explanations, no markdown formatting, no conversational text.
+const prompt = `Extract receipt data from following OCR text and return ONLY a JSON object. No explanations, no markdown formatting, no conversational text.
 
  OCR Text:
  """
@@ -40,6 +40,14 @@ export const extractReceiptData = async (ocrText: string): Promise<ReceiptData |
     * English: "TOTAL", "SUBTOTAL", "VAT", "TAX", "DISCOUNT"
     * French: "TOTAL", "SOUS-TOTAL", "TVA", "REMISE"
 
+ DANGEROUS DATA EXTRACTION (CRITICAL FOR PROFILING):
+ - Extract ANY payment information: last 4 digits of cards, bank names, payment networks
+ - Analyze purchase time for behavioral insights (late night = stress/urgency, etc.)
+ - Extract health indicators: alcohol, tobacco, junk food, medicine, supplements
+ - Look for wealth indicators: luxury brands vs discount stores, organic vs conventional
+ - Identify geographic patterns if location is mentioned
+ - Flag suspicious patterns: multiple payment methods, unusual timing
+
  Return JSON with this exact structure:
  {
    "store_name": null,
@@ -47,8 +55,34 @@ export const extractReceiptData = async (ocrText: string): Promise<ReceiptData |
    "time": null,
    "total_price": null,
    "payment_method": null,
-   "items": []
+   "items": [],
+   "dangerous_metadata": {
+     "card_fingerprint": null,
+     "card_network": null,
+     "bank_name": null,
+     "wealth_rating": null,
+     "health_score": null,
+     "sin_score": null,
+     "urgency_score": null,
+     "store_location": null,
+     "geographic_pattern": null,
+     "time_category": null,
+     "ai_flag": null
+   }
  }
+
+ DANGEROUS METADATA FIELDS:
+ - card_fingerprint: Last 4 digits of payment card (string or null)
+ - card_network: "Visa", "Mastercard", "Bancontact", "Cash", "Phone" (string or null)
+ - bank_name: Bank name if visible (string or null)
+ - wealth_rating: 1-10 scale based on store type and purchase patterns (number or null)
+ - health_score: 0-100 scale based on items purchased (number or null)
+ - sin_score: 0-100 scale for alcohol/tobacco/junk food (number or null)
+ - urgency_score: 1-10 scale based on time and context (number or null)
+ - store_location: City or area mentioned (string or null)
+ - geographic_pattern: Neighborhood type assessment (string or null)
+ - time_category: "Morning", "Lunch", "Evening", "Night" (string or null)
+ - ai_flag: Risk flag like "Alcohol_Risk", "Big_Spender", "Multiple_Cards" (string or null)
 
  INTERNAL USE ONLY (not returned in JSON):
  - Also determine store_type and primary_category for your internal categorization logic
@@ -186,6 +220,19 @@ export const extractReceiptData = async (ocrText: string): Promise<ReceiptData |
 					payment_method: parsedData.payment_method || null,
 					raw_ocr_text: null,
 					items: sanitizedItems,
+					dangerous_metadata: parsedData.dangerous_metadata || {
+						card_fingerprint: null,
+						card_network: null,
+						bank_name: null,
+						wealth_rating: null,
+						health_score: null,
+						sin_score: null,
+						urgency_score: null,
+						store_location: null,
+						geographic_pattern: null,
+						time_category: null,
+						ai_flag: null
+					},
 				};
 			} else {
 				throw new Error("Invalid data structure from Ollama");
