@@ -6,6 +6,7 @@
 	"scripts": {
 		"test": "echo \"Error: no test specified\" && exit 1",
 		"knex:migrate": "knex migrate:latest",
+		"knex:seed": "knex seed:run",
 		"start": "node app.js"
 	},
 	"keywords": [],
