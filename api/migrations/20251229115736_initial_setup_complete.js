@@ -48,27 +48,27 @@ exports.up = async function (knex) {
 	await knex.schema.createTable("dangerous_receipt_metadata", (table) => {
 		table.increments("id").primary();
 		table.integer("receipt_id").unsigned().references("id").inTable("receipts").onDelete("CASCADE").unique();
-		
+
 		// Financial & Bank
 		table.enu("payment_method", ["Cash", "Card", "Phone"]);
 		table.enu("card_network", ["Visa", "Mastercard", "Bancontact"]);
 		table.string("card_fingerprint", 4); // Last 4 digits
 		table.string("bank_name", 100);
 		table.integer("wealth_rating").checkBetween([1, 10]); // 1-10 scale
-		
+
 		// Health & Behavior
 		table.integer("health_score").checkBetween([0, 100]); // 0-100 scale
 		table.integer("sin_score").checkBetween([0, 100]); // 0-100 scale
 		table.integer("urgency_score").checkBetween([1, 10]); // 1-10 scale
-		
+
 		// Location & Time
 		table.string("store_location", 255);
 		table.string("geographic_pattern", 100);
-		table.enu("time_category", ["Morning", "Lunch", "Evening", "Night_Owl"]);
-		
+		table.enu("time_category", ["Ochtend", "Middag", "Avond", "Nacht"]);
+
 		// AI Judgment
 		table.string("ai_flag", 100); // Short label like "Alcohol_Risk", "Big_Spender"
-		
+
 		table.timestamps(true, true);
 	});
 
