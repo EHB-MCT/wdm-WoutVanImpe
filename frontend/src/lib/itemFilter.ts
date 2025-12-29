@@ -2,6 +2,12 @@ import { ReceiptItem } from "@/types/receipt";
 
 /**
  * Filters out metadata (totals, taxes, payment methods) and OCR noise from the item list.
+ * Applies a two-step filtering process:
+ * 1. Regex matching against known non-product keywords (totals, VAT, payment methods).
+ * 2. Heuristic analysis to remove "noise" lines (e.g., barcodes) that contain mostly numbers/symbols and few letters.
+ *
+ * @param {ReceiptItem[]} items - The raw list of items extracted via OCR.
+ * @returns {ReceiptItem[]} A cleaned array containing only valid product items.
  */
 export const filterNonProductItems = (items: ReceiptItem[]): ReceiptItem[] => {
 	const excludePatterns = [

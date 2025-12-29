@@ -5,13 +5,19 @@ import type { CategorySpending } from "@/types/receipt";
 import { PieChart, Pie, Cell, ResponsiveContainer, Legend, Tooltip } from "recharts";
 import styles from "@/styles/pages/Dashboard.module.css";
 
+/**
+ * Props definition for the PieChartDisplay component.
+ */
 interface PieChartDisplayProps {
+	/** Array of category spending data objects containing name and value. */
 	categoryData: CategorySpending[];
 }
 
 /**
  * Renders a pie chart visualization of spending categories.
- * @param props - Category data containing values and names.
+ * Utilizes Recharts to display data distribution with percentage labels and tooltips.
+ * @param {PieChartDisplayProps} props - Component props containing the dataset.
+ * @returns {JSX.Element} The rendered pie chart or a fallback message if no data exists.
  */
 export function PieChartDisplay({ categoryData }: Readonly<PieChartDisplayProps>) {
 	// CSS custom properties defined in globals.css

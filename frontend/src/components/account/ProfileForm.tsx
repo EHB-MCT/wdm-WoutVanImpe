@@ -3,6 +3,9 @@
 import React from "react";
 import { Button } from "../ui/Button";
 
+/**
+ * Interface defining the properties required for the ProfileForm component.
+ */
 interface ProfileFormProps {
 	profileForm: { username: string; email: string };
 	onProfileChange: (field: "username" | "email", value: string) => void;
@@ -15,11 +18,17 @@ interface ProfileFormProps {
 /**
  * Profile editing form component.
  * Handles user profile updates with change tracking and validation.
- * @param props - Form data and event handlers.
+ * @param {ProfileFormProps} props - Form data, event handlers, and state flags.
+ * @returns {JSX.Element} The rendered profile editing form.
  */
 export const ProfileForm: React.FC<ProfileFormProps> = ({ profileForm, onProfileChange, onSave, onCancel, isLoading, hasChanges }) => {
 	const isFormValid = profileForm.username.trim() && profileForm.email.trim() && profileForm.email.includes("@");
 
+	/**
+	 * Determines whether the save button should be disabled.
+	 * The button is disabled if there are no changes, the form is loading, or the input is invalid.
+	 * @returns {boolean} True if the button should be disabled.
+	 */
 	const getButtonDisabledState = () => {
 		return !hasChanges || isLoading || !isFormValid;
 	};

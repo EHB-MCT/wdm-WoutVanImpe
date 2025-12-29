@@ -6,6 +6,11 @@ import { isUserAuthenticated, getStoredUser } from "@/lib/auth";
 import { useRouter } from "next/navigation";
 import styles from "@/styles/pages/Admin.module.css";
 
+/**
+ * Main dashboard component for administrators.
+ * Displays global statistics, risk distributions, and a list of users for management.
+ * @returns {JSX.Element} The rendered admin dashboard page.
+ */
 export default function AdminDashboard() {
 	const [users, setUsers] = useState<AdminUser[]>([]);
 	const [stats, setStats] = useState<GlobalStats | null>(null);
@@ -24,6 +29,11 @@ export default function AdminDashboard() {
 		loadAdminData();
 	}, [router]);
 
+	/**
+	 * Fetches global statistics and user data from the admin API.
+	 * Updates local state with the results or sets an error message on failure.
+	 * @returns {Promise<void>}
+	 */
 	const loadAdminData = async () => {
 		try {
 			setLoading(true);
@@ -43,6 +53,11 @@ export default function AdminDashboard() {
 		}
 	};
 
+	/**
+	 * Maps a risk level string to a specific CSS class for styling.
+	 * @param {string} level - The risk level ('laag', 'gemiddeld', 'hoog').
+	 * @returns {string} The corresponding CSS module class name.
+	 */
 	const getRiskLevelColor = (level: string) => {
 		switch (level) {
 			case "laag":
@@ -56,6 +71,10 @@ export default function AdminDashboard() {
 		}
 	};
 
+	/**
+	 * Navigates to the detailed profile view of a specific user.
+	 * @param {number} userId - The unique identifier of the user.
+	 */
 	const handleUserClick = (userId: number) => {
 		router.push(`/admin/users/${userId}/profile`);
 	};

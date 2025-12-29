@@ -4,6 +4,9 @@ import React from "react";
 import { PieChartDisplay } from "./PieChartDisplay";
 import styles from "@/styles/pages/Dashboard.module.css";
 
+/**
+ * Props definition for the MonthlyOverview component.
+ */
 interface MonthlyOverviewProps {
 	currentDate: Date;
 	onPreviousMonth: () => void;
@@ -28,6 +31,11 @@ interface CategoryBreakdownProps {
 	onCategoryClick: (category: string) => void;
 }
 
+/**
+ * Renders the category breakdown section with a list and pie chart.
+ * @param {CategoryBreakdownProps} props - The component props containing category data and click handler.
+ * @returns {JSX.Element} The category breakdown view.
+ */
 function CategoryBreakdown({ categoryData, onCategoryClick }: CategoryBreakdownProps) {
 	return (
 		<div className={styles.combinedContent}>
@@ -51,7 +59,9 @@ function CategoryBreakdown({ categoryData, onCategoryClick }: CategoryBreakdownP
 
 /**
  * Monthly spending overview component.
- * Displays total spending, category breakdown chart, and month navigation.
+ * Displays total spending, category breakdown chart, and month navigation controls.
+ * @param {MonthlyOverviewProps} props - The component props containing date, data, and handlers.
+ * @returns {JSX.Element} The rendered overview section.
  */
 export function MonthlyOverview({ currentDate, onPreviousMonth, onNextMonth, canGoNext, totalSpent, hasReceipts, categoryData, onCategoryClick }: MonthlyOverviewProps) {
 	const formatMonthYear = (date: Date): string => {

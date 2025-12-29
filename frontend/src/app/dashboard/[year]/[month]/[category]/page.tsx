@@ -16,6 +16,10 @@ import { safeParseNumber, safeParseInt } from "@/lib/receiptUtils";
 import { receiptsApi, type Receipt } from "@/lib/api/receipts";
 import type { User, CategorySpending, ReceiptItem } from "@/types/receipt";
 
+/**
+ * Interface defining the structure of processed dashboard data.
+ * Contains aggregated statistics, chart datasets, and filtered lists.
+ */
 interface FilteredData {
     totalSpent: number;
     receipts: Receipt[];
@@ -27,14 +31,14 @@ interface FilteredData {
 }
 
 /**
- * Dynamic dashboard page.
- * Displays filtered receipts, spending analysis, and charts for selected time period.
- * @returns {JSX.Element} Dashboard with navigation and analysis.
+ * Dynamic dashboard page component.
+ * Orchestrates data fetching, date-based filtering, and renders visualization charts and receipt lists.
+ * @returns {JSX.Element} The rendered dashboard page.
  */
 export default function DashboardPage() {
     const params = useParams();
     const router = useRouter();
-    
+
     const [user, setUser] = useState<User | null>(null);
     const [receipts, setReceipts] = useState<Receipt[]>([]);
     const [selectedReceipt, setSelectedReceipt] = useState<Receipt | null>(null);
@@ -44,10 +48,14 @@ export default function DashboardPage() {
     const { year: yearParam, month: monthParam } = params;
     const searchParams = useSearchParams();
 
+    /**
+     * Memoized date object derived from URL parameters.
+     * Defaults to the current date if parameters are invalid or missing.
+     */
     const currentDate = useMemo(() => {
         const year = yearParam ? Number.parseInt(yearParam as string) : new Date().getFullYear();
         // JavaScript months are 0-indexed (0 = Jan, 11 = Dec)
-        const month = monthParam ? Number.parseInt(monthParam as string) - 1 : new Date().getMonth(); 
+        const month = monthParam ? Number.parseInt(monthParam as string) - 1 : new Date().getMonth();
 
         const now = new Date();
         const validYear = Number.isNaN(year) || year < 2020 || year > 2030 ? now.getFullYear() : year;
@@ -80,6 +88,11 @@ export default function DashboardPage() {
         }
     }, [currentDate, currentCategory, user]);
 
+    /**
+     * Fetches all receipts from the API.
+     * Requires the user to be authenticated.
+     * @returns {Promise<void>}
+     */
     const fetchData = async () => {
         try {
             removeExpiredTokens();
@@ -95,10 +108,15 @@ export default function DashboardPage() {
         }
     };
 
+    /**
+     * Navigates to a specific month and category view via URL routing.
+     * @param {Date} date - The target date to navigate to.
+     * @param {string} category - The category filter to apply.
+     */
     const navigateToMonth = (date: Date, category: string) => {
         const year = date.getFullYear();
         // URL months are 1-indexed for user readability
-        const month = date.getMonth() + 1; 
+        const month = date.getMonth() + 1;
         router.push(`/dashboard/${year}/${month}/all?category=${encodeURIComponent(category)}`);
     };
 
@@ -123,6 +141,11 @@ export default function DashboardPage() {
         return date.toLocaleDateString("nl-BE", { month: "long", year: "numeric" });
     };
 
+    /**
+     * Calculates statistics and filters receipts based on the current view settings.
+     * Processes daily spending, category distribution, and store frequency.
+     * @returns {FilteredData} The processed data object for the dashboard.
+     */
     const getFilteredData = useMemo((): FilteredData => {
         const year = currentDate.getFullYear();
         const month = currentDate.getMonth();
@@ -210,11 +233,16 @@ export default function DashboardPage() {
         setShowEditModal(false);
     };
 
+    /**
+     * Updates an existing receipt via the API and updates local state.
+     * @param {Receipt} updatedReceipt - The modified receipt object.
+     * @returns {Promise<void>}
+     */
     const saveReceipt = async (updatedReceipt: Receipt) => {
         try {
             // Extract just the date part from the purchase_date
             const datePart = updatedReceipt.purchase_date ? String(updatedReceipt.purchase_date).split("T")[0] : "";
-            
+
             const updatedData = await receiptsApi.update(updatedReceipt.id, {
                 store_name: updatedReceipt.store_name,
                 purchase_date: datePart,
@@ -237,6 +265,11 @@ export default function DashboardPage() {
         }
     };
 
+    /**
+     * Deletes a receipt via the API and removes it from local state.
+     * @param {number} receiptId - The ID of the receipt to delete.
+     * @returns {Promise<void>}
+     */
     const deleteReceipt = async (receiptId: number) => {
         try {
             await receiptsApi.delete(receiptId);

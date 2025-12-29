@@ -1,148 +1,179 @@
+/* ============================================================================ */
+/*                           ADMIN PAGE STYLES                                 */
+/* ============================================================================ */
+
+.adminPage {
+	padding: var(--spacing-xl);
+	background-color: var(--background);
+	min-height: 100vh;
+}
+
 .adminContainer {
 	max-width: 1200px;
 	margin: 0 auto;
-	padding: 2rem;
-	color: #333;
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-xl);
 }
+
+/* ============================================================================ */
+/*                           HEADER SECTION                                    */
+/* ============================================================================ */
 
 .header {
-	margin-bottom: 2rem;
+	text-align: center;
+	margin-bottom: var(--spacing-xl);
 }
 
-.header h1 {
-	font-size: 2.5rem;
-	color: #1a1a1a;
-	margin-bottom: 0.5rem;
+.pageTitle {
+	font-size: var(--font-4xl);
+	font-weight: 600;
+	color: var(--foreground);
+	margin-bottom: var(--spacing-md);
 }
 
-.header p {
-	color: #6c757d;
-	font-size: 1.1rem;
+.pageDescription {
+	font-size: var(--font-lg);
+	color: var(--muted-color);
+	max-width: 600px;
+	margin: 0 auto;
+	line-height: 1.6;
 }
 
 .riskExplanation {
-	background: #e8f4fd;
-	border-left: 4px solid #3498db;
-	padding: 1rem;
-	margin-bottom: 1.5rem;
-	border-radius: 4px;
-	font-size: 0.9rem;
-	color: #2c3e50;
+	background-color: var(--muted-bg);
+	border-left: 4px solid var(--brand-color);
+	padding: var(--spacing-lg);
+	margin-bottom: var(--spacing-xl);
+	border-radius: var(--radius-md);
+	font-size: var(--font-sm);
+	color: var(--foreground);
 }
 
-/* Statistics Section */
+/* ============================================================================ */
+/*                           STATISTICS SECTION                               */
+/* ============================================================================ */
+
 .statsSection {
-	background: #f8f9fa;
-	padding: 1.5rem;
-	border-radius: 8px;
-	margin-bottom: 2rem;
+	background-color: var(--card-bg);
+	border-radius: var(--radius-lg);
+	padding: var(--spacing-xl);
+	border: 1px solid var(--border-color);
+	box-shadow: var(--shadow-base);
 }
 
-.statsSection h2 {
-	color: #2c3e50;
-	margin-bottom: 1.5rem;
-	font-size: 1.5rem;
+.sectionTitle {
+	font-size: var(--font-xl);
+	font-weight: 600;
+	color: var(--foreground);
+	margin-bottom: var(--spacing-lg);
 }
 
 .statsGrid {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-	gap: 1rem;
-	margin-bottom: 2rem;
+	gap: var(--spacing-md);
+	margin-bottom: var(--spacing-xl);
 }
 
 .statCard {
-	background: white;
-	padding: 1.5rem;
-	border-radius: 8px;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	background-color: var(--card-bg);
+	border: 1px solid var(--border-color);
+	border-radius: var(--radius-md);
+	padding: var(--spacing-lg);
 	text-align: center;
-	border: 1px solid #e8f4fd;
+	box-shadow: var(--shadow-sm);
 }
 
-.statCard h3 {
-	margin: 0 0 0.5rem 0;
-	color: #7f8c8d;
-	font-size: 0.9rem;
+.statLabel {
+	font-size: var(--font-sm);
+	font-weight: 600;
+	color: var(--muted-color);
 	text-transform: uppercase;
 	letter-spacing: 0.5px;
+	margin-bottom: var(--spacing-sm);
 }
 
 .statValue {
-	font-size: 2rem;
-	font-weight: bold;
-	color: #2c3e50;
+	font-size: var(--font-3xl);
+	font-weight: 700;
+	color: var(--brand-color);
+	margin-bottom: var(--spacing-sm);
 }
 
-/* Risk Distribution */
+/* ============================================================================ */
+/*                           RISK DISTRIBUTION                                */
+/* ============================================================================ */
+
 .riskDistribution {
-	background: white;
-	padding: 1.5rem;
-	border-radius: 8px;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.riskDistribution h3 {
-	margin: 0 0 1rem 0;
-	color: #2c3e50;
+	background-color: var(--card-bg);
+	border-radius: var(--radius-md);
+	padding: var(--spacing-lg);
+	border: 1px solid var(--border-color);
+	box-shadow: var(--shadow-sm);
 }
 
 .riskBars {
 	display: flex;
 	flex-direction: column;
-	gap: 0.5rem;
+	gap: var(--spacing-sm);
 }
 
 .riskBar {
 	display: flex;
 	align-items: center;
-	gap: 0.5rem;
-	font-size: 0.9rem;
+	gap: var(--spacing-sm);
+	font-size: var(--font-sm);
 }
 
-.riskBar span:first-child {
-	min-width: 60px;
+.riskLabel {
+	min-width: 80px;
+	font-weight: 500;
 }
 
-.riskBar span:last-child {
-	min-width: 30px;
+.riskPercentage {
+	min-width: 40px;
 	text-align: right;
+	font-weight: 600;
 }
 
 .bar {
 	height: 20px;
-	border-radius: 3px;
-	transition: width 0.3s ease;
+	border-radius: var(--radius-sm);
+	transition: width var(--duration-normal);
+	flex: 1;
+	min-width: 0;
 }
 
-.lowBar {
-	background: #27ae60;
+.barLow {
+	background-color: var(--success-color, #27ae60);
 }
 
-.mediumBar {
-	background: #f39c12;
+.barMedium {
+	background-color: var(--warning-color, #f39c12);
 }
 
-.highBar {
-	background: #e74c3c;
+.barHigh {
+	background-color: var(--danger-color, #e74c3c);
 }
 
-/* Users Section */
+/* ============================================================================ */
+/*                           USERS SECTION                                    */
+/* ============================================================================ */
+
 .usersSection {
-	margin-top: 2rem;
-}
-
-.usersSection h2 {
-	color: #2c3e50;
-	margin-bottom: 1.5rem;
-	font-size: 1.5rem;
+	background-color: var(--card-bg);
+	border-radius: var(--radius-lg);
+	padding: var(--spacing-xl);
+	border: 1px solid var(--border-color);
+	box-shadow: var(--shadow-base);
 }
 
 .usersTable {
-	background: white;
-	border-radius: 8px;
+	background-color: var(--card-bg);
+	border-radius: var(--radius-md);
 	overflow: hidden;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+	box-shadow: var(--shadow-sm);
 }
 
 .usersTable table {
@@ -152,167 +183,149 @@
 
 .usersTable th,
 .usersTable td {
-	padding: 1rem;
+	padding: var(--spacing-lg);
 	text-align: left;
-	border-bottom: 1px solid #ecf0f1;
+	border-bottom: 1px solid var(--border-color);
 }
 
 .usersTable th {
-	background: #34495e;
-	color: white;
+	background-color: var(--muted-foreground);
+	color: var(--background);
 	font-weight: 600;
 	text-transform: uppercase;
-	font-size: 0.85rem;
+	font-size: var(--font-xs);
 	letter-spacing: 0.5px;
 }
 
 .userRow {
 	cursor: pointer;
-	transition: background-color 0.2s ease;
+	transition: background-color var(--duration-normal);
 }
 
 .userRow:hover {
-	background-color: #f8f9fa;
+	background-color: var(--muted-bg);
 }
 
 .userRow:last-child td {
 	border-bottom: none;
 }
 
-/* Risk Badges */
+/* ============================================================================ */
+/*                           RISK BADGES                                     */
+/* ============================================================================ */
+
 .riskBadge {
-	padding: 0.25rem 0.75rem;
-	border-radius: 12px;
-	font-size: 0.85rem;
+	padding: var(--spacing-xs) var(--spacing-sm);
+	border-radius: var(--radius-full);
+	font-size: var(--font-xs);
 	font-weight: 600;
 	text-transform: uppercase;
 	letter-spacing: 0.5px;
 }
 
 .riskLow {
-	background: #d4edda;
-	color: #155724;
+	background-color: var(--success-bg, #d4edda);
+	color: var(--success-color, #155724);
 }
 
 .riskMedium {
-	background: #fff3cd;
-	color: #9333ea;
+	background-color: var(--warning-bg, #fff3cd);
+	color: var(--warning-color, #9333ea);
 }
 
 .riskHigh {
-	background: #f8d7da;
-	color: #721c24;
+	background-color: var(--danger-bg, #f8d7da);
+	color: var(--danger-color, #721c24);
 }
 
 .riskUnknown {
-	background: #ecf0f1;
-	color: #7f8c8d;
+	background-color: var(--muted-bg);
+	color: var(--muted-color);
 }
 
-/* Intervention Badge */
 .interventionBadge {
-	background: #e74c3c;
-	color: white;
-	padding: 0.25rem 0.75rem;
-	border-radius: 12px;
-	font-size: 0.75rem;
+	background-color: var(--danger-color, #e74c3c);
+	color: var(--background);
+	padding: var(--spacing-xs) var(--spacing-sm);
+	border-radius: var(--radius-full);
+	font-size: var(--font-xs);
 	font-weight: 600;
 	text-transform: uppercase;
 	letter-spacing: 0.5px;
 }
 
-/* Loading and Error States */
-.loading {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 50vh;
-	font-size: 1.2rem;
-	color: #7f8c8d;
-}
+/* ============================================================================ */
+/*                           USER DETAIL PAGE                                 */
+/* ============================================================================ */
 
-.error {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	height: 50vh;
-	font-size: 1.2rem;
-	color: #e74c3c;
-	background: #fdedec;
-	border-radius: 8px;
-	text-align: center;
-}
-
-/* Admin Detail Page Styles */
 .backButton {
-	margin-bottom: 1rem;
-	background: #3498db;
-	color: white;
+	margin-bottom: var(--spacing-lg);
+	background-color: var(--brand-color);
+	color: var(--background);
 	border: none;
-	padding: 0.5rem 1rem;
-	border-radius: 4px;
+	padding: var(--spacing-sm) var(--spacing-lg);
+	border-radius: var(--radius-md);
 	cursor: pointer;
-	font-size: 0.9rem;
+	font-size: var(--font-sm);
+	transition: background-color var(--duration-normal);
 }
 
 .backButton:hover {
-	background: #2980b9;
+	background-color: var(--brand-hover);
 }
 
-/* Risk Section */
+/* ============================================================================ */
+/*                           RISK ANALYSIS                                    */
+/* ============================================================================ */
+
 .riskSection {
-	background: #f8f9fa;
-	padding: 1.5rem;
-	border-radius: 8px;
-	margin-bottom: 2rem;
-}
-
-.riskSection h2 {
-	color: #2c3e50;
-	margin-bottom: 1.5rem;
+	background-color: var(--card-bg);
+	border-radius: var(--radius-lg);
+	padding: var(--spacing-xl);
+	border: 1px solid var(--border-color);
+	box-shadow: var(--shadow-base);
+	margin-bottom: var(--spacing-xl);
 }
 
 .riskCards {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-	gap: 1.5rem;
-	margin-bottom: 2rem;
+	gap: var(--spacing-lg);
+	margin-bottom: var(--spacing-xl);
 }
 
 .riskCard {
-	background: white;
-	padding: 1.5rem;
-	border-radius: 8px;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.riskCard h3 {
-	margin: 0 0 1rem 0;
-	color: #2c3e50;
+	background-color: var(--card-bg);
+	border: 1px solid var(--border-color);
+	border-radius: var(--radius-md);
+	padding: var(--spacing-lg);
+	box-shadow: var(--shadow-sm);
 }
 
 .riskScore {
-	font-size: 3rem;
-	font-weight: bold;
+	font-size: var(--font-4xl);
+	font-weight: 700;
 	text-align: center;
-	margin-bottom: 1rem;
-	border-radius: 8px;
-	padding: 1rem;
+	margin-bottom: var(--spacing-lg);
+	border-radius: var(--radius-md);
+	padding: var(--spacing-lg);
+	background-color: var(--muted-bg);
+	color: var(--foreground);
 }
 
 .riskFactors {
 	display: flex;
 	flex-direction: column;
-	gap: 0.75rem;
+	gap: var(--spacing-sm);
 }
 
 .riskFactor {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding: 0.5rem;
-	background: #f8f9fa;
-	border-radius: 4px;
+	padding: var(--spacing-sm);
+	background-color: var(--muted-bg);
+	border-radius: var(--radius-sm);
 }
 
 .warningsList {
@@ -322,327 +335,355 @@
 }
 
 .warning {
-	background: #fdedec;
-	color: #e74c3c;
-	padding: 0.75rem;
-	border-radius: 4px;
-	border-left: 4px solid #e74c3c;
-	margin-bottom: 0.5rem;
-	font-size: 0.9rem;
+	background-color: var(--danger-bg, #fdedec);
+	color: var(--danger-color, #e74c3c);
+	padding: var(--spacing-md);
+	border-radius: var(--radius-sm);
+	border-left: 4px solid var(--danger-color, #e74c3c);
+	margin-bottom: var(--spacing-sm);
+	font-size: var(--font-sm);
 }
 
-/* Financial Section */
+/* ============================================================================ */
+/*                           FINANCIAL ANALYSIS                               */
+/* ============================================================================ */
+
 .financialSection {
-	margin-bottom: 2rem;
-}
-
-.financialSection h2 {
-	color: #2c3e50;
-	margin-bottom: 1.5rem;
+	background-color: var(--card-bg);
+	border-radius: var(--radius-lg);
+	padding: var(--spacing-xl);
+	border: 1px solid var(--border-color);
+	box-shadow: var(--shadow-base);
+	margin-bottom: var(--spacing-xl);
 }
 
 .financialCards {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-	gap: 1rem;
-	margin-bottom: 2rem;
+	gap: var(--spacing-md);
+	margin-bottom: var(--spacing-xl);
 }
 
 .cardDetails {
-	background: white;
-	padding: 1.5rem;
-	border-radius: 8px;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.cardDetails h3 {
-	margin: 0 0 1rem 0;
-	color: #2c3e50;
+	background-color: var(--card-bg);
+	border: 1px solid var(--border-color);
+	border-radius: var(--radius-md);
+	padding: var(--spacing-lg);
+	box-shadow: var(--shadow-sm);
 }
 
 .cardsList {
 	display: flex;
 	flex-wrap: wrap;
-	gap: 0.5rem;
+	gap: var(--spacing-sm);
 }
 
 .cardBadge {
-	background: #3498db;
-	color: white;
-	padding: 0.5rem 1rem;
-	border-radius: 20px;
-	font-size: 0.85rem;
+	background-color: var(--brand-color);
+	color: var(--background);
+	padding: var(--spacing-sm) var(--spacing-lg);
+	border-radius: var(--radius-full);
+	font-size: var(--font-xs);
 	font-weight: 600;
 }
 
-/* Behavioral Section */
-.behaviorSection {
-	margin-bottom: 2rem;
-}
+/* ============================================================================ */
+/*                           BEHAVIORAL ANALYSIS                             */
+/* ============================================================================ */
 
-.behaviorSection h2 {
-	color: #2c3e50;
-	margin-bottom: 1.5rem;
+.behaviorSection {
+	background-color: var(--card-bg);
+	border-radius: var(--radius-lg);
+	padding: var(--spacing-xl);
+	border: 1px solid var(--border-color);
+	box-shadow: var(--shadow-base);
+	margin-bottom: var(--spacing-xl);
 }
 
 .behaviorCards {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-	gap: 1rem;
-	margin-bottom: 2rem;
+	gap: var(--spacing-md);
+	margin-bottom: var(--spacing-xl);
 }
 
 .aiFlags {
-	background: white;
-	padding: 1.5rem;
-	border-radius: 8px;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.aiFlags h3 {
-	margin: 0 0 1rem 0;
-	color: #2c3e50;
+	background-color: var(--card-bg);
+	border: 1px solid var(--border-color);
+	border-radius: var(--radius-md);
+	padding: var(--spacing-lg);
+	box-shadow: var(--shadow-sm);
 }
 
 .flagsList {
 	display: flex;
 	flex-wrap: wrap;
-	flex-direction: row;
-	gap: 0.5rem;
+	gap: var(--spacing-sm);
 }
 
 .flagItem {
-	display: flex;
-	width: max-content;
-	gap: 10px;
-	justify-content: space-between;
-	padding: 0.5rem 0;
-	background-color: #3498db;
-	color: white;
-	border-radius: 20px;
+	background-color: var(--brand-color);
+	color: var(--background);
+	padding: var(--spacing-sm) var(--spacing-lg);
+	border-radius: var(--radius-full);
+	font-size: var(--font-xs);
+	font-weight: 600;
 }
 
-/* Enhanced AI Flags Section */
+/* ============================================================================ */
+/*                           ENHANCED AI FLAGS                               */
+/* ============================================================================ */
+
 .aiFlagsSection {
-	margin-top: 2.5rem;
-	padding: 2rem;
-	background: #f8fafc;
-	border-radius: 12px;
-	border: 1px solid #e8f4fd;
+	background-color: var(--muted-bg);
+	border-radius: var(--radius-lg);
+	padding: var(--spacing-xl);
+	border: 1px solid var(--border-color);
 }
 
 .aiFlagsGrid {
 	display: grid;
 	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-	gap: 1.25rem;
-	margin-bottom: 2rem;
+	gap: var(--spacing-lg);
+	margin-bottom: var(--spacing-xl);
 }
 
 .flagCard {
-	background: white;
-	padding: 1.5rem;
-	border-radius: 8px;
-	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
-	border-left: 4px solid #e74c3c;
+	background-color: var(--card-bg);
+	border-radius: var(--radius-md);
+	padding: var(--spacing-lg);
+	box-shadow: var(--shadow-md);
+	border-left: 4px solid var(--danger-color, #e74c3c);
 }
 
 .flagHeader {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	margin-bottom: 0.5rem;
+	margin-bottom: var(--spacing-sm);
 }
 
 .flagName {
 	font-weight: 600;
-	color: #2c3e50;
+	color: var(--foreground);
 }
 
 .flagCount {
-	background: #e74c3c;
-	color: white;
-	padding: 0.25rem 0.75rem;
-	border-radius: 12px;
-	font-weight: bold;
-	font-size: 0.9rem;
+	background-color: var(--danger-color, #e74c3c);
+	color: var(--background);
+	padding: var(--spacing-xs) var(--spacing-sm);
+	border-radius: var(--radius-full);
+	font-weight: 600;
+	font-size: var(--font-xs);
 }
 
 .flagBar {
 	width: 100%;
 	height: 8px;
-	background: linear-gradient(90deg, #c62828 0%, #e74c3c 100%);
-	border-radius: 4px;
-	margin-top: 0.5rem;
+	background: linear-gradient(90deg, var(--danger-color, #c62828) 0%, var(--danger-color, #e74c3c) 100%);
+	border-radius: var(--radius-sm);
+	margin-top: var(--spacing-sm);
 }
 
 .flagDescriptions {
-	margin-top: 2rem;
-	padding: 2rem;
-	background: white;
-	border-radius: 12px;
-}
-
-.flagDescriptions h4 {
-	margin-bottom: 1.5rem;
-	color: #2c3e50;
+	margin-top: var(--spacing-xl);
+	padding: var(--spacing-xl);
+	background-color: var(--card-bg);
+	border-radius: var(--radius-lg);
 }
 
 .summaryFlag {
 	display: flex;
-	align-items: center;
-	padding: 1.25rem 1.5rem;
-	margin-bottom: 1.5rem;
-	border: 1px solid #e8f4fd;
-	border-radius: 8px;
-	background: white;
-	transition: transform 0.2s ease, box-shadow 0.2s ease;
+	align-items: flex-start;
+	padding: var(--spacing-lg);
+	margin-bottom: var(--spacing-lg);
+	border: 1px solid var(--border-color);
+	border-radius: var(--radius-md);
+	background-color: var(--card-bg);
+	transition: transform var(--duration-normal), box-shadow var(--duration-normal);
 }
 
 .summaryFlag:hover {
 	transform: translateY(-2px);
-	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+	box-shadow: var(--shadow-lg);
 }
 
 .flagIcon {
-	font-size: 1.5rem;
-	margin-right: 0.75rem;
+	font-size: var(--font-xl);
+	margin-right: var(--spacing-md);
+	color: var(--brand-color);
 }
 
 .flagTitle {
 	font-weight: 600;
-	color: #1a1a1a;
+	color: var(--foreground);
+	margin-bottom: var(--spacing-xs);
 }
 
 .flagDesc {
-	font-size: 0.9rem;
-	color: #4b5563;
-	margin-top: 0.5rem;
+	font-size: var(--font-sm);
+	color: var(--muted-color);
 	line-height: 1.4;
 }
 
-/* Chart Styles */
+/* ============================================================================ */
+/*                           CHARTS & VISUALIZATIONS                         */
+/* ============================================================================ */
+
 .chartsGrid {
 	display: grid;
 	grid-template-columns: 1fr 1fr;
-	gap: 1.5rem;
-	margin-bottom: 2.5rem;
+	gap: var(--spacing-xl);
+	margin-bottom: var(--spacing-xl);
 }
 
 .chartCard {
-	background: white;
-	padding: 1.5rem;
-	border-radius: 8px;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	background-color: var(--card-bg);
+	border: 1px solid var(--border-color);
+	border-radius: var(--radius-md);
+	padding: var(--spacing-lg);
+	box-shadow: var(--shadow-sm);
 }
 
 .chartCard h3 {
-	margin-bottom: 1.5rem;
-	color: #1a1a1a;
-	font-size: 1.2rem;
+	margin-bottom: var(--spacing-lg);
+	color: var(--foreground);
+	font-size: var(--font-lg);
 	font-weight: 600;
-	border-bottom: 2px solid #e8f4fd;
-	padding-bottom: 0.5rem;
+	border-bottom: 2px solid var(--border-color);
+	padding-bottom: var(--spacing-sm);
 }
 
 .locationCards {
 	display: grid;
 	grid-template-columns: repeat(2, 1fr);
-	gap: 1.25rem;
+	gap: var(--spacing-lg);
 }
 
-/* Simple Chart Styles */
-
 .simpleChart h4 {
-	margin-bottom: 1rem;
-	color: #1a1a1a;
-	font-size: 1.1rem;
+	margin-bottom: var(--spacing-lg);
+	color: var(--foreground);
+	font-size: var(--font-base);
 	font-weight: 600;
 }
 
 .barItem {
 	display: flex;
 	align-items: center;
-	margin-bottom: 0.5rem;
-	padding: 0.5rem 0;
+	margin-bottom: var(--spacing-sm);
+	padding: var(--spacing-sm) 0;
+	gap: var(--spacing-sm);
 }
 
 .barLabel {
 	min-width: 120px;
 	font-weight: 600;
-	color: #1a1a1a;
-	background: #f8f9fa;
-	padding: 0.25rem 0.5rem;
-	border-radius: 4px;
+	color: var(--foreground);
+	background-color: var(--muted-bg);
+	padding: var(--spacing-xs) var(--spacing-sm);
+	border-radius: var(--radius-sm);
 }
 
 .barContainer {
 	width: 100%;
 	height: 28px;
-	background: #f8f9fa;
-	border-radius: 4px;
+	background-color: var(--muted-bg);
+	border-radius: var(--radius-sm);
 	overflow: hidden;
 	position: relative;
 }
 
 .barFill {
 	height: 100%;
-	background: linear-gradient(90deg, #4f46e5 0%, #8b5cf6 100%);
-	transition: width 0.3s ease;
+	background: linear-gradient(90deg, var(--brand-color) 0%, var(--brand-hover) 100%);
+	transition: width var(--duration-normal);
 	box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.1);
 }
 
 .barValue {
-	margin-left: 1rem;
+	margin-left: var(--spacing-sm);
 	font-weight: 700;
-	color: #1a1a1a;
-	background: white;
-	padding: 0.25rem;
-	border-radius: 4px;
+	color: var(--foreground);
+	background-color: var(--card-bg);
+	padding: var(--spacing-xs);
+	border-radius: var(--radius-sm);
 	min-width: 3rem;
 	text-align: center;
 }
 
-/* Location Section */
-.locationSection {
-	margin-bottom: 2rem;
-}
+/* ============================================================================ */
+/*                           LOCATION ANALYSIS                                */
+/* ============================================================================ */
 
-.locationSection h2 {
-	color: #2c3e50;
-	margin-bottom: 1.5rem;
+.locationSection {
+	background-color: var(--card-bg);
+	border-radius: var(--radius-lg);
+	padding: var(--spacing-xl);
+	border: 1px solid var(--border-color);
+	box-shadow: var(--shadow-base);
+	margin-bottom: var(--spacing-xl);
 }
 
 .locationCard {
-	background: white;
-	padding: 1.5rem;
-	border-radius: 8px;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.locationCard h3 {
-	margin: 0 0 1rem 0;
-	color: #2c3e50;
+	background-color: var(--card-bg);
+	border: 1px solid var(--border-color);
+	border-radius: var(--radius-md);
+	padding: var(--spacing-lg);
+	box-shadow: var(--shadow-sm);
 }
 
 .distributionList {
 	display: flex;
 	flex-direction: column;
-	gap: 0.5rem;
+	gap: var(--spacing-sm);
 }
 
 .distributionItem {
 	display: flex;
 	justify-content: space-between;
-	padding: 0.5rem;
-	background: #f8f9fa;
-	border-radius: 4px;
-	font-size: 0.9rem;
+	padding: var(--spacing-sm);
+	background-color: var(--muted-bg);
+	border-radius: var(--radius-sm);
+	font-size: var(--font-sm);
 }
 
-/* Responsive Design */
+/* ============================================================================ */
+/*                           LOADING & ERROR STATES                          */
+/* ============================================================================ */
+
+.loading {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 50vh;
+	font-size: var(--font-lg);
+	color: var(--muted-color);
+}
+
+.error {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 50vh;
+	font-size: var(--font-lg);
+	color: var(--danger-color, #e74c3c);
+	background-color: var(--danger-bg, #fdedec);
+	border-radius: var(--radius-md);
+	text-align: center;
+	padding: var(--spacing-xl);
+}
+
+/* ============================================================================ */
+/*                           RESPONSIVE DESIGN                               */
+/* ============================================================================ */
+
 @media (max-width: 768px) {
+	.adminPage {
+		padding: var(--spacing-md);
+	}
+
 	.adminContainer {
-		padding: 1rem;
+		gap: var(--spacing-lg);
 	}
 
 	.statsGrid {
@@ -659,8 +700,8 @@
 
 	.usersTable th,
 	.usersTable td {
-		padding: 0.75rem 0.5rem;
-		font-size: 0.9rem;
+		padding: var(--spacing-md) var(--spacing-sm);
+		font-size: var(--font-sm);
 	}
 
 	.riskCards {
@@ -671,6 +712,20 @@
 	.behaviorCards,
 	.locationCards {
 		grid-template-columns: repeat(2, 1fr);
+	}
+
+	.chartsGrid {
+		grid-template-columns: 1fr;
+	}
+
+	.barItem {
+		flex-direction: column;
+		align-items: stretch;
+		gap: var(--spacing-xs);
+	}
+
+	.barLabel {
+		min-width: auto;
 	}
 }
 
@@ -685,11 +740,19 @@
 		grid-template-columns: 1fr;
 	}
 
-	.header h1 {
-		font-size: 2rem;
+	.pageTitle {
+		font-size: var(--font-3xl);
 	}
 
 	.riskScore {
-		font-size: 2.5rem;
+		font-size: var(--font-3xl);
+	}
+
+	.header {
+		margin-bottom: var(--spacing-lg);
+	}
+
+	.sectionTitle {
+		font-size: var(--font-lg);
 	}
 }

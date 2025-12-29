@@ -1,11 +1,14 @@
 const dangerousDataService = require("../services/dangerousDataService");
 
 /**
- * Controller for admin operations
+ * Controller for admin operations to manage users and statistics.
  */
 class AdminController {
   /**
-   * Get list of all users with risk scores
+   * Retrieves a list of all users with their associated risk scores and statistics.
+   * @param {Object} req - The express request object.
+   * @param {Object} res - The express response object.
+   * @returns {Promise<void>} Sends a JSON response with the list of users and their risk data.
    */
   async getUsers(req, res) {
     try {
@@ -22,8 +25,8 @@ class AdminController {
             return {
               ...user,
               risk_score: stats.risk.overall_risk_score,
-              risk_level: stats.risk.overall_risk_score <= 3 ? 'laag' : 
-                         stats.risk.overall_risk_score <= 7 ? 'gemiddeld' : 'hoog',
+              risk_level: stats.risk.overall_risk_score <= 3 ? 'laag' :
+                stats.risk.overall_risk_score <= 7 ? 'gemiddeld' : 'hoog',
               total_receipts: stats.financial.transaction_count,
               unique_cards: stats.financial.unique_cards_count,
               intervention_needed: stats.risk.intervention_needed
@@ -56,14 +59,17 @@ class AdminController {
   }
 
   /**
-   * Get detailed profile of a specific user
+   * Retrieves the detailed profile and statistics for a specific user.
+   * @param {Object} req - The express request object containing the user ID in params.
+   * @param {Object} res - The express response object.
+   * @returns {Promise<void>} Sends a JSON response with the user's detailed profile data.
    */
   async getUserProfile(req, res) {
     try {
       const { id } = req.params;
-      const userId = parseInt(id);
+      const userId = Number.parseInt(id);
 
-      if (isNaN(userId)) {
+      if (Number.isNaN(userId)) {
         return res.status(400).json({
           success: false,
           error: "Ongeldig gebruikers ID"
@@ -92,7 +98,10 @@ class AdminController {
   }
 
   /**
-   * Get global statistics
+   * Retrieves global statistics regarding risks and financials.
+   * @param {Object} req - The express request object.
+   * @param {Object} res - The express response object.
+   * @returns {Promise<void>} Sends a JSON response with the global statistics.
    */
   async getGlobalStats(req, res) {
     try {

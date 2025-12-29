@@ -6,19 +6,37 @@ import { Button } from "@/components/ui/Button";
 import styles from "@/styles/components/Receipt.module.css";
 import { safeParseNumber, safeParseInt } from "@/lib/receiptUtils";
 
+/**
+ * Props definition for the ReceiptItem component.
+ */
 interface ReceiptItemProps {
+	/** The receipt item data object containing name, price, etc. */
 	item: ReceiptItemType;
+	/** The index of this item within the parent list array. */
 	index: number;
+	/** Callback to update a specific field of this item. */
 	updateItem: (index: number, field: keyof ReceiptItemType, value: string | number | null) => void;
+	/** Callback to remove this item from the list. */
 	removeItem: (index: number) => void;
+	/** List of available categories for the dropdown selector. */
 	categories?: string[];
 }
 
 /**
  * Individual receipt line item component.
  * Handles editing of item details (name, category, quantity, price) within the receipt form.
+ * @param {ReceiptItemProps} props - Component props containing item data and handlers.
+ * @returns {JSX.Element} The rendered item card.
  */
 export const ReceiptItem = React.memo(({ item, index, updateItem, removeItem, categories = [] }: Readonly<ReceiptItemProps>) => {
+	/**
+	 * Determines the CSS class for an input field based on its value validation.
+	 * Marks fields as incomplete if they are empty or zero (for numbers).
+	 * @param {string | number | null} value - The input value to check.
+	 * @param {boolean} [isQuantity=false] - Whether the field is for quantity (checks for 0).
+	 * @param {boolean} [isPrice=false] - Whether the field is for price (checks for 0).
+	 * @returns {string} The computed CSS class string.
+	 */
 	const getFieldClassName = (value: string | number | null, isQuantity: boolean = false, isPrice: boolean = false) => {
 		const baseClass = "input-field";
 		// Zero is considered "empty" / invalid for quantity and price in this context

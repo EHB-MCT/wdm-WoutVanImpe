@@ -27,17 +27,31 @@ export default function LoginPage() {
 		password: "",
 	});
 
+	/**
+	 * Updates the form data state when input fields change.
+	 * @param {React.ChangeEvent<HTMLInputElement>} e - The change event object.
+	 */
 	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		const { name, value } = e.target;
 		setFormData((prev) => ({ ...prev, [name]: value }));
 	};
 
+	/**
+	 * Toggles between login and registration modes.
+	 * Resets the form data and clears any existing messages.
+	 */
 	const switchAuthMode = () => {
 		setIsLogin(!isLogin);
 		setFormData({ username: "", email: "", password: "" });
 		setMessage("");
 	};
 
+	/**
+	 * Handles the form submission for login or registration.
+	 * Performs API calls, manages local storage tokens, and handles redirects.
+	 * @param {React.FormEvent<HTMLFormElement>} e - The form submission event.
+	 * @returns {Promise<void>}
+	 */
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
 		setIsLoading(true);

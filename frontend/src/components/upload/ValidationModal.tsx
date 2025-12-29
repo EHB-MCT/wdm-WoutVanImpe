@@ -5,17 +5,28 @@ import { Button } from "@/components/ui/Button";
 import styles from "@/styles/components/ValidationModal.module.css";
 import { JSX } from "react";
 
+/**
+ * Interface defining the properties for the ValidationModal component.
+ */
 interface ValidationModalProps {
+	/** The validation result object containing success status, errors, and warnings. */
 	validation: ValidationResult;
+	/** Boolean flag to control the visibility of the modal. */
 	isOpen: boolean;
+	/** Callback function to close the modal. */
 	onClose: () => void;
+	/** Optional callback to reset the form after a successful save. */
 	onResetForm?: () => void;
+	/** Optional callback to proceed with saving if validation passes. */
 	onContinue?: () => void;
 }
 
 /**
  * Modal for displaying validation feedback (success, errors, warnings).
  * Prevents saving invalid receipts and provides actionable feedback.
+ * Dynamically adjusts its title, content, and button actions based on the validation state.
+ * @param {ValidationModalProps} props - Component props containing validation data and handlers.
+ * @returns {JSX.Element | null} The rendered modal dialog or null if closed.
  */
 export function ValidationModal({ validation, isOpen, onClose, onContinue, onResetForm }: Readonly<ValidationModalProps>): JSX.Element | null {
 	if (!isOpen) return null;

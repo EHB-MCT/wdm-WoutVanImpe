@@ -14,8 +14,11 @@ interface JwtPayload {
 }
 
 /**
- * Validates token structure and expiration.
- * Note: This is a frontend-only check for UI states; actual security verification happens on the backend.
+ * Validates the structure and expiration of a JWT string.
+ * **Note:** This is a superficial frontend check to determine UI states (e.g., showing "Login" vs "Logout" buttons).
+ * Actual security verification must always happen on the backend.
+ * @param {string} token - The JWT string to validate.
+ * @returns {boolean} True if the token has 3 parts and has not expired; otherwise false.
  */
 export const isValidToken = (token: string): boolean => {
 	try {
@@ -35,6 +38,11 @@ export const isValidToken = (token: string): boolean => {
 	}
 };
 
+/**
+ * Decodes a JWT to extract its expiration date.
+ * @param {string} token - The JWT string.
+ * @returns {Date | null} The expiration Date object, or null if the token is invalid.
+ */
 export const getTokenExpiration = (token: string): Date | null => {
 	try {
 		const parts = token.split(".");
@@ -51,6 +59,10 @@ export const getTokenExpiration = (token: string): Date | null => {
 	}
 };
 
+/**
+ * Helper to remove a key from both localStorage and sessionStorage.
+ * @param {string} key - The storage key to remove.
+ */
 const clearStorage = (key: string): void => {
 	if (globalThis.window === undefined) return;
 
@@ -62,6 +74,11 @@ const clearStorage = (key: string): void => {
 	}
 };
 
+/**
+ * Helper to retrieve a key from either localStorage or sessionStorage.
+ * @param {string} key - The storage key to retrieve.
+ * @returns {string | null} The value if found, otherwise null.
+ */
 const getFromStorage = (key: string): string | null => {
 	if (globalThis.window === undefined) return null;
 
@@ -73,6 +90,9 @@ const getFromStorage = (key: string): string | null => {
 	}
 };
 
+/**
+ * Logs the user out by clearing all authentication-related data from browser storage.
+ */
 export const logout = (): void => {
 	console.log("Logging out user, removing authentication data");
 	clearStorage("token");
@@ -80,6 +100,10 @@ export const logout = (): void => {
 	clearStorage("stayLoggedIn");
 };
 
+/**
+ * Checks if the currently stored token is expired and performs a logout if necessary.
+ * Useful for initializing the app state on page load.
+ */
 export const removeExpiredTokens = (): void => {
 	const token = getFromStorage("token");
 
@@ -89,6 +113,10 @@ export const removeExpiredTokens = (): void => {
 	}
 };
 
+/**
+ * Retrieves detailed status information about the current authentication token.
+ * @returns {Object} An object containing validity status, minutes until expiration, and expired flag.
+ */
 export const getTokenInfo = (): { isValid: boolean; expiresIn: number | null; isExpired: boolean } => {
 	const token = getFromStorage("token");
 	if (!token) {
@@ -111,6 +139,12 @@ export const getTokenInfo = (): { isValid: boolean; expiresIn: number | null; is
 	};
 };
 
+/**
+ * Intercepts API responses to check for token refresh headers.
+ * If a new token is provided by the backend (sliding session), it updates local storage.
+ * @param {Response} response - The fetch API response object.
+ * @returns {boolean} True if the operation was successful (or no refresh needed), false on error.
+ */
 export const handleTokenRefresh = (response: Response): boolean => {
 	if (globalThis.window === undefined) return true;
 
@@ -145,12 +179,21 @@ export const handleTokenRefresh = (response: Response): boolean => {
 	}
 };
 
+/**
+ * Checks if the user is currently authenticated.
+ * Performs a cleanup of expired tokens before checking for a valid token existence.
+ * @returns {boolean} True if a valid token exists.
+ */
 export const isUserAuthenticated = (): boolean => {
 	removeExpiredTokens();
 	const token = getFromStorage("token");
 	return !!token && isValidToken(token);
 };
 
+/**
+ * Retrieves the stored user profile object.
+ * @returns {User | null} The user object if authenticated, otherwise null.
+ */
 export const getStoredUser = (): User | null => {
 	if (isUserAuthenticated()) {
 		const storedUser = getFromStorage("user");

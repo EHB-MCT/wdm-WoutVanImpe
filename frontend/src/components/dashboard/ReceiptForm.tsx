@@ -4,18 +4,31 @@ import React from "react";
 import { ReceiptData } from "@/types/receipt";
 import styles from "@/styles/components/Receipt.module.css";
 
+/**
+ * Interface defining the properties required for the ReceiptForm component.
+ */
 interface ReceiptFormProps {
+	/** The current receipt data object to be edited. */
 	editableData: ReceiptData | null;
+	/** Callback function to update specific fields in the receipt data. */
 	updateEditableData: (field: keyof ReceiptData, value: string | number | null) => void;
 }
 
 /**
  * Receipt header form component.
  * Handles editing of general receipt details (store, date, total, payment).
+ * @param {ReceiptFormProps} props - The component props containing data and handlers.
+ * @returns {JSX.Element|null} The rendered form grid or null if no data is provided.
  */
 export const ReceiptForm = React.memo(({ editableData, updateEditableData }: Readonly<ReceiptFormProps>) => {
 	if (!editableData) return null;
 
+	/**
+	 * Determines the CSS class for an input field based on its value.
+	 * Adds a warning class if the field is empty to visually cue the user.
+	 * @param {string | number | null} value - The current value of the input field.
+	 * @returns {string} The CSS class string.
+	 */
 	const getFieldClassName = (value: string | number | null) => {
 		const baseClass = "input-field";
 		return !value ? `${baseClass} incompleteField` : baseClass;

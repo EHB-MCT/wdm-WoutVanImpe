@@ -1,5 +1,9 @@
 import { apiClient } from "./client";
 
+/**
+ * Represents a high-level user summary for the admin dashboard.
+ * Includes basic account info and calculated risk metrics.
+ */
 export interface AdminUser {
 	id: number;
 	username: string;
@@ -13,6 +17,10 @@ export interface AdminUser {
 	intervention_needed: boolean;
 }
 
+/**
+ * Comprehensive user profile data for detailed analysis.
+ * Contains financial habits, behavioral AI scoring, location patterns, and risk factors.
+ */
 export interface UserProfile {
 	user: {
 		id: number;
@@ -54,6 +62,10 @@ export interface UserProfile {
 	};
 }
 
+/**
+ * Aggregated system statistics.
+ * Provides an overview of total activity and risk distribution across the platform.
+ */
 export interface GlobalStats {
 	total_users: number;
 	total_receipts: number;
@@ -66,25 +78,36 @@ export interface GlobalStats {
 	average_cards_per_user: number;
 }
 
+/**
+ * Service class responsible for administrative operations.
+ * Handles fetching user lists, detailed profiles, and global system analytics.
+ */
 class AdminApiClient {
 	private readonly client = apiClient;
 
 	/**
-	 * Get all users with their risk assessments
+	 * Fetches a list of all registered users.
+	 * Includes their current risk assessments and summary metrics.
+	 * @returns {Promise<{ success: boolean; data: AdminUser[]; total: number }>} The list of users and total count.
 	 */
 	async getUsers(): Promise<{ success: boolean; data: AdminUser[]; total: number }> {
 		return this.client.get("/api/admin/users");
 	}
 
 	/**
-	 * Get detailed profile for a specific user
+	 * Retrieves a detailed profile for a specific user.
+	 * Aggregates financial, behavioral, and location data for analysis.
+	 * @param {number} userId - The unique ID of the user to fetch.
+	 * @returns {Promise<{ success: boolean; data: UserProfile }>} The detailed user profile.
 	 */
 	async getUserProfile(userId: number): Promise<{ success: boolean; data: UserProfile }> {
 		return this.client.get(`/api/admin/users/${userId}/profile`);
 	}
 
 	/**
-	 * Get global system statistics
+	 * Get global system statistics.
+	 * Returns aggregated data on user base, receipt volume, and overall risk levels.
+	 * @returns {Promise<{ success: boolean; data: GlobalStats }>} The global statistics object.
 	 */
 	async getGlobalStats(): Promise<{ success: boolean; data: GlobalStats }> {
 		return this.client.get("/api/admin/stats");

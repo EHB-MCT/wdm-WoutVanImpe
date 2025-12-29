@@ -6,8 +6,9 @@ import { Button } from "../ui/Button";
 import styles from "@/styles/pages/Dashboard.module.css";
 
 /**
- * Guest welcome component.
- * Renders a login prompt for unauthenticated users.
+ * Component that displays a welcome message and login prompt for unauthenticated users (guests).
+ * Renders a card with a direct link to the login page.
+ * @returns {JSX.Element} The rendered guest welcome interface.
  */
 export function GuestWelcome() {
 	return (

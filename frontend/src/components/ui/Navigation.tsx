@@ -7,23 +7,40 @@ import styles from "@/styles/components/Navigation.module.css";
 import { NAVIGATION } from "@/lib/constants";
 import { getStoredUser, isUserAuthenticated } from "@/lib/auth";
 
+/**
+ * Props definition for the NavLink component.
+ */
 export interface NavLinkProps {
+	/** The target URL for the link. */
 	href: string;
+	/** The text label to display. */
 	label: string;
+	/** Optional icon to display next to the label. */
 	icon?: React.ReactNode;
+	/** Optional boolean to force the active state. */
 	isActive?: boolean;
+	/** Optional callback to close the mobile menu when the link is clicked. */
 	onCloseMobile?: () => void;
 }
 
+/**
+ * Props definition for the Navigation component.
+ */
 export interface NavigationProps {
+	/** Whether to show the brand logo/text. Defaults to true. */
 	showBrand?: boolean;
+	/** Text to display as the brand name. Defaults to "FinanceTracker". */
 	brandText?: string;
+	/** Optional CSS class name for styling the container. */
 	className?: string;
 }
 
 /**
  * Navigation link component.
  * Handles active state detection for exact matches and sub-routes (e.g. Dashboard).
+ * Applies styling based on the current active state.
+ * @param {NavLinkProps} props - The component props.
+ * @returns {JSX.Element} The rendered list item containing the link.
  */
 export function NavLink({ href, label, icon, isActive, onCloseMobile }: Readonly<NavLinkProps>) {
 	const pathname = usePathname();
@@ -54,7 +71,9 @@ export function NavLink({ href, label, icon, isActive, onCloseMobile }: Readonly
 
 /**
  * Main application navigation bar.
- * Includes responsive mobile menu handling.
+ * Includes responsive mobile menu handling, brand display, and role-based admin link visibility.
+ * @param {NavigationProps} props - The component props.
+ * @returns {JSX.Element} The rendered navigation bar.
  */
 export function Navigation({ showBrand = true, brandText = "FinanceTracker", className = "" }: Readonly<NavigationProps>) {
 	const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
@@ -71,8 +90,8 @@ export function Navigation({ showBrand = true, brandText = "FinanceTracker", cla
 	// Check if user is admin
 	useEffect(() => {
 		const user = getStoredUser();
-		const isAdmin = isUserAuthenticated() && user && user.role === 'admin';
-		setShowAdminLink(isAdmin);
+		const isAdmin = isUserAuthenticated() && user && user.role === "admin";
+		setShowAdminLink(isAdmin || false);
 	}, []);
 
 	useEffect(() => {
@@ -108,14 +127,7 @@ export function Navigation({ showBrand = true, brandText = "FinanceTracker", cla
 							icon={link.icon}
 						/>
 					))}
-					{showAdminLink && (
-						<NavLink
-							key={NAVIGATION.ADMIN_LINK.href}
-							href={NAVIGATION.ADMIN_LINK.href}
-							label={NAVIGATION.ADMIN_LINK.label}
-							icon={NAVIGATION.ADMIN_LINK.icon}
-						/>
-					)}
+					{showAdminLink && <NavLink key={NAVIGATION.ADMIN_LINK.href} href={NAVIGATION.ADMIN_LINK.href} label={NAVIGATION.ADMIN_LINK.label} icon={NAVIGATION.ADMIN_LINK.icon} />}
 				</ul>
 
 				<button className={styles.navMobileToggle} onClick={toggleMobileMenu} aria-label="Toggle navigation menu" aria-expanded={isMobileMenuOpen}>
@@ -131,15 +143,7 @@ export function Navigation({ showBrand = true, brandText = "FinanceTracker", cla
 								{NAVIGATION.MAIN_LINKS.map((link) => (
 									<NavLink key={link.href} href={link.href === "/dashboard" ? `/dashboard/${new Date().getFullYear()}/${new Date().getMonth() + 1}/all` : link.href} label={link.label} icon={link.icon} onCloseMobile={closeMobileMenu} />
 								))}
-								{showAdminLink && (
-									<NavLink 
-										key={NAVIGATION.ADMIN_LINK.href} 
-										href={NAVIGATION.ADMIN_LINK.href} 
-										label={NAVIGATION.ADMIN_LINK.label} 
-										icon={NAVIGATION.ADMIN_LINK.icon} 
-										onCloseMobile={closeMobileMenu} 
-									/>
-								)}
+								{showAdminLink && <NavLink key={NAVIGATION.ADMIN_LINK.href} href={NAVIGATION.ADMIN_LINK.href} label={NAVIGATION.ADMIN_LINK.label} icon={NAVIGATION.ADMIN_LINK.icon} onCloseMobile={closeMobileMenu} />}
 							</ul>
 						</div>
 					</>

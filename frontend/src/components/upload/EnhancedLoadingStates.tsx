@@ -1,8 +1,14 @@
 import classNames from "classnames";
 import styles from "@/styles/pages/Upload.module.css";
 
+/**
+ * Defines the specific stages of the receipt processing workflow.
+ */
 export type ProcessingStep = "idle" | "uploading" | "ocr-processing" | "ocr-complete" | "ai-processing" | "ai-complete" | "error" | "success";
 
+/**
+ * Structure defining the metadata for a single processing step.
+ */
 interface StepInfo {
 	id: ProcessingStep;
 	label: string;
@@ -10,6 +16,9 @@ interface StepInfo {
 	description: string;
 }
 
+/**
+ * Configuration array defining the sequence and display details of the processing steps.
+ */
 const PROCESSING_STEPS: StepInfo[] = [
 	{
 		id: "uploading",
@@ -55,18 +64,32 @@ const PROCESSING_STEPS: StepInfo[] = [
 	},
 ];
 
+/**
+ * Properties required for the EnhancedLoadingStates component.
+ */
 interface EnhancedLoadingStatesProps {
+	/** The current active step in the process. */
 	currentStep: ProcessingStep;
+	/** Optional error message to display if the process fails. */
 	errorMessage?: string;
+	/** Numeric progress value (0-100) for the progress bar. */
 	progress?: number;
 }
 
 /**
  * Visualizes the multi-step processing workflow (Upload -> OCR -> AI).
+ * Displays current progress, step indicators, and error states.
+ * @param {EnhancedLoadingStatesProps} props - Component props containing step info and progress.
+ * @returns {JSX.Element|null} The rendered loading state or null if idle.
  */
 export function EnhancedLoadingStates({ currentStep, errorMessage, progress = 0 }: Readonly<EnhancedLoadingStatesProps>) {
 	if (currentStep === "idle") return null;
 
+	/**
+	 * Determines the visual state (pending, active, completed) of a specific step based on the current global process state.
+	 * @param {ProcessingStep} step - The step to check.
+	 * @returns {"pending" | "active" | "completed" | "error"} The calculated status.
+	 */
 	const getStepStatus = (step: ProcessingStep): "pending" | "active" | "completed" | "error" => {
 		if (step === "error") return "error";
 
@@ -78,6 +101,11 @@ export function EnhancedLoadingStates({ currentStep, errorMessage, progress = 0 
 		return "pending";
 	};
 
+	/**
+	 * Maps a step status to the corresponding CSS module class.
+	 * @param {"pending" | "active" | "completed" | "error"} status - The status of the step.
+	 * @returns {string} The CSS class name.
+	 */
 	const getStepClassName = (status: "pending" | "active" | "completed" | "error") => {
 		switch (status) {
 			case "pending":

@@ -6,15 +6,24 @@ import { Receipt } from "@/types/receipt";
 import { formatCurrency, formatDate, safeParseNumber, safeParseInt } from "@/lib/receiptUtils";
 import styles from "@/styles/components/ReceiptsList.module.css";
 
+/**
+ * Interface defining the properties required for the ReceiptsList component.
+ */
 interface ReceiptsListProps {
+	/** Array of receipt objects to be displayed in the list. */
 	receipts: Receipt[];
+	/** Callback function triggered when a specific receipt card is clicked. */
 	onReceiptClick: (receipt: Receipt) => void;
+	/** Optional CSS class name for styling the container. */
 	className?: string;
 }
 
 /**
  * Renders a clickable list of receipts with a summary preview.
  * Shows a "No Data" message if the receipt array is empty.
+ * Displays a preview of the first few items for each receipt.
+ * @param {ReceiptsListProps} props - Component props containing the receipts data and handlers.
+ * @returns {JSX.Element} The rendered grid of receipt cards or an empty state message.
  */
 export const ReceiptsList: React.FC<Readonly<ReceiptsListProps>> = ({ receipts, onReceiptClick, className }) => {
 	if (!receipts || receipts.length === 0) {

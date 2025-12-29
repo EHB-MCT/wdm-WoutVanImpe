@@ -31,6 +31,11 @@ export default function HomePage() {
 		setUser(storedUser);
 	}, []);
 
+	/**
+	 * Navigates the user to the detailed dashboard view for a specific category.
+	 * Constructs the URL using the current year, month, and the selected category filter.
+	 * @param {string} category - The category identifier to filter by (or "all").
+	 */
 	const navigateToDashboard = (category: string) => {
 		const year = currentDate.getFullYear();
 		const month = currentDate.getMonth() + 1;
@@ -42,16 +47,26 @@ export default function HomePage() {
 		}
 	};
 
+	/**
+	 * Memoized boolean indicating if navigation to the next month is allowed.
+	 * Prevents the user from navigating into future months beyond the current real-time date.
+	 */
 	const canGoNext = useMemo(() => {
 		const now = new Date();
 		const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1);
 		return nextMonth <= new Date(now.getFullYear(), now.getMonth());
 	}, [currentDate]);
 
+	/**
+	 * Updates the state to display data for the previous month.
+	 */
 	const goToPreviousMonth = () => {
 		setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1));
 	};
 
+	/**
+	 * Updates the state to display data for the next month.
+	 */
 	const goToNextMonth = () => {
 		const nextMonth = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1);
 		setCurrentDate(nextMonth);

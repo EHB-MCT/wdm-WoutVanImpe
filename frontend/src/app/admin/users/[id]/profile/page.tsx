@@ -6,6 +6,11 @@ import { adminApi, UserProfile } from "@/lib/api/admin";
 import { isUserAuthenticated, getStoredUser } from "@/lib/auth";
 import styles from "@/styles/pages/Admin.module.css";
 
+/**
+ * Admin page component that displays detailed risk analysis and financial statistics for a specific user.
+ * Fetches and visualizes data regarding financial risks, behavioral patterns, and location analysis.
+ * @returns {JSX.Element} The user detail view.
+ */
 export default function UserDetail() {
 	const [userProfile, setUserProfile] = useState<UserProfile | null>(null);
 	const [loading, setLoading] = useState(true);
@@ -31,6 +36,12 @@ export default function UserDetail() {
 		loadUserProfile(userId);
 	}, [params.id, router]);
 
+	/**
+	 * Fetches the detailed user profile data from the API.
+	 * Updates the state with the profile data or an error message.
+	 * @param {number} userId - The unique identifier of the user to fetch.
+	 * @returns {Promise<void>}
+	 */
 	const loadUserProfile = async (userId: number) => {
 		try {
 			setLoading(true);
@@ -48,12 +59,20 @@ export default function UserDetail() {
 		}
 	};
 
+	/**
+	 * Determines the CSS class for the risk score based on the value.
+	 * @param {number} score - The calculated risk score.
+	 * @returns {string} The CSS class name for styling the score (low, medium, or high risk).
+	 */
 	const getRiskScoreColor = (score: number) => {
 		if (score <= 3) return styles.riskLow;
 		if (score <= 7) return styles.riskMedium;
 		return styles.riskHigh;
 	};
 
+	/**
+	 * Navigates the administrator back to the main dashboard.
+	 */
 	const handleBackClick = () => {
 		router.push("/admin");
 	};

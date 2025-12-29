@@ -9,13 +9,19 @@ interface User {
 	email: string;
 }
 
+/**
+ * Interface defining the properties for the WelcomeSection component.
+ */
 interface WelcomeSectionProps {
+	/** The authenticated user object, or null if not logged in. */
 	user: User | null;
 }
 
 /**
- * Dashboard welcome header.
- * Displays the user's name and the current date.
+ * Dashboard welcome header component.
+ * Displays the authenticated user's name and the current date formatted in Dutch.
+ * @param {WelcomeSectionProps} props - Component props containing the user object.
+ * @returns {JSX.Element|null} The welcome header section or null if no user is provided.
  */
 export function WelcomeSection({ user }: Readonly<WelcomeSectionProps>) {
 	const formatDate = (date: Date): string => {

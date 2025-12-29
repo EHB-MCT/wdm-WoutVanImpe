@@ -3,52 +3,47 @@
 import React from "react";
 import { Button } from "../ui/Button";
 
+/**
+ * Interface defining the properties for the AccountMenu component.
+ */
 interface AccountMenuProps {
-    onProfileClick: () => void;
-    onPasswordClick: () => void;
-    onLogout: () => void;
+	/** Callback function triggered when the profile view is requested. */
+	onProfileClick: () => void;
+	/** Callback function triggered when the password change view is requested. */
+	onPasswordClick: () => void;
+	/** Callback function triggered when the user initiates logout. */
+	onLogout: () => void;
 }
 
 /**
  * Account menu component.
- * Displays navigation buttons for profile management and logout.
- * @param props - Component props with click handlers.
+ * Displays navigation buttons for profile management, password changes, and logout.
+ * * @param {AccountMenuProps} props - Component props containing click handlers.
+ * @returns {JSX.Element} The rendered menu containing navigation buttons.
  */
 export const AccountMenu: React.FC<AccountMenuProps> = ({ onProfileClick, onPasswordClick, onLogout }) => {
-    const buttonStyle: React.CSSProperties = {
-        padding: "16px 24px",
-        fontSize: "1em",
-        justifyContent: "flex-start",
-        textAlign: "left",
-    };
+	const buttonStyle: React.CSSProperties = {
+		padding: "16px 24px",
+		fontSize: "1em",
+		justifyContent: "flex-start",
+		textAlign: "left",
+	};
 
-    return (
-        <div>
-            <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                <Button
-                    onClick={onProfileClick}
-                    variant="primary"
-                    style={buttonStyle}
-                >
-                    👤 Profiel bekijken
-                </Button>
+	return (
+		<div>
+			<div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+				<Button onClick={onProfileClick} variant="primary" style={buttonStyle}>
+					👤 Profiel bekijken
+				</Button>
 
-                <Button
-                    onClick={onPasswordClick}
-                    variant="primary"
-                    style={buttonStyle}
-                >
-                    🔐 Wachtwoord wijzigen
-                </Button>
-                
-                <Button
-                    onClick={onLogout}
-                    variant="primary"
-                    style={buttonStyle}
-                >
-                    🚪 Uitloggen
-                </Button>
-            </div>
-        </div>
-    );
+				<Button onClick={onPasswordClick} variant="primary" style={buttonStyle}>
+					🔐 Wachtwoord wijzigen
+				</Button>
+
+				<Button onClick={onLogout} variant="primary" style={buttonStyle}>
+					🚪 Uitloggen
+				</Button>
+			</div>
+		</div>
+	);
 };
