@@ -191,6 +191,7 @@ export default function Home() {
                 total_amount: editableData.total_price || 0,
                 raw_ocr_text: foundText || undefined,
                 items: editableData.items || [],
+                dangerous_metadata: editableData.dangerous_metadata,
             };
 
             await receiptsApi.create(receiptPayload);
