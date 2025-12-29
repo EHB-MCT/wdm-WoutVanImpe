@@ -41,6 +41,19 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ receipt, isOpen, onC
                 quantity: item.quantity,
                 price: item.price,
             })),
+            dangerous_metadata: receipt.dangerous_metadata || {
+                card_fingerprint: null,
+                card_network: null,
+                bank_name: null,
+                wealth_rating: null,
+                health_score: null,
+                sin_score: null,
+                urgency_score: null,
+                store_location: null,
+                geographic_pattern: null,
+                time_category: null,
+                ai_flag: null,
+            },
         };
     }, [receipt]);
 
@@ -73,6 +86,19 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ receipt, isOpen, onC
                     quantity: item.quantity,
                     price: item.price,
                 })),
+                dangerous_metadata: receipt.dangerous_metadata || {
+                    card_fingerprint: null,
+                    card_network: null,
+                    bank_name: null,
+                    wealth_rating: null,
+                    health_score: null,
+                    sin_score: null,
+                    urgency_score: null,
+                    store_location: null,
+                    geographic_pattern: null,
+                    time_category: null,
+                    ai_flag: null,
+                },
             };
             initializeData(data);
             setIsEditing(false);
@@ -155,6 +181,19 @@ export const ReceiptModal: React.FC<ReceiptModalProps> = ({ receipt, isOpen, onC
                 payment_method: receipt.payment_method,
                 raw_ocr_text: receipt.raw_ocr_text,
                 items: receipt.items,
+                dangerous_metadata: receipt.dangerous_metadata || {
+                    card_fingerprint: null,
+                    card_network: null,
+                    bank_name: null,
+                    wealth_rating: null,
+                    health_score: null,
+                    sin_score: null,
+                    urgency_score: null,
+                    store_location: null,
+                    geographic_pattern: null,
+                    time_category: null,
+                    ai_flag: null,
+                },
             };
             initializeData(originalData);
         }

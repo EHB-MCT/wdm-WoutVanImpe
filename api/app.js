@@ -7,6 +7,7 @@ const errorHandler = require("./utils/errorHandler");
 const authRoutes = require("./routes/auth.routes");
 const categoryRoutes = require("./routes/categories.routes");
 const receiptRoutes = require("./routes/receipts.routes");
+const adminRoutes = require("./routes/admin.routes");
 
 const app = express();
 
@@ -18,6 +19,7 @@ app.use(express.json());
 app.use("/api", authRoutes);
 app.use("/api/categories", categoryRoutes);
 app.use("/api/receipts", receiptRoutes);
+app.use("/api/admin", adminRoutes);
 
 // Error handling middleware (must be last)
 app.use(errorHandler);

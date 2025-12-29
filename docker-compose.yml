@@ -59,7 +59,7 @@ services:
   api:
     build:
       context: ./api
-    command: sh -c "npm run knex:migrate && npm start"
+    command: sh -c "npm run knex:migrate && npm run knex:seed && npm start"
     environment:
       DATABASE_HOST: database
       DATABASE_USER: ${DATABASE_USER}

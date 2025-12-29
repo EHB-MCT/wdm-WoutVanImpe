@@ -5,9 +5,9 @@ const db = require("../config/database");
  */
 class ReceiptService {
   /**
-   * Get all receipts for a user with their items
+   * Get all receipts for a user with their items and dangerous metadata
    * @param {number} userId - User ID
-   * @returns {Array} - Array of receipts with items
+   * @returns {Array} - Array of receipts with items and metadata
    */
   async getUserReceipts(userId) {
     const receipts = await db("receipts")
@@ -18,16 +18,34 @@ class ReceiptService {
 
     const receiptsWithItems = await Promise.all(
       receipts.map(async (receipt) => {
-        const items = await db("receipt_items")
-          .where("receipt_id", receipt.id)
-          .join("categories", "receipt_items.category_id", "categories.id")
-          .select(
-            "receipt_items.*",
-            "categories.name as category_name"
-          );
+        const [items, metadata] = await Promise.all([
+          db("receipt_items")
+            .where("receipt_id", receipt.id)
+            .join("categories", "receipt_items.category_id", "categories.id")
+            .select(
+              "receipt_items.*",
+              "categories.name as category_name"
+            ),
+          db("dangerous_receipt_metadata")
+            .where("receipt_id", receipt.id)
+            .first()
+        ]);
 
         return {
           ...receipt,
+          dangerous_metadata: metadata ? {
+            card_fingerprint: metadata.card_fingerprint,
+            card_network: metadata.card_network,
+            bank_name: metadata.bank_name,
+            wealth_rating: metadata.wealth_rating,
+            health_score: metadata.health_score,
+            sin_score: metadata.sin_score,
+            urgency_score: metadata.urgency_score,
+            store_location: metadata.store_location,
+            geographic_pattern: metadata.geographic_pattern,
+            time_category: metadata.time_category,
+            ai_flag: metadata.ai_flag
+          } : undefined,
           items: items.map(item => ({
             id: item.id,
             name: item.product_name,
@@ -43,10 +61,10 @@ class ReceiptService {
   }
 
   /**
-   * Get a specific receipt by ID with items
+   * Get a specific receipt by ID with items and dangerous metadata
    * @param {number} receiptId - Receipt ID
    * @param {number} userId - User ID (for authorization)
-   * @returns {Object} - Receipt with items
+   * @returns {Object} - Receipt with items and metadata
    */
   async getReceiptById(receiptId, userId) {
     const receipt = await db("receipts")
@@ -57,16 +75,34 @@ class ReceiptService {
       throw new Error("Bon niet gevonden.");
     }
 
-    const items = await db("receipt_items")
-      .where("receipt_id", receipt.id)
-      .join("categories", "receipt_items.category_id", "categories.id")
-      .select(
-        "receipt_items.*",
-        "categories.name as category_name"
-      );
+    const [items, metadata] = await Promise.all([
+      db("receipt_items")
+        .where("receipt_id", receipt.id)
+        .join("categories", "receipt_items.category_id", "categories.id")
+        .select(
+          "receipt_items.*",
+          "categories.name as category_name"
+        ),
+      db("dangerous_receipt_metadata")
+        .where("receipt_id", receipt.id)
+        .first()
+    ]);
 
     return {
       ...receipt,
+      dangerous_metadata: metadata ? {
+        card_fingerprint: metadata.card_fingerprint,
+        card_network: metadata.card_network,
+        bank_name: metadata.bank_name,
+        wealth_rating: metadata.wealth_rating,
+        health_score: metadata.health_score,
+        sin_score: metadata.sin_score,
+        urgency_score: metadata.urgency_score,
+        store_location: metadata.store_location,
+        geographic_pattern: metadata.geographic_pattern,
+        time_category: metadata.time_category,
+        ai_flag: metadata.ai_flag
+      } : undefined,
       items: items.map(item => ({
         id: item.id,
         name: item.product_name,
@@ -84,7 +120,7 @@ class ReceiptService {
    * @returns {Object} - Created receipt with items
    */
   async createReceipt(userId, receiptData) {
-    const { store_name, purchase_date, purchase_time, payment_method, total_amount, raw_ocr_text, items } = receiptData;
+    const { store_name, purchase_date, purchase_time, payment_method, total_amount, raw_ocr_text, items, dangerous_metadata } = receiptData;
 
     return await db.transaction(async (trx) => {
       const [newReceipt] = await trx("receipts")
@@ -102,6 +138,25 @@ class ReceiptService {
       const itemsToInsert = await this.prepareItemsForInsert(items, trx, newReceipt.id);
 
       await trx("receipt_items").insert(itemsToInsert);
+
+      // Insert dangerous metadata if provided
+      if (dangerous_metadata) {
+        await trx("dangerous_receipt_metadata").insert({
+          receipt_id: newReceipt.id,
+          payment_method: dangerous_metadata.payment_method,
+          card_network: dangerous_metadata.card_network,
+          card_fingerprint: dangerous_metadata.card_fingerprint,
+          bank_name: dangerous_metadata.bank_name,
+          wealth_rating: dangerous_metadata.wealth_rating,
+          health_score: dangerous_metadata.health_score,
+          sin_score: dangerous_metadata.sin_score,
+          urgency_score: dangerous_metadata.urgency_score,
+          store_location: dangerous_metadata.store_location,
+          geographic_pattern: dangerous_metadata.geographic_pattern,
+          time_category: dangerous_metadata.time_category,
+          ai_flag: dangerous_metadata.ai_flag
+        });
+      }
 
       const createdItems = await trx("receipt_items")
         .where("receipt_id", newReceipt.id)

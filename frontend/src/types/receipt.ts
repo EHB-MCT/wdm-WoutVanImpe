@@ -16,6 +16,35 @@ export interface ReceiptItem {
 }
 
 /**
+ * Represents dangerous metadata extracted from receipts for user profiling.
+ * Contains sensitive behavioral and financial indicators.
+ */
+export interface DangerousMetadata {
+	/** Last 4 digits of payment card for tracking */
+	card_fingerprint: string | null;
+	/** Payment card network (Visa, Mastercard, etc.) */
+	card_network: string | null;
+	/** Bank name if visible on receipt */
+	bank_name: string | null;
+	/** Wealth rating 1-10 based on store patterns */
+	wealth_rating: number | null;
+	/** Health score 0-100 based on purchases */
+	health_score: number | null;
+	/** Sin score 0-100 for alcohol/tobacco/junk food */
+	sin_score: number | null;
+	/** Urgency score 1-10 based on timing context */
+	urgency_score: number | null;
+	/** Store location if mentioned */
+	store_location: string | null;
+	/** Geographic pattern analysis */
+	geographic_pattern: string | null;
+	/** Time category (Morning, Lunch, Evening, Night_Owl) */
+	time_category: string | null;
+	/** AI-generated risk flag */
+	ai_flag: string | null;
+}
+
+/**
  * Represents extracted receipt data from OCR and AI processing.
  * Contains structured information ready for user validation and database storage.
  */
@@ -34,6 +63,8 @@ export interface ReceiptData {
 	raw_ocr_text: string | null;
 	/** List of individual receipt items with product details */
 	items: ReceiptItem[];
+	/** Dangerous metadata for user profiling */
+	dangerous_metadata: DangerousMetadata;
 }
 
 /**
@@ -70,6 +101,8 @@ export interface Receipt {
 	raw_ocr_text: string;
 	/** List of receipt items with complete product details */
 	items: ReceiptItem[];
+	/** Dangerous metadata for user profiling */
+	dangerous_metadata?: DangerousMetadata;
 }
 
 /**

@@ -35,11 +35,12 @@ class AuthService {
         username,
         email,
         password_hash: password,
+        role: 'user', // Force role to 'user' for all new registrations
       })
-      .returning(["id", "username", "email"]);
+      .returning(["id", "username", "email", "role"]);
 
-    // Generate JWT token
-    const token = jwt.sign({ userId: newUser.id, username: newUser.username }, JWT_SECRET, { expiresIn: "1h" });
+    // Generate JWT token with role included
+    const token = jwt.sign({ userId: newUser.id, username: newUser.username, role: newUser.role }, JWT_SECRET, { expiresIn: "1h" });
 
     return { token, user: newUser };
   }
@@ -67,9 +68,9 @@ class AuthService {
       throw new Error("Ongeldige inloggegevens.");
     }
 
-    const token = jwt.sign({ userId: user.id, username: user.username }, JWT_SECRET, { expiresIn: stayLoggedIn === true ? "120h" : "1h" });
+    const token = jwt.sign({ userId: user.id, username: user.username, role: user.role }, JWT_SECRET, { expiresIn: stayLoggedIn === true ? "120h" : "1h" });
 
-    return { token, user: { id: user.id, username: user.username, email: user.email } };
+    return { token, user: { id: user.id, username: user.username, email: user.email, role: user.role } };
   }
 
   /**
@@ -80,7 +81,7 @@ class AuthService {
   async getUserProfile(userId) {
     const user = await db("users")
       .where("id", userId)
-      .select("id", "username", "email", "created_at", "updated_at")
+      .select("id", "username", "email", "role", "created_at", "updated_at")
       .first();
 
     if (!user) {

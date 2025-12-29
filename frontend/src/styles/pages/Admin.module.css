@@ -1,0 +1,695 @@
+.adminContainer {
+	max-width: 1200px;
+	margin: 0 auto;
+	padding: 2rem;
+	color: #333;
+}
+
+.header {
+	margin-bottom: 2rem;
+}
+
+.header h1 {
+	font-size: 2.5rem;
+	color: #1a1a1a;
+	margin-bottom: 0.5rem;
+}
+
+.header p {
+	color: #6c757d;
+	font-size: 1.1rem;
+}
+
+.riskExplanation {
+	background: #e8f4fd;
+	border-left: 4px solid #3498db;
+	padding: 1rem;
+	margin-bottom: 1.5rem;
+	border-radius: 4px;
+	font-size: 0.9rem;
+	color: #2c3e50;
+}
+
+/* Statistics Section */
+.statsSection {
+	background: #f8f9fa;
+	padding: 1.5rem;
+	border-radius: 8px;
+	margin-bottom: 2rem;
+}
+
+.statsSection h2 {
+	color: #2c3e50;
+	margin-bottom: 1.5rem;
+	font-size: 1.5rem;
+}
+
+.statsGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 1rem;
+	margin-bottom: 2rem;
+}
+
+.statCard {
+	background: white;
+	padding: 1.5rem;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	text-align: center;
+	border: 1px solid #e8f4fd;
+}
+
+.statCard h3 {
+	margin: 0 0 0.5rem 0;
+	color: #7f8c8d;
+	font-size: 0.9rem;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.statValue {
+	font-size: 2rem;
+	font-weight: bold;
+	color: #2c3e50;
+}
+
+/* Risk Distribution */
+.riskDistribution {
+	background: white;
+	padding: 1.5rem;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.riskDistribution h3 {
+	margin: 0 0 1rem 0;
+	color: #2c3e50;
+}
+
+.riskBars {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.riskBar {
+	display: flex;
+	align-items: center;
+	gap: 0.5rem;
+	font-size: 0.9rem;
+}
+
+.riskBar span:first-child {
+	min-width: 60px;
+}
+
+.riskBar span:last-child {
+	min-width: 30px;
+	text-align: right;
+}
+
+.bar {
+	height: 20px;
+	border-radius: 3px;
+	transition: width 0.3s ease;
+}
+
+.lowBar {
+	background: #27ae60;
+}
+
+.mediumBar {
+	background: #f39c12;
+}
+
+.highBar {
+	background: #e74c3c;
+}
+
+/* Users Section */
+.usersSection {
+	margin-top: 2rem;
+}
+
+.usersSection h2 {
+	color: #2c3e50;
+	margin-bottom: 1.5rem;
+	font-size: 1.5rem;
+}
+
+.usersTable {
+	background: white;
+	border-radius: 8px;
+	overflow: hidden;
+	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.usersTable table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.usersTable th,
+.usersTable td {
+	padding: 1rem;
+	text-align: left;
+	border-bottom: 1px solid #ecf0f1;
+}
+
+.usersTable th {
+	background: #34495e;
+	color: white;
+	font-weight: 600;
+	text-transform: uppercase;
+	font-size: 0.85rem;
+	letter-spacing: 0.5px;
+}
+
+.userRow {
+	cursor: pointer;
+	transition: background-color 0.2s ease;
+}
+
+.userRow:hover {
+	background-color: #f8f9fa;
+}
+
+.userRow:last-child td {
+	border-bottom: none;
+}
+
+/* Risk Badges */
+.riskBadge {
+	padding: 0.25rem 0.75rem;
+	border-radius: 12px;
+	font-size: 0.85rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.riskLow {
+	background: #d4edda;
+	color: #155724;
+}
+
+.riskMedium {
+	background: #fff3cd;
+	color: #9333ea;
+}
+
+.riskHigh {
+	background: #f8d7da;
+	color: #721c24;
+}
+
+.riskUnknown {
+	background: #ecf0f1;
+	color: #7f8c8d;
+}
+
+/* Intervention Badge */
+.interventionBadge {
+	background: #e74c3c;
+	color: white;
+	padding: 0.25rem 0.75rem;
+	border-radius: 12px;
+	font-size: 0.75rem;
+	font-weight: 600;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+/* Loading and Error States */
+.loading {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 50vh;
+	font-size: 1.2rem;
+	color: #7f8c8d;
+}
+
+.error {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	height: 50vh;
+	font-size: 1.2rem;
+	color: #e74c3c;
+	background: #fdedec;
+	border-radius: 8px;
+	text-align: center;
+}
+
+/* Admin Detail Page Styles */
+.backButton {
+	margin-bottom: 1rem;
+	background: #3498db;
+	color: white;
+	border: none;
+	padding: 0.5rem 1rem;
+	border-radius: 4px;
+	cursor: pointer;
+	font-size: 0.9rem;
+}
+
+.backButton:hover {
+	background: #2980b9;
+}
+
+/* Risk Section */
+.riskSection {
+	background: #f8f9fa;
+	padding: 1.5rem;
+	border-radius: 8px;
+	margin-bottom: 2rem;
+}
+
+.riskSection h2 {
+	color: #2c3e50;
+	margin-bottom: 1.5rem;
+}
+
+.riskCards {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: 1.5rem;
+	margin-bottom: 2rem;
+}
+
+.riskCard {
+	background: white;
+	padding: 1.5rem;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.riskCard h3 {
+	margin: 0 0 1rem 0;
+	color: #2c3e50;
+}
+
+.riskScore {
+	font-size: 3rem;
+	font-weight: bold;
+	text-align: center;
+	margin-bottom: 1rem;
+	border-radius: 8px;
+	padding: 1rem;
+}
+
+.riskFactors {
+	display: flex;
+	flex-direction: column;
+	gap: 0.75rem;
+}
+
+.riskFactor {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 0.5rem;
+	background: #f8f9fa;
+	border-radius: 4px;
+}
+
+.warningsList {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+}
+
+.warning {
+	background: #fdedec;
+	color: #e74c3c;
+	padding: 0.75rem;
+	border-radius: 4px;
+	border-left: 4px solid #e74c3c;
+	margin-bottom: 0.5rem;
+	font-size: 0.9rem;
+}
+
+/* Financial Section */
+.financialSection {
+	margin-bottom: 2rem;
+}
+
+.financialSection h2 {
+	color: #2c3e50;
+	margin-bottom: 1.5rem;
+}
+
+.financialCards {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 1rem;
+	margin-bottom: 2rem;
+}
+
+.cardDetails {
+	background: white;
+	padding: 1.5rem;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.cardDetails h3 {
+	margin: 0 0 1rem 0;
+	color: #2c3e50;
+}
+
+.cardsList {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5rem;
+}
+
+.cardBadge {
+	background: #3498db;
+	color: white;
+	padding: 0.5rem 1rem;
+	border-radius: 20px;
+	font-size: 0.85rem;
+	font-weight: 600;
+}
+
+/* Behavioral Section */
+.behaviorSection {
+	margin-bottom: 2rem;
+}
+
+.behaviorSection h2 {
+	color: #2c3e50;
+	margin-bottom: 1.5rem;
+}
+
+.behaviorCards {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+	gap: 1rem;
+	margin-bottom: 2rem;
+}
+
+.aiFlags {
+	background: white;
+	padding: 1.5rem;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.aiFlags h3 {
+	margin: 0 0 1rem 0;
+	color: #2c3e50;
+}
+
+.flagsList {
+	display: flex;
+	flex-wrap: wrap;
+	flex-direction: row;
+	gap: 0.5rem;
+}
+
+.flagItem {
+	display: flex;
+	width: max-content;
+	gap: 10px;
+	justify-content: space-between;
+	padding: 0.5rem 0;
+	background-color: #3498db;
+	color: white;
+	border-radius: 20px;
+}
+
+/* Enhanced AI Flags Section */
+.aiFlagsSection {
+	margin-top: 2.5rem;
+	padding: 2rem;
+	background: #f8fafc;
+	border-radius: 12px;
+	border: 1px solid #e8f4fd;
+}
+
+.aiFlagsGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+	gap: 1.25rem;
+	margin-bottom: 2rem;
+}
+
+.flagCard {
+	background: white;
+	padding: 1.5rem;
+	border-radius: 8px;
+	box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+	border-left: 4px solid #e74c3c;
+}
+
+.flagHeader {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 0.5rem;
+}
+
+.flagName {
+	font-weight: 600;
+	color: #2c3e50;
+}
+
+.flagCount {
+	background: #e74c3c;
+	color: white;
+	padding: 0.25rem 0.75rem;
+	border-radius: 12px;
+	font-weight: bold;
+	font-size: 0.9rem;
+}
+
+.flagBar {
+	width: 100%;
+	height: 8px;
+	background: linear-gradient(90deg, #c62828 0%, #e74c3c 100%);
+	border-radius: 4px;
+	margin-top: 0.5rem;
+}
+
+.flagDescriptions {
+	margin-top: 2rem;
+	padding: 2rem;
+	background: white;
+	border-radius: 12px;
+}
+
+.flagDescriptions h4 {
+	margin-bottom: 1.5rem;
+	color: #2c3e50;
+}
+
+.summaryFlag {
+	display: flex;
+	align-items: center;
+	padding: 1.25rem 1.5rem;
+	margin-bottom: 1.5rem;
+	border: 1px solid #e8f4fd;
+	border-radius: 8px;
+	background: white;
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.summaryFlag:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+.flagIcon {
+	font-size: 1.5rem;
+	margin-right: 0.75rem;
+}
+
+.flagTitle {
+	font-weight: 600;
+	color: #1a1a1a;
+}
+
+.flagDesc {
+	font-size: 0.9rem;
+	color: #4b5563;
+	margin-top: 0.5rem;
+	line-height: 1.4;
+}
+
+/* Chart Styles */
+.chartsGrid {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: 1.5rem;
+	margin-bottom: 2.5rem;
+}
+
+.chartCard {
+	background: white;
+	padding: 1.5rem;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.chartCard h3 {
+	margin-bottom: 1.5rem;
+	color: #1a1a1a;
+	font-size: 1.2rem;
+	font-weight: 600;
+	border-bottom: 2px solid #e8f4fd;
+	padding-bottom: 0.5rem;
+}
+
+.locationCards {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	gap: 1.25rem;
+}
+
+/* Simple Chart Styles */
+
+.simpleChart h4 {
+	margin-bottom: 1rem;
+	color: #1a1a1a;
+	font-size: 1.1rem;
+	font-weight: 600;
+}
+
+.barItem {
+	display: flex;
+	align-items: center;
+	margin-bottom: 0.5rem;
+	padding: 0.5rem 0;
+}
+
+.barLabel {
+	min-width: 120px;
+	font-weight: 600;
+	color: #1a1a1a;
+	background: #f8f9fa;
+	padding: 0.25rem 0.5rem;
+	border-radius: 4px;
+}
+
+.barContainer {
+	width: 100%;
+	height: 28px;
+	background: #f8f9fa;
+	border-radius: 4px;
+	overflow: hidden;
+	position: relative;
+}
+
+.barFill {
+	height: 100%;
+	background: linear-gradient(90deg, #4f46e5 0%, #8b5cf6 100%);
+	transition: width 0.3s ease;
+	box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.1);
+}
+
+.barValue {
+	margin-left: 1rem;
+	font-weight: 700;
+	color: #1a1a1a;
+	background: white;
+	padding: 0.25rem;
+	border-radius: 4px;
+	min-width: 3rem;
+	text-align: center;
+}
+
+/* Location Section */
+.locationSection {
+	margin-bottom: 2rem;
+}
+
+.locationSection h2 {
+	color: #2c3e50;
+	margin-bottom: 1.5rem;
+}
+
+.locationCard {
+	background: white;
+	padding: 1.5rem;
+	border-radius: 8px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.locationCard h3 {
+	margin: 0 0 1rem 0;
+	color: #2c3e50;
+}
+
+.distributionList {
+	display: flex;
+	flex-direction: column;
+	gap: 0.5rem;
+}
+
+.distributionItem {
+	display: flex;
+	justify-content: space-between;
+	padding: 0.5rem;
+	background: #f8f9fa;
+	border-radius: 4px;
+	font-size: 0.9rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+	.adminContainer {
+		padding: 1rem;
+	}
+
+	.statsGrid {
+		grid-template-columns: repeat(2, 1fr);
+	}
+
+	.riskBar {
+		flex-wrap: wrap;
+	}
+
+	.usersTable {
+		overflow-x: auto;
+	}
+
+	.usersTable th,
+	.usersTable td {
+		padding: 0.75rem 0.5rem;
+		font-size: 0.9rem;
+	}
+
+	.riskCards {
+		grid-template-columns: 1fr;
+	}
+
+	.financialCards,
+	.behaviorCards,
+	.locationCards {
+		grid-template-columns: repeat(2, 1fr);
+	}
+}
+
+@media (max-width: 480px) {
+	.statsGrid {
+		grid-template-columns: 1fr;
+	}
+
+	.financialCards,
+	.behaviorCards,
+	.locationCards {
+		grid-template-columns: 1fr;
+	}
+
+	.header h1 {
+		font-size: 2rem;
+	}
+
+	.riskScore {
+		font-size: 2.5rem;
+	}
+}
