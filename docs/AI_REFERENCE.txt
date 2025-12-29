@@ -1647,4 +1647,28 @@ disabled={!hasChanges || isLoading ||
 The account page now provides an intuitive, user-friendly experience with clear navigation options and intelligent form handling, making it easy for users to manage their profile information securely.
 
 --- 
-*This file will be updated as we continue working on the project*
+
+
+I stopped updating this file because i found out you could share your opecode conversations, but at this moment, when i am copying the url's the displays don't work anymore.
+The chat is however given in the terminal.
+
+- https://opncd.ai/share/GZIvTmkt
+- https://opncd.ai/share/L7c4FWll
+- https://opncd.ai/share/5upxaDnT
+- https://opncd.ai/share/T01F6n0Z
+- https://opncd.ai/share/iiggpmGR
+- https://opncd.ai/share/t42OF1jm
+- https://opncd.ai/share/F5hYUrrP
+- https://opncd.ai/share/sPLhlnch
+- https://opncd.ai/share/n4VG3QiD
+- https://opncd.ai/share/CjnyxnVA
+- https://opncd.ai/share/y7ol1jbI
+- https://opncd.ai/share/2cFzcyPe
+- https://opncd.ai/share/Pu2xjd51
+- https://opncd.ai/share/uKEXOied
+- https://opncd.ai/share/3nGvpEnA
+- https://opncd.ai/share/Wr42JJbQ
+- https://opncd.ai/share/V10HQoiz
+- https://opncd.ai/share/Gr4hNfi2
+- https://opncd.ai/share/sN9Dn1ak
+- https://opncd.ai/share/NyT5rjDk 

@@ -2,6 +2,14 @@
 
 This document outlines coding standards, file structures, and naming conventions for our software stack. Adhering to these guidelines ensures code consistency, readability, and maintainability across Frontend (Next.js/React) and Backend (Node.js/Express/Tesseract).
 
+> **Note:** This document was created as a reference guide for the Development course and serves as a coding standards template for this project.
+
+## 📚 External References
+
+- [Next.js App Router project structure](https://nextjs.org/docs/app/getting-started/project-structure)
+- [Node.js Module conventions](https://nodejs.org/docs/v24.12.0/api/module.html#conventions-of-hooks)
+- [Node.js API Documentation](https://nodejs.org/docs/latest/api/)
+
 ---
 
 ## 1. General JavaScript/TypeScript Standards
@@ -264,5 +272,36 @@ Maintain a `.env.example` file with keys but no values.
 **Naming:**
 - **Server:** `PORT`, `DB_HOST`
 - **Next.js (Public):** Must start with `NEXT_PUBLIC_` (e.g., `NEXT_PUBLIC_API_URL`).
+
+---
+
+## 📚 Git Workflow & Course Reference
+
+This project follows established Git workflows suitable for educational environments:
+
+### Branch Strategy
+- **Main branch:** `main` (production)
+- **Development:** Work from feature branches, merge to develop
+- **Course example:** `git checkout -b feature/your-feature-name develop`
+
+### Commit Standards
+- Follow [Conventional Commits](https://www.conventionalcommits.org/) specification
+- All commits should be atomic and well-described
+- Use descriptive commit messages that explain the "why" not just the "what"
+
+### Example Course Workflow
+```bash
+# Start new feature from develop
+git checkout -b feature/user-authentication develop
+
+# Make changes and commit
+git add .
+git commit -m "feat(auth): implement user authentication with JWT"
+
+# Push and create pull request
+git push origin feature/user-authentication
+```
+
+> This project demonstrates best practices for full-stack web development using modern technologies and follows industry-standard Git workflows.
 
 ---
