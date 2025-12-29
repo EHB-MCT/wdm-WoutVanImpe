@@ -29,7 +29,7 @@ export const ReceiptsList: React.FC<Readonly<ReceiptsListProps>> = ({ receipts, 
 	}
 
 	return (
-		<div className={`${className} ${styles.receiptsList}`}>
+		<div className={`${className} ${styles.receiptsGrid}`}>
 			{receipts.map((receipt) => (
 				<Button key={receipt.id} onClick={() => onReceiptClick(receipt)} variant="secondary" className={styles.receiptCard}>
 					<div className={styles.receiptHeader}>
