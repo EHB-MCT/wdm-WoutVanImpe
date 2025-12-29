@@ -1,13 +1,15 @@
 FROM node:latest
 
-COPY package*.json .
+WORKDIR /app
+
+COPY package*.json ./
 
 RUN npm i --quiet
 
-COPY src .
+COPY src ./src
 COPY next.config.ts .
 COPY tsconfig.json .
 
-EXPOSE 3001
+EXPOSE $FRONTEND_PORT
 
 CMD ["npm", "run", "dev"]

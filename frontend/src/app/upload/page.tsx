@@ -1,36 +1,62 @@
 "use client";
-import { useRef, useState, useEffect } from "react";
-import { ReceiptData, ReceiptItem } from "@/types/receipt";
-import { validateReceiptData, ValidationResult } from "./utils/receiptValidation";
-import ImageUpload from "./components/ImageUpload";
-import ReceiptForm from "../components/ReceiptForm";
-import ReceiptItemsList from "../components/ReceiptItemsList";
-import LoadingStates from "./components/LoadingStates";
-import OCRTextDisplay from "./components/OCRTextDisplay";
-import ReceiptProcessor from "./components/ReceiptProcessor";
-import ValidationModal from "./components/ValidationModal";
-import styles from "../page.module.css";
-import componentStyles from "../components/components.module.css";
-import classNames from "classnames";
 
+import { useRef, useState, useEffect } from "react";
+import classNames from "classnames";
+import { ReceiptData, ReceiptItem } from "@/types/receipt";
+import { ReceiptForm } from "@/components/dashboard/ReceiptForm";
+import { ReceiptItemsList } from "@/components/dashboard/ReceiptItemsList";
+import { AuthGuard } from "@/components/ui/AuthGuard";
+import { ImageUpload } from "@/components/upload/ImageUpload";
+import { EnhancedLoadingStates, ProcessingStep } from "@/components/upload/EnhancedLoadingStates";
+import { OCRTextDisplay } from "@/components/upload/OCRTextDisplay";
+import { ValidationModal } from "@/components/upload/ValidationModal";
+import { Button } from "@/components/ui/Button";
+import { ReceiptProcessor } from "@/components/upload/ReceiptProcessor";
+import { generateUniqueId } from "@/lib/utils";
+import { removeExpiredTokens, isUserAuthenticated } from "@/lib/auth";
+import { ValidationResult, validateReceiptData } from "@/lib/receiptValidation";
+import { safeParseNumber, safeParseInt } from "@/lib/receiptUtils";
+import { receiptsApi, type CreateReceiptRequest } from "@/lib/api/receipts";
+import { categoriesApi } from "@/lib/api/categories";
+import styles from "@/styles/pages/Upload.module.css";
+import componentStyles from "@/styles/components/Receipt.module.css";
+
+/**
+ * Upload page component for receipt scanning workflow.
+ * Provides interface for uploading images, OCR processing, and receipt data editing.
+ * @returns {JSX.Element} Upload page.
+ */
 export default function Home() {
 	const imgInputRef = useRef<HTMLInputElement | null>(null);
+
 	const [imgPreview, setImgPreview] = useState<string>("");
 	const [foundText, setFoundText] = useState<string>("");
 	const [editableData, setEditableData] = useState<ReceiptData | null>(null);
 	const [imgSubmitted, setImgSubmitted] = useState<boolean>(false);
-	const [isLoading, setIsLoading] = useState<boolean>(false);
+
+	const [processingStep, setProcessingStep] = useState<ProcessingStep>("idle");
+	const [processingProgress, setProcessingProgress] = useState<number>(0);
+	const [processingError, setProcessingError] = useState<string>("");
 	const [isSaving, setIsSaving] = useState<boolean>(false);
+
 	const [validation, setValidation] = useState<ValidationResult | null>(null);
 	const [showValidationModal, setShowValidationModal] = useState<boolean>(false);
 	const [categories, setCategories] = useState<string[]>([]);
 
+	/**
+	 * Handles the file input change event.
+	 * Generates a preview URL for the selected image and resets processing states.
+	 */
 	const handleChange = () => {
-		console.log("change");
 		const file = imgInputRef.current?.files?.[0];
 		if (file) {
 			const objectUrl = URL.createObjectURL(file);
 			setImgPreview(objectUrl);
+
+			// Reset processing state when new file is selected
+			setProcessingStep("idle");
+			setProcessingProgress(0);
+			setProcessingError("");
 		}
 	};
 
@@ -38,189 +64,234 @@ export default function Home() {
 		imgInputRef,
 		setFoundText,
 		setEditableData,
-		setIsLoading,
+		setProcessingStep,
+		setProcessingProgress,
+		setErrorMessage: setProcessingError,
 	});
 
+	/**
+	 * Calculates the total price from a list of receipt items.
+	 * @param {ReceiptItem[]} items - The list of items to calculate the total for.
+	 * @returns {number} The sum of (price * quantity) for all items.
+	 */
 	const calculateTotalFromItems = (items: ReceiptItem[]): number => {
 		return items.reduce((total, item) => {
-			if (item.price !== null && item.price !== undefined) {
-				const quantity = item.quantity || 1;
-				return total + (item.price * quantity);
-			}
-			return total;
+			const price = safeParseNumber(item.price);
+			const quantity = safeParseInt(item.quantity, 1);
+			return total + price * quantity;
 		}, 0);
 	};
 
+	/**
+	 * Updates a specific top-level field in the receipt data.
+	 * Recalculates the total price if items are updated and triggers validation.
+	 * @param {keyof ReceiptData} field - The key of the field to update.
+	 * @param {string | number | null} value - The new value for the field.
+	 */
 	const updateEditableData = (field: keyof ReceiptData, value: string | number | null) => {
 		if (!editableData) return;
-		
+
 		const newData = {
 			...editableData,
 			[field]: value,
 		};
-		
-		// Recalculate total if items change
-		if (field === 'items' && newData.items) {
+
+		if (field === "items" && newData.items) {
 			newData.total_price = calculateTotalFromItems(newData.items);
 		}
-		
+
 		setEditableData(newData);
-		
-		// Re-validate on data change
+
 		const newValidation = validateReceiptData(newData);
 		setValidation(newValidation);
 	};
 
+	/**
+	 * Updates a specific field of a receipt item at a given index.
+	 * Recalculates the total price after the update.
+	 * @param {number} index - The index of the item in the items array.
+	 * @param {keyof ReceiptItem} field - The field of the item to update.
+	 * @param {string | number | null} value - The new value for the item field.
+	 */
 	const updateItem = (index: number, field: keyof ReceiptItem, value: string | number | null) => {
-		if (!editableData || !editableData.items) return;
+		if (!editableData?.items) return;
+
 		const updatedItems = [...editableData.items];
 		updatedItems[index] = {
 			...updatedItems[index],
 			[field]: value,
 		};
+
 		const newData = {
 			...editableData,
 			items: updatedItems,
 		};
-		
-		// Recalculate total from items
+
 		newData.total_price = calculateTotalFromItems(updatedItems);
-		
+
 		setEditableData(newData);
-		
-		// Re-validate on item change
+
 		const newValidation = validateReceiptData(newData);
 		setValidation(newValidation);
 	};
 
+	/**
+	 * Adds a new empty item to the receipt items list.
+	 */
 	const addNewItem = () => {
 		if (!editableData) return;
+
 		const newItem: ReceiptItem = {
+			id: generateUniqueId(),
 			name: null,
 			category: null,
 			quantity: 1,
 			price: null,
 		};
+
 		const updatedItems = [newItem, ...(editableData.items || [])];
 		const newData = {
 			...editableData,
 			items: updatedItems,
 		};
-		
-		// Recalculate total from items
+
 		newData.total_price = calculateTotalFromItems(updatedItems);
-		
+
 		setEditableData(newData);
-		
-		// Re-validate after adding item
+
 		const newValidation = validateReceiptData(newData);
 		setValidation(newValidation);
 	};
 
+	/**
+	 * Removes an item from the receipt items list by index.
+	 * @param {number} index - The index of the item to remove.
+	 */
 	const removeItem = (index: number) => {
-		if (!editableData || !editableData.items) return;
+		if (!editableData?.items) return;
+
 		const updatedItems = editableData.items.filter((_, i) => i !== index);
 		const newData = {
 			...editableData,
 			items: updatedItems,
 		};
-		
-		// Recalculate total from items
+
 		newData.total_price = calculateTotalFromItems(updatedItems);
-		
+
 		setEditableData(newData);
-		
-		// Re-validate after removing item
+
 		const newValidation = validateReceiptData(newData);
 		setValidation(newValidation);
 	};
 
+	/**
+	 * Resets the entire form and all associated states to their initial values.
+	 */
+	const resetForm = () => {
+		setImgPreview("");
+		setFoundText("");
+		setEditableData(null);
+		setImgSubmitted(false);
+		setValidation(null);
+		setProcessingStep("idle");
+		setProcessingProgress(0);
+		setProcessingError("");
+		setIsSaving(false);
+
+		// Clear the file input
+		if (imgInputRef.current) {
+			imgInputRef.current.value = "";
+		}
+	};
+
+	/**
+	 * Executes the final save operation to the API.
+	 * Handles authentication checks, payload formatting, and error handling.
+	 * @returns {Promise<void>}
+	 */
 	const proceedWithSave = async () => {
 		if (!editableData) return;
 
 		setShowValidationModal(false);
 		setIsSaving(true);
 		try {
-			const token = localStorage.getItem("token");
-			if (!token) {
+			removeExpiredTokens();
+			if (!isUserAuthenticated()) {
 				throw new Error("Je moet ingelogd zijn om bonnen op te slaan.");
 			}
 
-			const receiptPayload = {
-				store_name: editableData.store_name,
-				purchase_date: editableData.date,
-				purchase_time: editableData.time,
-				payment_method: editableData.payment_method,
-				total_amount: editableData.total_price,
-				raw_ocr_text: foundText || null,
-				items: editableData.items || []
+			const receiptPayload: CreateReceiptRequest = {
+				store_name: editableData.store_name || "",
+				purchase_date: editableData.date || "",
+				purchase_time: editableData.time || undefined,
+				payment_method: editableData.payment_method || "",
+				total_amount: editableData.total_price || 0,
+				raw_ocr_text: foundText || undefined,
+				items: editableData.items || [],
+				dangerous_metadata: editableData.dangerous_metadata,
 			};
 
-			const response = await fetch("http://localhost:5000/api/receipts", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-					"Authorization": `Bearer ${token}`,
-				},
-				body: JSON.stringify(receiptPayload),
-			});
-			
-			if (!response.ok) {
-				const errorData = await response.json();
-				throw new Error(errorData.error || `Opslaan mislukt: ${response.status} ${response.statusText}`);
-			}
+			await receiptsApi.create(receiptPayload);
 
-			const savedReceipt = await response.json();
-			console.log("Receipt saved successfully:", savedReceipt);
-			
+			setValidation({
+				isValid: true,
+				errors: [],
+				warnings: [],
+				success: "Bon succesvol opgeslagen!",
+			});
+			setShowValidationModal(true);
+
 			// Reset form after successful save
-			setImgPreview("");
-			setFoundText("");
-			setEditableData(null);
-			setImgSubmitted(false);
-			setValidation(null);
-			
-			alert("Bon succesvol opgeslagen!");
+			setTimeout(() => {
+				resetForm();
+				setShowValidationModal(false);
+			}, 2000); // Show success message for 2 seconds, then reset
 		} catch (error) {
 			console.error("Save error:", error);
-			alert(`Fout bij opslaan bon: ${error instanceof Error ? error.message : "Onbekende fout"}`);
+			setValidation({
+				isValid: false,
+				errors: [{ field: "Save Error", message: error instanceof Error ? error.message : "Onbekende fout" }],
+				warnings: [],
+			});
+			setShowValidationModal(true);
 		} finally {
 			setIsSaving(false);
 		}
 	};
 
+	/**
+	 * Validates the current data and triggers the confirmation modal.
+	 * The actual API call is delegated to `proceedWithSave`.
+	 */
 	const handleSave = async () => {
 		if (!editableData) return;
 
-		// Validate before saving
 		const validationResult = validateReceiptData(editableData);
 		setValidation(validationResult);
 		setShowValidationModal(true);
 
-		if (!validationResult.isValid) {
-			// Don't save if there are errors
-			return;
-		}
-
-		// If valid, proceed with save will be handled by modal continue button
+		// Actual save is triggered by the "Continue" button in the modal via proceedWithSave
 	};
 
+	/**
+	 * Handles the initial form submission to start image processing.
+	 * @param {React.FormEvent} e - The form submission event.
+	 */
 	const handleFormSubmit = (e: React.FormEvent) => {
 		e.preventDefault();
 		setImgSubmitted(true);
-		setShowValidationModal(false); // Reset validation when new image is submitted
+		setShowValidationModal(false);
+		setProcessingStep("idle");
+		setProcessingProgress(0);
+		setProcessingError("");
 		handleSubmit(e);
 	};
 
-	// Fetch categories on component mount
 	useEffect(() => {
 		const fetchCategories = async () => {
 			try {
-				const response = await fetch("http://localhost:5000/api/categories");
-				if (response.ok) {
-					const categoriesData: { id: number; name: string }[] = await response.json();
-					setCategories(categoriesData.map((cat) => cat.name));
-				}
+				const categoriesData = await categoriesApi.getAll();
+				setCategories(categoriesData.map((cat) => cat.name));
 			} catch (error) {
 				console.error("Error fetching categories:", error);
 			}
@@ -229,74 +300,75 @@ export default function Home() {
 		fetchCategories();
 	}, []);
 
-	// Initialize validation when editableData is set
 	useEffect(() => {
 		if (editableData) {
-			// Ensure total is calculated from items
+			// Ensure data consistency between items and total price on load
 			const calculatedTotal = editableData.items ? calculateTotalFromItems(editableData.items) : 0;
 			const dataWithCorrectTotal = {
 				...editableData,
-				total_price: calculatedTotal
+				total_price: calculatedTotal,
 			};
-			
-			// Update the data if total was different
+
 			if (editableData.total_price !== calculatedTotal) {
 				setEditableData(dataWithCorrectTotal);
 			}
-			
+
 			const initialValidation = validateReceiptData(dataWithCorrectTotal);
 			setValidation(initialValidation);
 		}
-	}, [editableData]); // Include editableData as dependency
+	}, [editableData]);
 
 	return (
-		<div className={styles.ocrPage}>
-			<h1 className={styles.pageTitle}>Upload your tickets here!</h1>
+		<AuthGuard>
+			<div className={styles.ocrPage}>
+				<h1 className={styles.pageTitle}>Upload your tickets here!</h1>
 
-			{imgSubmitted && (
-				<div className={classNames(componentStyles.textResultContainer, "card")}>
-					{isLoading ? (
-						<LoadingStates isLoading={isLoading} />
-					) : editableData ? (
-						<div>
-							<div className={componentStyles.editReceiptHeader}>
-								<strong>Edit Receipt Data:</strong>
-								<button onClick={handleSave} disabled={isSaving} className={`btn btn-primary ${componentStyles.saveButton}`}>
-									{isSaving ? "Saving..." : "Save Receipt"}
-								</button>
+				{imgSubmitted &&
+					(() => {
+						const enhancedLoadingState = <EnhancedLoadingStates currentStep={processingStep} progress={processingProgress} errorMessage={processingError} />;
+
+						const editableDataState = (
+							<div>
+								<div className={styles.editReceiptHeader}>
+									<strong>Edit Receipt Data:</strong>
+								</div>
+
+								<div className={componentStyles.receiptFormSection}>
+									<ReceiptForm editableData={editableData} updateEditableData={updateEditableData} />
+
+									<ReceiptItemsList editableData={editableData} updateItem={updateItem} addNewItem={addNewItem} removeItem={removeItem} categories={categories} />
+								</div>
+
+								<OCRTextDisplay foundText={foundText} />
+
+								<div className={styles.saveButtonContainer}>
+									<Button onClick={handleSave} disabled={isSaving} variant="primary" className={styles.saveButton}>
+										{isSaving ? "Saving..." : "Save Receipt"}
+									</Button>
+								</div>
+
+								{showValidationModal && validation && <ValidationModal validation={validation} isOpen={showValidationModal} onClose={() => setShowValidationModal(false)} onContinue={proceedWithSave} onResetForm={resetForm} />}
 							</div>
+						);
 
-							{showValidationModal && validation && (
-								<ValidationModal 
-									validation={validation} 
-									isOpen={showValidationModal}
-									onClose={() => setShowValidationModal(false)}
-									onContinue={proceedWithSave}
-								/>
-							)}
-
-							<div className={componentStyles.receiptFormSection}>
-								<ReceiptForm editableData={editableData} updateEditableData={updateEditableData} />
-
-								<ReceiptItemsList editableData={editableData} updateItem={updateItem} addNewItem={addNewItem} removeItem={removeItem} categories={categories} />
+						const foundTextState = (
+							<div>
+								<strong>OCR Text (AI extraction failed):</strong>
+								<pre className={componentStyles.ocrFailedText}>{foundText}</pre>
 							</div>
+						);
 
-							<OCRTextDisplay foundText={foundText} />
-						</div>
-					) : foundText ? (
-						<div>
-							<strong>OCR Text (AI extraction failed):</strong>
-							<pre className={componentStyles.ocrFailedText}>{foundText}</pre>
-						</div>
-					) : (
-						<div className={componentStyles.processingFailed}>
-							<strong>Processing failed</strong>
-						</div>
-					)}
-				</div>
-			)}
+						const failedState = (
+							<div className={componentStyles.processingFailed}>
+								<strong>Processing failed</strong>
+							</div>
+						);
 
-			<ImageUpload imgInputRef={imgInputRef} imgPreview={imgPreview} onChange={handleChange} isLoading={isLoading} onSubmit={handleFormSubmit} />
-		</div>
+						return <div className={classNames(styles.textResultContainer, "card")}>{processingStep !== "idle" && processingStep !== "success" ? enhancedLoadingState : editableData ? editableDataState : foundText ? foundTextState : failedState}</div>;
+					})()}
+
+				<ImageUpload imgInputRef={imgInputRef} imgPreview={imgPreview} onChange={handleChange} isLoading={processingStep !== "idle" && processingStep !== "success"} onSubmit={handleFormSubmit} />
+			</div>
+		</AuthGuard>
 	);
 }

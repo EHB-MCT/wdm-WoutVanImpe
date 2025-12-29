@@ -1,146 +1,202 @@
 "use client";
 
-import React, { useState, FormEvent } from "react";
-import SHA256 from "crypto-js/sha256";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import styles from "../page.module.css";
+import { getStoredUser, logout, isUserAuthenticated } from "@/lib/auth";
+import { AccountMenu } from "@/components/account/AccountMenu";
+import { ProfileForm } from "@/components/account/ProfileForm";
+import { PasswordForm } from "@/components/account/PasswordForm";
+import { MessageDisplay } from "@/components/ui/MessageDisplay";
+import { authApi, type ProfileUpdateRequest, type PasswordChangeRequest, ApiError } from "@/lib/api";
+import { User } from "@/types/receipt";
+import { VALIDATION } from "@/lib/constants";
+import styles from "@/styles/components/Account.module.css";
 
-export default function AuthPage() {
+/**
+ * Account page component for user profile management.
+ * Handles user profile editing, password changing, and account navigation.
+ * @returns {JSX.Element} Account management interface.
+ */
+export default function AccountPage() {
 	const router = useRouter();
-	const [isLogin, setIsLogin] = useState(true);
-	const [message, setMessage] = useState("");
-	const [isSuccess, setIsSuccess] = useState(false);
-	const [formData, setFormData] = useState({
-		name: "",
-		email: "",
-		password: "",
-	});
 
-	const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		const { name, value } = e.target;
-		setFormData((prev) => ({ ...prev, [name]: value }));
+	const [user, setUser] = useState<User | null>(null);
+	const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+	const [activeView, setActiveView] = useState<"menu" | "profile" | "password">("menu");
+	const [passwordForm, setPasswordForm] = useState({ currentPassword: "", newPassword: "" });
+	const [profileForm, setProfileForm] = useState({ username: "", email: "" });
+	const [hasChanges, setHasChanges] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
+
+	useEffect(() => {
+		if (message) {
+			const timer = setTimeout(() => {
+				setMessage(null);
+			}, 3000);
+			return () => clearTimeout(timer);
+		}
+	}, [message]);
+
+	useEffect(() => {
+		if (!isUserAuthenticated()) {
+			router.push("/account/login");
+			return;
+		}
+		const storedUser = getStoredUser();
+		if (storedUser) {
+			setUser(storedUser);
+			setProfileForm({ username: storedUser.username, email: storedUser.email });
+		}
+	}, [router]);
+
+	/**
+	 * Checks if the current profile form data differs from the stored user data.
+	 * Updates the hasChanges state to enable/disable the save button.
+	 */
+	const checkProfileChanges = () => {
+		if (user) {
+			const changesMade = profileForm.username !== user.username || profileForm.email !== user.email;
+			setHasChanges(changesMade);
+		}
 	};
 
-	const handleSubmit = async (e: FormEvent) => {
-		e.preventDefault();
-		setMessage("");
+	useEffect(() => {
+		checkProfileChanges();
+	}, [profileForm, user]);
 
-		if (!formData.email || !formData.password || (!isLogin && !formData.name)) {
-			setMessage("Vul alle verplichte velden in.");
+	/**
+	 * Handles user logout logic.
+	 * Displays a success message, clears the session, and redirects to the login page.
+	 */
+	const handleLogout = () => {
+		setMessage({ type: "success", text: "Succesvol uitgelogd!" });
+		logout();
+		setTimeout(() => {
+			router.push("/account/login");
+		}, VALIDATION.LOGOUT_REDIRECT_DELAY_MS);
+	};
+
+	/**
+	 * Validates and submits the password change request.
+	 * Handles API errors and updates the UI state upon success or failure.
+	 * @returns {Promise<void>}
+	 */
+	const handlePasswordChange = async () => {
+		if (!passwordForm.currentPassword || !passwordForm.newPassword) {
+			setMessage({ type: "error", text: "Vul beide velden in" });
 			return;
 		}
 
-		const hashedPassword = SHA256(formData.password).toString();
+		if (passwordForm.newPassword.length < 6) {
+			setMessage({ type: "error", text: "Wachtwoord moet minimaal 6 tekens zijn" });
+			return;
+		}
 
-		const endpoint = isLogin ? "http://localhost:5000/api/login" : "http://localhost:5000/api/register";
-
-		const payload = isLogin
-			? {
-					email: formData.email,
-					password: hashedPassword,
-			  }
-			: {
-					username: formData.name,
-					email: formData.email,
-					password: hashedPassword,
-			  };
-
+		setIsLoading(true);
 		try {
-			const response = await fetch(endpoint, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(payload),
-			});
+			const passwordData: PasswordChangeRequest = {
+				currentPassword: passwordForm.currentPassword,
+				newPassword: passwordForm.newPassword,
+			};
 
-			const data = await response.json();
+			await authApi.changePassword(passwordData);
 
-			if (!response.ok) {
-				throw new Error(data.error || "Er is iets misgegaan.");
+			setMessage({ type: "success", text: "Wachtwoord succesvol gewijzigd!" });
+			setPasswordForm({ currentPassword: "", newPassword: "" });
+			setActiveView("menu");
+		} catch (error) {
+			console.error("Password change error:", error);
+			if (error instanceof ApiError) {
+				setMessage({ type: "error", text: error.message });
+			} else {
+				setMessage({ type: "error", text: "Netwerkfout, probeer opnieuw" });
 			}
-
-	console.log("Succes:", data);
-
-			if (data.token) {
-				localStorage.setItem("token", data.token);
-				localStorage.setItem("user", JSON.stringify(data.user));
-			}
-
-			setMessage(isLogin ? "Succesvol ingelogd!" : "Account aangemaakt!");
-			setIsSuccess(true);
-			
-			// Redirect to home page after 1.5 seconds
-			setTimeout(() => {
-				router.push("/");
-			}, 1500);
-		} catch (error: unknown) {
-			console.error("API Error:", error);
-			setMessage(error instanceof Error ? error.message : "An unknown error occurred");
-			setIsSuccess(false);
+		} finally {
+			setIsLoading(false);
 		}
 	};
+
+	/**
+	 * Validates and submits the profile update request.
+	 * Updates local user state and resets change tracking upon success.
+	 * @returns {Promise<void>}
+	 */
+	const handleProfileSave = async () => {
+		if (!profileForm.username.trim() || !profileForm.email.trim()) {
+			setMessage({ type: "error", text: "Vul beide velden in" });
+			return;
+		}
+
+		if (!profileForm.email.includes("@")) {
+			setMessage({ type: "error", text: "Voer een geldig emailadres in" });
+			return;
+		}
+
+		setIsLoading(true);
+		try {
+			const profileData: ProfileUpdateRequest = {
+				username: profileForm.username,
+				email: profileForm.email,
+			};
+
+			const response = await authApi.updateProfile(profileData);
+
+			setMessage({ type: "success", text: "Profiel succesvol bijgewerkt!" });
+			setUser(response.user);
+			setProfileForm({ username: response.user.username, email: response.user.email });
+			setHasChanges(false);
+		} catch (error) {
+			console.error("Profile update error:", error);
+			if (error instanceof ApiError) {
+				setMessage({ type: "error", text: error.message });
+			} else {
+				setMessage({ type: "error", text: "Netwerkfout, probeer opnieuw" });
+			}
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
+	/**
+	 * Resets the view to the main menu and clears form states.
+	 * Discards any unsaved changes in the profile form.
+	 */
+	const goBack = () => {
+		setActiveView("menu");
+		setPasswordForm({ currentPassword: "", newPassword: "" });
+		if (user) {
+			setProfileForm({ username: user.username, email: user.email });
+			setHasChanges(false);
+		}
+	};
+
+	if (!user) {
+		return (
+			<div className={styles.authContainer}>
+				<div className="card">
+					<p>Laden...</p>
+				</div>
+			</div>
+		);
+	}
 
 	return (
 		<div className={styles.authContainer}>
 			<div className={styles.authWrapper}>
 				<div className="card">
-					<div style={{ display: "flex", alignItems: "center", marginBottom: "20px" }}>
-						<button 
-							onClick={() => router.push("/")} 
-							className="btn btn-secondary" 
-							style={{ marginRight: "15px", padding: "8px 16px" }}
-						>
-							← Terug
-						</button>
-						<h1 className={styles.authTitle} style={{ margin: 0 }}>
-							{isLogin ? "Welkom Terug" : "Account Maken"}
-						</h1>
+					<div className={`${styles.accountHeader} flex-center`}>
+						<h1 className={styles.authTitle}>{activeView === "menu" ? `Hallo, ${user.username}!` : activeView === "profile" ? "Profiel" : activeView === "password" ? "Wachtwoord wijzigen" : "Account"}</h1>
 					</div>
 
-					<form onSubmit={handleSubmit} className={styles.formStack}>
-						{!isLogin && (
-							<div>
-								<label className="label-text" htmlFor="name">
-									Naam
-								</label>
-								<input type="text" id="name" name="name" value={formData.name} onChange={handleChange} className="input-field" placeholder="Jouw naam" />
-							</div>
-						)}
+					{message && <MessageDisplay message={message} />}
 
-						<div>
-							<label className="label-text" htmlFor="email">
-								Email
-							</label>
-							<input type="email" id="email" name="email" value={formData.email} onChange={handleChange} className="input-field" required placeholder="naam@voorbeeld.com" />
-						</div>
+					{activeView === "menu" && <AccountMenu onProfileClick={() => setActiveView("profile")} onPasswordClick={() => setActiveView("password")} onLogout={handleLogout} />}
 
-						<div>
-							<label className="label-text" htmlFor="password">
-								Wachtwoord
-							</label>
-							<input type="password" id="password" name="password" value={formData.password} onChange={handleChange} className="input-field" required placeholder="••••••••" />
-						</div>
+					{activeView === "profile" && (
+						<ProfileForm profileForm={profileForm} onProfileChange={(field, value) => setProfileForm({ ...profileForm, [field]: value })} onSave={handleProfileSave} onCancel={goBack} isLoading={isLoading} hasChanges={hasChanges} />
+					)}
 
-						{message && (
-							<p className={isSuccess ? "success-msg" : "error-msg"}>
-								{message}
-							</p>
-						)}
-
-						<button type="submit" className="btn btn-primary">
-							{isLogin ? "Inloggen" : "Registreren"}
-						</button>
-					</form>
-
-					<div className={styles.footer}>
-						<p>
-							{isLogin ? "Nog geen account?" : "Heb je al een account?"}
-							<button onClick={() => setIsLogin(!isLogin)} className="btn btn-link" style={{ marginLeft: "5px" }}>
-								{isLogin ? "Registreer hier" : "Log hier in"}
-							</button>
-						</p>
-					</div>
+					{activeView === "password" && <PasswordForm passwordForm={passwordForm} onPasswordChange={(field, value) => setPasswordForm({ ...passwordForm, [field]: value })} onSave={handlePasswordChange} onCancel={goBack} isLoading={isLoading} />}
 				</div>
 			</div>
 		</div>
