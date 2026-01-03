@@ -308,7 +308,6 @@ This project follows comprehensive coding standards documented in [STANDARDS.md]
 - **[CONTRIBUTING.md](./CONTRIBUTING.md)** - Detailed contribution guidelines and workflow
 - **[STANDARDS.md](./docs/STANDARDS.md)** - Coding conventions and best practices
 - **[CODE_OF_CONDUCT.md](./CODE_OF_CONDUCT.md)** - Community guidelines
-- **[AGENTS.md](./AGENTS.md)** - Development commands and agent reference
 - **[docs/REFLECTION.MD](./docs/REFLECTION.MD)** - Project development reflections
 - **[docs/AI_REFERENCE.txt](./docs/AI_REFERENCE.txt)** - AI development reference material
 
