@@ -1,0 +1,349 @@
+/* ============================================================================ */
+/*                           DASHBOARD PAGE STYLES                            */
+/* ============================================================================ */
+
+.dashboardPage {
+	padding: var(--spacing-xl);
+	background-color: var(--background);
+}
+
+.dashboardContainer {
+	max-width: 1200px;
+	margin: 0 auto;
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-xl);
+}
+
+/* ============================================================================ */
+/*                           WELCOME SECTION                                  */
+/* ============================================================================ */
+
+.welcomeSection {
+	text-align: center;
+	margin-bottom: var(--spacing-xl);
+}
+
+.pageTitle {
+	font-size: var(--font-4xl);
+	font-weight: 600;
+	color: var(--foreground);
+	margin-bottom: var(--spacing-md);
+}
+
+.currentDate {
+	font-size: var(--font-lg);
+	color: var(--muted-color);
+	font-weight: 400;
+}
+
+/* ============================================================================ */
+/*                           CTA SECTION                                       */
+/* ============================================================================ */
+
+.ctaSection {
+	display: flex;
+	justify-content: center;
+	margin-bottom: var(--spacing-xl);
+}
+
+.ctaCard {
+	text-align: center;
+	max-width: 600px;
+	width: 100%;
+}
+
+.ctaTitle {
+	font-size: var(--font-2xl);
+	font-weight: 600;
+	color: var(--foreground);
+	margin-bottom: var(--spacing-md);
+}
+
+.ctaDescription {
+	font-size: var(--font-base);
+	color: var(--muted-color);
+	margin-bottom: var(--spacing-xl);
+	line-height: 1.6;
+}
+
+.ctaButtonContainer {
+	display: flex;
+	gap: var(--spacing-md);
+	justify-content: center;
+	flex-wrap: wrap;
+}
+
+.ctaLink {
+	text-decoration: none;
+}
+
+.ctaButton {
+	min-width: 140px;
+}
+
+/* ============================================================================ */
+/*                           MONTHLY OVERVIEW                                  */
+/* ============================================================================ */
+
+.monthlyOverview {
+	background-color: var(--card-bg);
+	border-radius: var(--radius-lg);
+	padding: var(--spacing-xl);
+	border: 1px solid var(--border-color);
+	box-shadow: var(--shadow-base);
+}
+
+.monthHeader {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: var(--spacing-xl);
+}
+
+.monthNavButton {
+	background: none;
+	border: none;
+	font-size: var(--font-2xl);
+	color: var(--brand-color);
+	cursor: pointer;
+	padding: var(--spacing-sm);
+	border-radius: var(--radius-md);
+	transition: all var(--duration-normal);
+}
+
+.monthNavButton:hover:not(:disabled) {
+	background-color: var(--muted-bg);
+}
+
+.monthNavButton:disabled {
+	color: var(--muted-color);
+	cursor: not-allowed;
+}
+
+.monthTitle {
+	font-size: var(--font-xl);
+	font-weight: 600;
+	color: var(--foreground);
+	margin: 0;
+}
+
+/* ============================================================================ */
+/*                           STATS & COMBINED CONTENT                          */
+/* ============================================================================ */
+
+.statsGrid {
+	display: grid;
+	gap: var(--spacing-lg);
+}
+
+.statCard {
+	text-align: center;
+}
+
+.statTitle {
+	font-size: var(--font-lg);
+	font-weight: 600;
+	color: var(--foreground);
+	margin-bottom: var(--spacing-md);
+}
+
+.statAmount {
+	font-size: var(--font-3xl);
+	font-weight: 700;
+	color: var(--brand-color);
+	margin-bottom: var(--spacing-lg);
+}
+
+.combinedContent {
+	display: grid;
+	grid-template-columns: 1fr 1fr;
+	gap: var(--spacing-xl);
+	align-items: start;
+}
+
+/* ============================================================================ */
+/*                           CATEGORY BREAKDOWN                                */
+/* ============================================================================ */
+
+.categoryList {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	align-self: center;
+}
+
+.categoryItem {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	padding: 10px 14px;
+	background: #ececec;
+	border-radius: 8px;
+	transition: background 0.2s;
+	border: none;
+	cursor: pointer;
+}
+
+.categoryItem:hover {
+	background: #dadada;
+}
+
+.categoryInfo {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.categoryDot {
+	width: 12px;
+	height: 12px;
+	border-radius: 50%;
+	flex-shrink: 0;
+}
+
+/* Chart color variations */
+.color0 {
+	background-color: var(--chart-1);
+}
+.color1 {
+	background-color: var(--chart-2);
+}
+.color2 {
+	background-color: var(--chart-3);
+}
+.color3 {
+	background-color: var(--chart-4);
+}
+.color4 {
+	background-color: var(--chart-5);
+}
+.color5 {
+	background-color: var(--chart-6);
+}
+.color6 {
+	background-color: var(--chart-7);
+}
+.color7 {
+	background-color: var(--chart-8);
+}
+
+.categoryName {
+	font-size: 0.95rem;
+	color: var(--foreground);
+	font-weight: 500;
+}
+
+.categoryAmount {
+	font-size: 1rem;
+	color: var(--foreground);
+	font-weight: 600;
+}
+
+/* ============================================================================ */
+/*                           CHARTS & SUMMARY                                  */
+/* ============================================================================ */
+
+.summaryCards {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+	gap: var(--spacing-lg);
+	margin-bottom: var(--spacing-xl);
+}
+
+.chartsGrid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+	gap: var(--spacing-lg);
+	margin-bottom: var(--spacing-xl);
+}
+
+.chartCard {
+	min-height: 400px;
+}
+
+.chartTitle {
+	font-size: var(--font-lg);
+	font-weight: 600;
+	color: var(--foreground);
+	margin-bottom: var(--spacing-lg);
+	text-align: center;
+}
+
+.chartContainer {
+	height: 300px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.receiptsSection {
+	margin-top: var(--spacing-xl);
+}
+
+/* ============================================================================ */
+/*                           NO DATA & LOGIN PROMPT                            */
+/* ============================================================================ */
+
+.noDataMessage {
+	text-align: center;
+	padding: var(--spacing-3xl);
+	color: var(--muted-color);
+	font-size: var(--font-lg);
+}
+
+.loginPrompt {
+	text-align: center;
+	max-width: 400px;
+	margin: 0 auto;
+}
+
+/* ============================================================================ */
+/*                           GUEST COMPONENTS                                 */
+/* ============================================================================ */
+
+.guestCard {
+	text-align: center;
+	max-width: 400px;
+	margin: 0 auto var(--spacing-xl);
+}
+
+.guestDescription {
+	margin-bottom: var(--spacing-lg);
+	line-height: 1.6;
+}
+
+.guestButton {
+	min-width: 120px;
+}
+
+/* ============================================================================ */
+/*                           RESPONSIVE DESIGN                                 */
+/* ============================================================================ */
+
+@media (max-width: 768px) {
+	.dashboardPage {
+		padding: var(--spacing-md);
+	}
+
+	.combinedContent {
+		grid-template-columns: 1fr;
+	}
+
+	.chartsGrid {
+		grid-template-columns: 1fr;
+	}
+
+	.ctaButtonContainer {
+		flex-direction: column;
+		align-items: center;
+	}
+
+	.monthHeader {
+		font-size: var(--font-lg);
+	}
+
+	.pageTitle {
+		font-size: var(--font-3xl);
+	}
+}

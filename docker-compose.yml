@@ -1,0 +1,81 @@
+services:
+  tesseract:
+    build:
+      context: ./tesseract
+    environment:
+      TESSERACT_PORT: ${TESSERACT_PORT}
+      FRONTEND_PORT: ${FRONTEND_PORT}
+    ports:
+      - "${TESSERACT_PORT}:${TESSERACT_PORT}"
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: ./frontend
+    ports:
+      - "${FRONTEND_PORT}:${FRONTEND_PORT}"
+    environment:
+      FRONTEND_PORT: ${FRONTEND_PORT}
+      NEXT_PUBLIC_API_PORT: ${API_PORT}
+      NEXT_PUBLIC_OLLAMA_PORT: ${OLLAMA_PORT}
+      NEXT_PUBLIC_TESSERACT_PORT: ${TESSERACT_PORT}
+    networks:
+      - app-network
+
+  ollama:
+    image: ollama/ollama:latest
+    ports:
+      - "${OLLAMA_PORT}:${OLLAMA_PORT}"
+    volumes:
+      - ./ollama:/root/.ollama
+    networks:
+      - app-network
+
+  database:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${DATABASE_USER}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD}
+      POSTGRES_DB: ${DATABASE_DB}
+    ports:
+      - "${DATABASE_PORT}:${DATABASE_PORT}"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -d ${DATABASE_DB} -U ${DATABASE_USER}"]
+      interval: 1s
+      timeout: 5s
+      retries: 10
+    networks:
+      - app-network
+
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "${ADMINER_PORT}:${ADMINER_PORT}"
+    networks:
+      - app-network
+
+  api:
+    build:
+      context: ./api
+    command: sh -c "npm run knex:migrate && npm run knex:seed && npm start"
+    environment:
+      DATABASE_HOST: database
+      DATABASE_USER: ${DATABASE_USER}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD}
+      DATABASE_DB: ${DATABASE_DB}
+      API_PORT: ${API_PORT}
+      API_JWT_SECRET: ${API_JWT_SECRET}
+    ports:
+      - "${API_PORT}:${API_PORT}"
+    networks:
+      - app-network
+    depends_on:
+      database:
+        condition: service_healthy
+
+networks:
+  app-network:
+    driver: bridge

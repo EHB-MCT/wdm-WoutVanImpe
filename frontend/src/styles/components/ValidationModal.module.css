@@ -1,0 +1,271 @@
+/* ============================================================================ */
+/*                    VALIDATION MODAL COMPONENT                           */
+/* ============================================================================ */
+
+.modalBackdrop {
+  /* Override default dialog styles to maintain appearance */
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-modal-backdrop);
+  border: none;
+  width: 100%;
+  height: 100%;
+  margin: 0; /* Remove default dialog margin */
+  color: inherit; /* Inherit text color */
+  padding: var(--spacing-md); /* Ensure proper padding */
+}
+
+.modalContent {
+  background-color: var(--card-bg);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-xl);
+  max-width: 600px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+  z-index: var(--z-modal);
+  animation: modalSlideIn var(--duration-normal) ease-out;
+}
+
+@keyframes modalSlideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* ============================================================================ */
+/*                           MODAL HEADER                                    */
+/* ============================================================================ */
+
+.modalHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: var(--spacing-xl);
+  border-bottom: 1px solid var(--border-color);
+  background-color: var(--card-bg);
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+}
+
+.modalTitle {
+  font-size: var(--font-lg);
+  font-weight: 600;
+  color: var(--foreground);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.modalCloseButton {
+  background: none;
+  border: none;
+  font-size: var(--font-2xl);
+  color: var(--muted-color);
+  cursor: pointer;
+  padding: var(--spacing-sm);
+  border-radius: var(--radius-md);
+  transition: all var(--duration-normal);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+}
+
+.modalCloseButton:hover {
+  background-color: var(--muted-bg);
+  color: var(--error-color);
+}
+
+.modalCloseButton:focus {
+  outline: 2px solid var(--brand-color);
+  outline-offset: 2px;
+}
+
+/* ============================================================================ */
+/*                           MODAL BODY                                      */
+/* ============================================================================ */
+
+.modalBody {
+  padding: var(--spacing-xl);
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.validationSection {
+  border-radius: var(--radius-md);
+  padding: var(--spacing-md);
+  margin-bottom: var(--spacing-md);
+}
+
+.validationSection:last-child {
+  margin-bottom: 0;
+}
+
+.errorSection {
+  background-color: var(--error-bg);
+  border: 1px solid var(--error-border);
+}
+
+.warningSection {
+  background-color: var(--warning-bg);
+  border: 1px solid var(--warning-border);
+}
+
+.successSection {
+  background-color: var(--success-bg);
+  border: 1px solid var(--success-border);
+}
+
+.validationTitle {
+  font-size: var(--font-base);
+  font-weight: 600;
+  margin: 0 0 var(--spacing-md) 0;
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.errorSection .validationTitle {
+  color: var(--error-color);
+}
+
+.warningSection .validationTitle {
+  color: var(--warning-color);
+}
+
+.successSection .validationTitle {
+  color: var(--success-color);
+}
+
+.validationList {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.validationItem {
+  font-size: var(--font-sm);
+  line-height: 1.5;
+  margin-bottom: var(--spacing-sm);
+  padding-left: var(--spacing-md);
+  position: relative;
+}
+
+.validationItem:last-child {
+  margin-bottom: 0;
+}
+
+.validationItem::before {
+  content: "•";
+  position: absolute;
+  left: 0;
+  color: inherit;
+  font-weight: bold;
+}
+
+.errorSection .validationItem {
+  color: var(--error-color);
+}
+
+.warningSection .validationItem {
+  color: var(--warning-color);
+}
+
+.successMessage {
+  font-size: var(--font-base);
+  font-weight: 500;
+  color: var(--success-color);
+  text-align: center;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+}
+
+/* ============================================================================ */
+/*                           MODAL FOOTER                                    */
+/* ============================================================================ */
+
+.modalFooter {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--spacing-md);
+  padding: var(--spacing-xl);
+  border-top: 1px solid var(--border-color);
+  background-color: var(--card-bg);
+  border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+/* ============================================================================ */
+/*                           RESPONSIVE DESIGN                               */
+/* ============================================================================ */
+
+@media (max-width: 768px) {
+  .modalBackdrop {
+    padding: var(--spacing-sm);
+  }
+  
+  .modalContent {
+    max-width: 100%;
+    margin: 0;
+    max-height: 90vh;
+  }
+  
+  .modalHeader {
+    padding: var(--spacing-md);
+  }
+  
+  .modalTitle {
+    font-size: var(--font-base);
+  }
+  
+  .modalBody {
+    padding: var(--spacing-md);
+    max-height: 300px;
+  }
+  
+  .modalFooter {
+    padding: var(--spacing-md);
+    flex-direction: column-reverse;
+  }
+  
+  .validationItem {
+    font-size: var(--font-xs);
+    padding-left: var(--spacing-sm);
+  }
+}
+
+@media (max-width: 480px) {
+  .modalHeader {
+    flex-direction: column;
+    gap: var(--spacing-md);
+    text-align: center;
+  }
+  
+  .modalTitle {
+    font-size: var(--font-sm);
+  }
+  
+  .validationSection {
+    padding: var(--spacing-sm);
+  }
+  
+  .validationTitle {
+    font-size: var(--font-sm);
+  }
+}

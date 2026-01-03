@@ -1,0 +1,5 @@
+ollama
+.env
+node_modules
+AGENTS.md
+commit.md

@@ -1,0 +1,21 @@
+{
+	"name": "tesseract",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1",
+		"start": "node --max-old-space-size=2048 src/index.js",
+		"dev": "nodemon --max-old-space-size=2048 src/index.js --legacy-watch"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"cors": "^2.8.5",
+		"express": "^5.1.0",
+		"multer": "^2.0.2",
+		"nodemon": "^3.1.10",
+		"tesseract.js": "^6.0.1"
+	}
+}

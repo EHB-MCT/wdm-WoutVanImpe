@@ -1,0 +1,207 @@
+/* ============================================================================ */
+/*                          AUTH LAYOUT COMPONENTS                         */
+/* ============================================================================ */
+
+.authContainer {
+	min-height: 100vh;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: var(--background);
+	padding: var(--spacing-md);
+	margin-top: -64px;
+}
+
+.authWrapper {
+	width: 100%;
+	max-width: 400px;
+}
+
+.authHeader {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: var(--spacing-xl);
+	padding-bottom: var(--spacing-md);
+	border-bottom: 1px solid var(--border-color);
+}
+
+.authTitle {
+	font-size: var(--font-2xl);
+	font-weight: 600;
+	color: var(--foreground);
+	margin: 0;
+	text-align: center;
+	flex: 1;
+}
+
+.backButton {
+	padding: var(--spacing-sm) var(--spacing-md);
+	font-size: var(--font-sm);
+}
+
+/* ============================================================================ */
+/*                           FORM STYLING                                    */
+/* ============================================================================ */
+
+.formStack {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-lg);
+}
+
+.formGroup {
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-sm);
+}
+
+.input-field {
+	width: 100%;
+	padding: var(--spacing-md);
+	border: 1px solid var(--border-color);
+	border-radius: var(--radius-md);
+	background-color: var(--card-bg);
+	color: var(--foreground);
+	font-size: var(--font-base);
+	transition: all var(--duration-normal);
+}
+
+.input-field:focus {
+	outline: none;
+	border-color: var(--brand-color);
+	box-shadow: 0 0 0 3px var(--brand-shadow);
+}
+
+.input-field::placeholder {
+	color: var(--placeholder-color);
+}
+
+.label-text {
+	font-size: var(--font-sm);
+	font-weight: 600;
+	color: var(--muted-color);
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+/* ============================================================================ */
+/*                     STAY LOGGED IN CHECKBOX                             */
+/* ============================================================================ */
+
+.stayLoggedInContainer {
+	display: flex;
+	align-items: flex-start;
+	gap: var(--spacing-sm);
+	padding: var(--spacing-sm);
+	border-radius: var(--radius-md);
+	transition: background-color var(--duration-normal);
+}
+
+.stayLoggedInContainer:hover {
+	background-color: var(--muted-bg);
+}
+
+.checkboxInput {
+	margin-top: var(--spacing-xs);
+	accent-color: var(--brand-color);
+}
+
+.checkboxLabel {
+	font-size: var(--font-sm);
+	color: var(--foreground);
+	cursor: pointer;
+	display: flex;
+	flex-direction: column;
+	gap: var(--spacing-xs);
+	flex: 1;
+}
+
+.checkboxSubtext {
+	font-size: var(--font-xs);
+	color: var(--muted-color);
+	opacity: 0.8;
+}
+
+/* ============================================================================ */
+/*                           FORM ACTIONS                                    */
+/* ============================================================================ */
+
+.formActions {
+	display: flex;
+	gap: var(--spacing-md);
+	justify-content: center;
+	margin-top: var(--spacing-lg);
+}
+
+.footer {
+	text-align: center;
+	margin-top: var(--spacing-xl);
+	padding-top: var(--spacing-lg);
+	border-top: 1px solid var(--border-color);
+}
+
+.footer p {
+	font-size: var(--font-sm);
+	color: var(--muted-color);
+	margin: 0;
+}
+
+.linkButton {
+	font-size: var(--font-sm);
+	text-decoration: none;
+	margin-left: var(--spacing-xs);
+}
+
+/* ============================================================================ */
+/*                           MESSAGE DISPLAY                                 */
+/* ============================================================================ */
+
+.success-msg {
+	color: var(--success-color);
+	background-color: var(--success-bg);
+	padding: var(--spacing-md);
+	border-radius: var(--radius-md);
+	border: 1px solid var(--success-border);
+	font-size: var(--font-sm);
+	text-align: center;
+	margin-bottom: var(--spacing-lg);
+}
+
+.error-msg {
+	color: var(--error-color);
+	background-color: var(--error-bg);
+	padding: var(--spacing-md);
+	border-radius: var(--radius-md);
+	border: 1px solid var(--error-border);
+	font-size: var(--font-sm);
+	text-align: center;
+	margin-bottom: var(--spacing-lg);
+}
+
+/* ============================================================================ */
+/*                           RESPONSIVE DESIGN                               */
+/* ============================================================================ */
+
+@media (max-width: 480px) {
+	.authContainer {
+		padding: var(--spacing-sm);
+	}
+
+	.authWrapper {
+		max-width: 100%;
+	}
+
+	.authHeader {
+		flex-direction: column;
+		gap: var(--spacing-md);
+	}
+
+	.authTitle {
+		font-size: var(--font-xl);
+	}
+
+	.formActions {
+		flex-direction: column;
+	}
+}
